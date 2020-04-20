@@ -1,27 +1,29 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '../models/meal.dart' as x;
+import '../models/MealShow.dart';
+import '../models/MealDetail.dart';
+import '../models/MealFavourite.dart';
 import 'package:http/http.dart' as http;
 
 class Meals with ChangeNotifier {
-  x.Data data;
+  Data data;
   int favouriteProv;
   
-  List<x.MealDetailData> detailMeals = [];
-  List<x.MealDetailData> get detailMealsItems {
+  List<MealDetailData> detailMeals = [];
+  List<MealDetailData> get detailMealsItems {
     return [...detailMeals];
   }
 
-  List<x.MealShowData> showMeal = [];
-  List<x.MealShowData> get showMealItem {
+  List<MealShowData> showMeal = [];
+  List<MealShowData> get showMealItem {
     return [...showMeal];
   }
 
-  List<x.MealsFavouriteData> availableMeals = [];
+  List<MealsFavouriteData> availableMeals = [];
   
-  List<x.MealsFavouriteData> mealsFavourite = [];
-  List<x.MealsFavouriteData> get mealsFavouriteItems {
+  List<MealsFavouriteData> mealsFavourite = [];
+  List<MealsFavouriteData> get mealsFavouriteItems {
     return [...mealsFavourite];
   }
 
@@ -58,8 +60,8 @@ class Meals with ChangeNotifier {
     String url = 'http://192.168.43.85:5000/api/v1/meals/show/$mealId'; // 192.168.43.85 || 10.0.2.2
     try {
       http.Response response = await http.get(url);
-      x.MealShowModel model = x.MealShowModel.fromJson(json.decode(response.body));
-      List<x.MealShowData> loadedMeal = model.data;
+      MealShowModel model = MealShowModel.fromJson(json.decode(response.body));
+      List<MealShowData> loadedMeal = model.data;
       showMeal = loadedMeal;
       notifyListeners();
       return showMeal;
@@ -72,11 +74,11 @@ class Meals with ChangeNotifier {
     String url = 'http://192.168.43.85:5000/api/v1/meals/detail/$mealId'; // 192.168.43.85 || 10.0.2.2
     try {
       http.Response response = await http.get(url);
-      x.MealDetailModel model = x.MealDetailModel.fromJson(json.decode(response.body));
+      MealDetailModel model = MealDetailModel.fromJson(json.decode(response.body));
       data = model.data;
       favouriteProv = data.meals.first.isfavourite;
       data.meals.forEach((item) {
-        availableMeals.add(x.MealsFavouriteData(id: item.id));
+        availableMeals.add(MealsFavouriteData(id: item.id));
       });
       notifyListeners();
     } catch(error) {
@@ -100,7 +102,7 @@ class Meals with ChangeNotifier {
     String url = 'http://192.168.43.85:5000/api/v1/meals/favourite'; // 192.168.43.85 || 10.0.2.2
     try {
       http.Response response = await http.get(url);
-      x.MealsFavouriteModel model = x.MealsFavouriteModel.fromJson(json.decode(response.body));
+      MealsFavouriteModel model = MealsFavouriteModel.fromJson(json.decode(response.body));
       mealsFavourite = model.data;
       notifyListeners();
     } catch(error) {
