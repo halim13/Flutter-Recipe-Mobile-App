@@ -1,0 +1,46 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../models/category.dart';
+
+
+class CategoryItem extends StatelessWidget {
+  // final Category category;
+  // CategoryItem({Key key, @required this.category}) : super(key: key);
+  // void selectCategory(BuildContext ctx) {
+  //   Navigator.of(ctx).pushNamed(
+  //     CategoryMealsScreen.routeName,
+  //     arguments: {
+  //       'id': id,
+  //       'title': title,
+  //     },
+  //   );
+  // }
+
+  @override
+  Widget build(BuildContext context) {
+    final category = Provider.of<CategoryData>(context, listen: false);
+    return InkWell(
+      onTap: () => {},
+      splashColor: Theme.of(context).primaryColor,
+      borderRadius: BorderRadius.circular(15),
+      child: Container(
+        padding: const EdgeInsets.all(15),
+        child: Text(
+          category.title,
+          style: Theme.of(context).textTheme.headline6,
+        ),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.red.withOpacity(0.7),
+              Colors.red,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(15),
+        ),
+      ),
+    );
+  }
+}
