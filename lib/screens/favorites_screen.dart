@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/providers/meals_detail.dart';
 import 'package:provider/provider.dart';
-import '../providers/meals.dart';
 import '../screens/meal_detail_screen.dart';
 import '../widgets/meal_item.dart';
 
@@ -12,12 +12,12 @@ class FavoritesScreen extends StatelessWidget {
       MealDetailScreen.routeName,
       arguments: id,
     );
-  }  
+  }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: Provider.of<Meals>(context, listen: false).getMealsFavourite(),
+      future: Provider.of<MealsDetail>(context, listen: false).getMealsFavourite(),
       builder: (context, snapshot) {
         if(snapshot.connectionState == ConnectionState.waiting) {
           return Center(
@@ -31,26 +31,26 @@ class FavoritesScreen extends StatelessWidget {
             )
           );
         }
-        return Consumer<Meals>(
+        return Consumer<MealsDetail>(
           child: Center(
             child: Text('You have no favorites yet - start adding some!'),
           ),
-          builder: (context, value, ch) {
-            if(value.mealsFavouriteItems.length <= 0) {
+          builder: (context, mealsdetail, ch) {
+            if(mealsdetail.mealsFavouriteItems.length <= 0) {
               return ch;
             }
-            return RefreshIndicator(
-                onRefresh: () => value.refreshFavourites(),
-                child: ListView.builder(
-                itemCount: value.mealsFavouriteItems.length,
+            return  RefreshIndicator(
+              onRefresh: () => mealsdetail.refreshMealsFavourite(),
+              child: ListView.builder(
+              itemCount: mealsdetail.mealsFavouriteItems.length,
                 itemBuilder: (context, index) {
                   return MealItem(
-                    id: value.mealsFavouriteItems[index].id,
-                    title: value.mealsFavouriteItems[index].title,
-                    imageUrl: value.mealsFavouriteItems[index].imageUrl,
-                    duration: value.mealsFavouriteItems[index].duration,
-                    affordability: value.mealsFavouriteItems[index].affordability,
-                    complexity: value.mealsFavouriteItems[index].complexity,
+                    id: mealsdetail.mealsFavouriteItems[index].id,
+                    title: mealsdetail.mealsFavouriteItems[index].title,
+                    imageUrl: mealsdetail.mealsFavouriteItems[index].imageUrl,
+                    duration: mealsdetail.mealsFavouriteItems[index].duration,
+                    affordability: mealsdetail.mealsFavouriteItems[index].affordability,
+                    complexity: mealsdetail.mealsFavouriteItems[index].complexity,
                   );
                 }
               ),

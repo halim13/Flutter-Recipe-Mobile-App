@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/helpers/highlight_occurences.dart';
 import 'package:provider/provider.dart';
-import '../providers/meals.dart';
+import '../providers/meals_show.dart';
 import '../screens/meal_detail_screen.dart';
 
 class CategoryMealsScreen extends StatefulWidget {
@@ -13,7 +14,7 @@ class CategoryMealsScreen extends StatefulWidget {
 class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
   ScrollController controller = ScrollController();
 
-  @override 
+  @override
   void initState() {
     super.initState();
     controller.addListener(() {
@@ -43,25 +44,33 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(categoryTitle),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              showSearch(context: context, delegate: DataSearch());
+            }
+          )
+        ],
       ),
       body: FutureBuilder(
-        future: Provider.of<Meals>(context, listen: false).show(mealId),
+        future: Provider.of<MealsShow>(context, listen: false).show(mealId),
         builder: (context, snapshot) {
           if(snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),
             );
-          }        
+          }
           if(snapshot.hasError) {
             return Center(
               child: Text('Oops! Something went wrong! Please Try Again.')
             );
           }
-          return Consumer<Meals>(
+          return Consumer<MealsShow>(
             child: Center(
               child: const Text('You have no meals yet, start adding some!'),
             ),
-            builder: (context, value, ch) => value.showMealItem.length <= 0 ? ch : 
+            builder: (context, value, ch) => value.showMealItem.length <= 0 ? ch :
             RefreshIndicator(
               onRefresh: () => value.refreshMeals(mealId),
               child: ListView.builder(
@@ -152,6 +161,89 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
           );
         },
       )
+    );
+  }
+}
+
+class DataSearch extends SearchDelegate<String> {
+
+
+  ThemeData appBarTheme(BuildContext context) {
+    assert(context != null);
+    final ThemeData theme = Theme.of(context);
+    assert(theme != null);
+    return theme.copyWith(
+      inputDecorationTheme: InputDecorationTheme(
+        hintStyle: TextStyle(color: Colors.white),
+      ),
+      primaryIconTheme: theme.primaryIconTheme.copyWith(color: Colors.white),
+      textTheme: theme.textTheme.copyWith(
+        headline6: TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.normal
+        ),
+      ),
+    );
+  }
+
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: Icon(Icons.clear),
+        onPressed: () {
+          query = "";
+        }
+      )
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: AnimatedIcon(
+        icon: AnimatedIcons.menu_arrow,
+        progress: transitionAnimation
+      ),
+      onPressed: () {
+        close(context, null);
+      });
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return Container(
+      child: Text(query)
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    final provider = Provider.of<MealsShow>(context);
+
+    final suggestionList = query.isEmpty ? provider.showMealItem : provider.showMealItem.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
+
+    return ListView.builder(
+      itemCount: suggestionList.length,
+      itemBuilder: (context, index) => ListTile(
+        onTap: () {
+          Navigator.of(context).pushNamed(
+            MealDetailScreen.routeName,
+            arguments: suggestionList[index].id
+          );
+        },
+        leading: Icon(Icons.fastfood),
+        title: RichText(
+          text: TextSpan(
+            children: highlightOccurrences(suggestionList[index].title, query),
+            style: TextStyle(
+              color: Colors.grey,
+              fontWeight: FontWeight.normal
+            ),
+          )
+        )
+      ),
     );
   }
 }

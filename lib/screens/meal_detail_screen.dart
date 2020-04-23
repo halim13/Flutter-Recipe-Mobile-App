@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/meals.dart';
+import '../providers/meals_detail.dart';
 
 class MealDetailScreen extends StatefulWidget {
   static const routeName = '/meal-detail';
@@ -38,97 +38,90 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final mealId = ModalRoute.of(context).settings.arguments;
+    final provider = Provider.of<MealsDetail>(context, listen: false);
     return FutureBuilder(
-      future: Provider.of<Meals>(context, listen: false).detail(mealId),
+      future: Provider.of<MealsDetail>(context, listen: false).detail(mealId),
       builder: (context, snapshot) {
         if(snapshot.connectionState == ConnectionState.waiting) {
-          return Consumer<Meals>(
-            builder: (context, value, ch) {
-              return Scaffold(
-                appBar: AppBar(
-                  title: Text('')
-                ),
-                body: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            },
+          return Scaffold(
+            appBar: AppBar(
+              title: Text("")
+            ),
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
           );
         }
         if(snapshot.hasError) {
-          return Consumer<Meals>(
-            builder: (context, value, ch) { 
-              return Scaffold(
-                appBar: AppBar(
-                  title: Text(value.data.meals.first.title),
-                ),
-                body: Center(
-                  child: Text('Oops! Something went wrong! Please Try Again.'),
-                )
-              );
-            }
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(provider.data.meals.first.title),
+            ),
+            body: Center(
+              child: Text('Oops! Something went wrong! Please Try Again.'),
+            )
           );
         }
-        return Consumer<Meals>(
-          builder: (context, value, child) {
-            return Scaffold(
-              appBar: AppBar(
-                title: Text(value.data.meals.first.title),
-              ),
-              body: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      height: 300,
-                      width: double.infinity,
-                      child: Image.network(
-                        value.data.meals.first.imageUrl,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    buildSectionTitle(context, 'Ingredients'),
-                    buildContainer(
-                      ListView.builder(
-                        itemCount: value.data.ingredients.length,
-                        itemBuilder: (ctx, index) => Card(
-                          color: Theme.of(context).accentColor,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: 5,
-                              horizontal: 10,
-                            ),
-                            child: Text(value.data.ingredients[index].body)),
-                          ),
-                      ),
-                    ),
-                    buildSectionTitle(context, 'Steps'),
-                    buildContainer(
-                      ListView.builder(
-                        itemCount: value.data.steps.length,
-                        itemBuilder: (context, index) => Column(
-                          children: [
-                            ListTile(
-                              leading: CircleAvatar(
-                                child: Text('# ${(index + 1)}'),
-                              ),
-                              title: Text(
-                                value.data.steps[index].body,
-                              ),
-                            ),
-                            Divider()
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(provider.data.meals.first.title),
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Container(
+                  height: 300,
+                  width: double.infinity,
+                  child: Image.network(
+                    provider.data.meals.first.imageUrl,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
-              floatingActionButton: FloatingActionButton(
+                buildSectionTitle(context, 'Ingredients'),
+                buildContainer(
+                  ListView.builder(
+                    itemCount: provider.data.ingredients.length,
+                    itemBuilder: (ctx, index) => Card(
+                      color: Theme.of(context).accentColor,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 5,
+                          horizontal: 10,
+                        ),
+                        child: Text(provider.data.ingredients[index].body)),
+                      ),
+                  ),
+                ),
+                buildSectionTitle(context, 'Steps'),
+                buildContainer(
+                  ListView.builder(
+                    itemCount: provider.data.steps.length,
+                    itemBuilder: (context, index) => Column(
+                      children: [
+                        ListTile(
+                          leading: CircleAvatar(
+                            child: Text('# ${(index + 1)}'),
+                          ),
+                          title: Text(
+                            provider.data.steps[index].body,
+                          ),
+                        ),
+                        Divider()
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          floatingActionButton: Consumer<MealsDetail>(
+            builder: (context, value, ch) {
+              return FloatingActionButton(
                 child: Icon(value.isMealFavorite(mealId) ? Icons.star : Icons.star_border),
                 onPressed: () => value.toggleFavourite(mealId)
-              )
-            );
-          }
+              );
+            },
+          )
         );
       },
     );
