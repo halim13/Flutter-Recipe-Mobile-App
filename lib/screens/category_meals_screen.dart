@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/helpers/highlight_occurences.dart';
 import 'package:provider/provider.dart';
+import '../helpers/highlight_occurences.dart';
 import '../providers/meals_show.dart';
 import '../screens/meal_detail_screen.dart';
 
@@ -167,7 +167,6 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
 
 class DataSearch extends SearchDelegate<String> {
 
-
   ThemeData appBarTheme(BuildContext context) {
     assert(context != null);
     final ThemeData theme = Theme.of(context);
@@ -208,41 +207,168 @@ class DataSearch extends SearchDelegate<String> {
       ),
       onPressed: () {
         close(context, null);
-      });
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    return Container(
-      child: Text(query)
+      }
     );
   }
 
   @override
-  Widget buildSuggestions(BuildContext context) {
+  Widget buildResults(BuildContext context) {
     final provider = Provider.of<MealsShow>(context);
-
-    final suggestionList = query.isEmpty ? provider.showMealItem : provider.showMealItem.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
+    final results = provider.showMealItem.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
 
     return ListView.builder(
-      itemCount: suggestionList.length,
-      itemBuilder: (context, index) => ListTile(
-        onTap: () {
-          Navigator.of(context).pushNamed(
-            MealDetailScreen.routeName,
-            arguments: suggestionList[index].id
-          );
-        },
-        leading: Icon(Icons.fastfood),
-        title: RichText(
-          text: TextSpan(
-            children: highlightOccurrences(suggestionList[index].title, query),
-            style: TextStyle(
-              color: Colors.grey,
-              fontWeight: FontWeight.normal
+      itemCount: results.length,
+      itemBuilder: (context, index) {
+        return InkWell(
+          onTap: () => {
+            Navigator.of(context).pushNamed(
+              MealDetailScreen.routeName,
+              arguments: results[index].id
+            )
+          },
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15)
             ),
+            elevation: 4,
+            margin: EdgeInsets.all(10),
+            child: Column(
+              children: <Widget>[
+                Stack(
+                  children: <Widget>[
+                    ClipRRect(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        topRight: Radius.circular(15),
+                      ),
+                      child: Image.network(results[index].imageurl,
+                        height: 250,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 20,
+                      right: 10,
+                      child: Container(
+                        width: 300,
+                        color: Colors.black54,
+                        padding: EdgeInsets.symmetric(
+                          vertical: 5,
+                          horizontal: 20,
+                        ),
+                        child: Text(results[index].title,
+                          style: TextStyle(
+                            fontSize: 26,
+                            color: Colors.white,
+                          ),
+                          softWrap: true,
+                          overflow: TextOverflow.fade,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Icon(Icons.schedule),
+                          SizedBox(width: 6),
+                          Text('${results[index].duration} min'),
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Icon(Icons.work),
+                          SizedBox(width: 6),
+                          Text(results[index].complexities),
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Icon(Icons.attach_money),
+                          SizedBox(width: 6),
+                          Text(results[index].affordabilities),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    );
+  }
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    final provider = Provider.of<MealsShow>(context);
+    if(query.isEmpty) {
+      return ListView.builder(
+        itemCount: provider.searchSuggestionsItem.length,
+        itemBuilder: (context, index) => Card(
+          child: ListTile(
+            onTap: () {
+              Navigator.of(context).pushNamed(
+                MealDetailScreen.routeName,
+                arguments: provider.searchSuggestionsItem[index].id
+              );
+              provider.popularViews(provider.searchSuggestionsItem[index].id);
+            },
+            leading: Image.network(
+              provider.searchSuggestionsItem[index].imageUrl,
+              height: 50,
+              width: 50,
+              alignment: Alignment.center,
+              fit: BoxFit.cover,
+            ),
+            title: RichText(
+              text: TextSpan(
+                children: highlightOccurrences(provider.searchSuggestionsItem[index].title, query),
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold
+                ),
+              )
+            )
+          ),
+        ),
+      );
+    }
+    final suggestionsList = provider.showMeal.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
+    return ListView.builder(
+      itemCount: suggestionsList.length,
+      itemBuilder: (context, index) => Card(
+        child: ListTile(
+          onTap: () {
+            Navigator.of(context).pushNamed(
+              MealDetailScreen.routeName,
+              arguments: suggestionsList[index].id
+            );
+            provider.popularViews(suggestionsList[index].id);
+          },
+          leading: Image.network(
+            suggestionsList[index].imageurl,
+            height: 50,
+            width: 50,
+            alignment: Alignment.center,
+            fit: BoxFit.cover,
+          ),
+          title: RichText(
+            text: TextSpan(
+              children: highlightOccurrences(suggestionsList[index].title, query),
+              style: TextStyle(
+                color: Colors.grey,
+                fontWeight: FontWeight.bold
+              ),
+            )
           )
-        )
+        ),
       ),
     );
   }
