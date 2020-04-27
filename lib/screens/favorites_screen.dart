@@ -16,6 +16,7 @@ class FavoritesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<MealsDetail>(context, listen: false);
     return FutureBuilder(
       future: Provider.of<MealsDetail>(context, listen: false).getMealsFavourite(),
       builder: (context, snapshot) {
@@ -32,14 +33,19 @@ class FavoritesScreen extends StatelessWidget {
           );
         }
         return Consumer<MealsDetail>(
-          child: Center(
-            child: Text('You have no favorites yet - start adding some!'),
+          child: Container(
+            child: RefreshIndicator(
+              onRefresh: () => provider.refreshMealsFavourite(),
+              child: Center(
+                child: Text('You have no favorites yet - start adding some!'),
+              ),
+            )
           ),
           builder: (context, mealsdetail, ch) {
             if(mealsdetail.mealsFavouriteItems.length <= 0) {
               return ch;
             }
-            return  RefreshIndicator(
+            return RefreshIndicator(
               onRefresh: () => mealsdetail.refreshMealsFavourite(),
               child: ListView.builder(
               itemCount: mealsdetail.mealsFavouriteItems.length,

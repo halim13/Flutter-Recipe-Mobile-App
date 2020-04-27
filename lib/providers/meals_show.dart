@@ -43,8 +43,9 @@ class MealsShow with ChangeNotifier {
     }
   }
 
-  Future<void> show(String mealId) async {
-    String url = 'http://192.168.43.85:5000/api/v1/meals/show/$mealId'; // 192.168.43.85 || 10.0.2.2
+  Future<void> show(String mealId, [int limit = 0]) async {
+    limit = limit + 5;
+    String url = 'http://192.168.43.85:5000/api/v1/meals/show/$mealId?limit=$limit'; // 192.168.43.85 || 10.0.2.2
     try {
       http.Response response = await http.get(url);
       MealShowModel model = MealShowModel.fromJson(json.decode(response.body));

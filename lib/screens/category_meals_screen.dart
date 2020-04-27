@@ -19,7 +19,8 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
     super.initState();
     controller.addListener(() {
       if (controller.position.pixels == controller.position.maxScrollExtent) {
-        print('here we go asshole!');
+        final routeArgs = ModalRoute.of(context).settings.arguments as Map<String, String>;
+        Provider.of<MealsShow>(context, listen: false).show(routeArgs['id'], 5);
       }
     });
   }
@@ -77,6 +78,8 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
               controller: controller,
               itemCount: value.showMealItem.length,
               itemBuilder: (context, index) {
+                if(index == value.showMealItem.length) 
+                  return CircularProgressIndicator();
                   return InkWell(
                     onTap: () => selectMeal(context, value.showMealItem[index].id),
                     child: Card(
@@ -168,9 +171,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
 class DataSearch extends SearchDelegate<String> {
 
   ThemeData appBarTheme(BuildContext context) {
-    assert(context != null);
     final ThemeData theme = Theme.of(context);
-    assert(theme != null);
     return theme.copyWith(
       inputDecorationTheme: InputDecorationTheme(
         hintStyle: TextStyle(color: Colors.white),
