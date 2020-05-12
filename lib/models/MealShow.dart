@@ -7,10 +7,10 @@ class MealShowModel with ChangeNotifier {
   List<MealShowData> data;
 
   MealShowModel({
-    this.status,
-    this.error,
-    this.message,
-    this.data,
+    @required this.status,
+    @required this.error,
+    @required this.message,
+    @required this.data,
   });
 
   factory MealShowModel.fromJson(Map<String, dynamic> json) => MealShowModel(
@@ -30,12 +30,12 @@ class MealShowData with ChangeNotifier {
   String complexities;
 
   MealShowData({
-    this.id,
-    this.title,
-    this.duration,
-    this.imageurl,
-    this.affordabilities,
-    this.complexities,
+    @required this.id,
+    @required this.title,
+    @required this.duration,
+    @required this.imageurl,
+    @required this.affordabilities,
+    @required this.complexities,
   });
 
   factory MealShowData.fromJson(Map<String, dynamic> json) => MealShowData(

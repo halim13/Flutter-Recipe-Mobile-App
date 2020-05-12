@@ -7,10 +7,10 @@ class MealsFavouriteModel with ChangeNotifier {
   List<MealsFavouriteData> data;
 
   MealsFavouriteModel({
-    this.status,
-    this.error,
-    this.message,
-    this.data,
+    @required this.status,
+    @required this.error,
+    @required this.message,
+    @required this.data,
   });
 
   factory MealsFavouriteModel.fromJson(Map<String, dynamic> json) => MealsFavouriteModel(
@@ -32,10 +32,10 @@ class MealsFavouriteData with ChangeNotifier {
   String imageUrl;
 
   MealsFavouriteData({
-    this.id,
-    this.title,
+    @required this.id,
+    @required this.title,
     this.duration,
-    this.isfavourite,
+    @required this.isfavourite,
     this.affordability,
     this.complexity,
     this.imageUrl,
@@ -50,5 +50,4 @@ class MealsFavouriteData with ChangeNotifier {
     complexity: json["complexity"] == null ? null : json["complexity"],
     imageUrl: json["imageUrl"] == null ? null : json["imageUrl"],
   );
-
 }

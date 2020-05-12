@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../helpers/color_convert.dart';
 import '../providers/categories.dart';
 import './category_meals_screen.dart';
 
 class CategoriesScreen extends StatelessWidget {
-
   void selectCategory(BuildContext context, String id, String title) {
     Navigator.of(context).pushNamed(
       CategoryMealsScreen.routeName,
@@ -51,23 +49,30 @@ class CategoriesScreen extends StatelessWidget {
               ), 
               itemBuilder: (context, index) {
                 return InkWell(
-                  onTap: () => selectCategory(context, value.items[index].id, value.items[index].title),
+                  onTap: () => selectCategory(context, value.items[index].id.toString(), value.items[index].title),
                   splashColor: Theme.of(context).primaryColor,
                   borderRadius: BorderRadius.circular(15),
                   child: Container(
                     padding: const EdgeInsets.all(15),
-                    child: Text(
-                      value.items[index].title,
-                      style: Theme.of(context).textTheme.headline6,
+                    child: Container(
+                      padding: const EdgeInsets.all(5),
+                      child: Text(
+                        value.items[index].title,
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
                     ),
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          hexToColor(value.items[index].color).withOpacity(0.7),
-                          hexToColor(value.items[index].color),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+                      // gradient: LinearGradient(
+                      //   colors: [
+                      //     hexToColor(value.items[index].color).withOpacity(0.7),
+                      //     hexToColor(value.items[index].color),
+                      //   ],
+                      //   begin: Alignment.topLeft,
+                      //   end: Alignment.bottomRight,
+                      // ),
+                      image: DecorationImage(
+                        image: value.items[index].cover != "" ? NetworkImage(value.items[index].cover) : AssetImage('assets/default-thumbnail.jpg'),
+                        fit: BoxFit.cover
                       ),
                       borderRadius: BorderRadius.circular(15),
                     ),

@@ -117,6 +117,8 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
           floatingActionButton: Consumer<MealsDetail>(
             builder: (context, value, ch) {
               return FloatingActionButton(
+                backgroundColor: Colors.yellow.shade700,
+                foregroundColor: Colors.black,
                 child: Icon(value.isMealFavorite(mealId) ? Icons.star : Icons.star_border),
                 onPressed: () => value.toggleFavourite(mealId)
               );

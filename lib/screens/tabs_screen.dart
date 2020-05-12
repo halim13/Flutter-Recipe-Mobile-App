@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import '../custom/bottom_navy_bar.dart';
 import '../widgets/main_drawer.dart';
-import '../screens/favorites_screen.dart';
+import './profile_screen.dart';
+import './favorites_screen.dart';
 import './categories_screen.dart';
 
 class TabsScreen extends StatefulWidget {
@@ -18,17 +20,21 @@ class TabsScreenState extends State<TabsScreen> {
     pages = [
       {
         'page': CategoriesScreen(),
-        'title': 'Category',
+        'title': 'Categories',
       },
       {
         'page': FavoritesScreen(),
         'title': 'Favorites',
       },
+      {
+        'page': ProfileScreen(),
+        'title': 'Profile',
+      },
     ];
     super.initState();
   }
 
-  void _selectPage(int index) {
+  void selectPage(int index) {
     setState(() {
       selectedPageIndex = index;
     });
@@ -40,28 +46,34 @@ class TabsScreenState extends State<TabsScreen> {
       appBar: AppBar(
         title: Text(pages[selectedPageIndex]['title']),
       ),
-      drawer: MainDrawer(),
       body: pages[selectedPageIndex]['page'],
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: _selectPage,
-        backgroundColor: Theme.of(context).primaryColor,
-        unselectedItemColor: Colors.white,
-        selectedItemColor: Theme.of(context).accentColor,
-        currentIndex: selectedPageIndex,
-        // type: BottomNavigationBarType.fixed,
+      drawer: MainDrawer(),
+      bottomNavigationBar: BottomNavyBar( 
+        selectedIndex: selectedPageIndex,
+        showElevation: false, 
+        onItemSelected: (index) => setState(() {
+          selectedPageIndex = index;
+        }),
         items: [
-          BottomNavigationBarItem(
-            backgroundColor: Theme.of(context).primaryColor,
-            icon: Icon(Icons.category),
-            title: Text('Categories'),
+          BottomNavyBarItem(
+          icon: Icon(Icons.fastfood),
+          title: Text('Categories'),
+          activeColor: Colors.red.shade700,
           ),
-          BottomNavigationBarItem(
-            backgroundColor: Theme.of(context).primaryColor,
+          BottomNavyBarItem(
             icon: Icon(Icons.star),
-            title: Text('Favorites'),
+            title: Text('Favourites'),
+            activeColor: Colors.yellow.shade700
+          ),
+          BottomNavyBarItem(
+            icon: Icon(Icons.account_circle),
+            title: Text('Profile'),
+            activeColor: Colors.blue.shade700,
           ),
         ],
       ),
     );
   }
 }
+
+

@@ -7,10 +7,10 @@ class MealDetailModel with ChangeNotifier {
   Data data;
 
   MealDetailModel({
-    this.status,
-    this.error,
-    this.message,
-    this.data,
+    @required this.status,
+    @required this.error,
+    @required this.message,
+    @required this.data,
   });
 
   factory MealDetailModel.fromJson(Map<String, dynamic> json) => MealDetailModel(
@@ -27,9 +27,9 @@ class Data with ChangeNotifier {
   List<StepDetailData> steps;
 
   Data({
-    this.meals,
-    this.ingredients,
-    this.steps,
+    @required this.meals,
+    @required this.ingredients,
+    @required this.steps,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -46,10 +46,10 @@ class MealDetailData with ChangeNotifier {
   int isfavourite;
 
   MealDetailData({
-    this.id,
-    this.title,
-    this.imageUrl,
-    this.isfavourite
+    @required this.id,
+    @required this.title,
+    @required this.imageUrl,
+    @required this.isfavourite
   });
 
   factory MealDetailData.fromJson(Map<String, dynamic> json) => MealDetailData(
@@ -64,7 +64,7 @@ class IngredientDetailData with ChangeNotifier {
   String body;
 
   IngredientDetailData({
-    this.body,
+    @required this.body,
   });
 
   factory IngredientDetailData.fromJson(Map<String, dynamic> json) => IngredientDetailData(
@@ -76,7 +76,7 @@ class StepDetailData with ChangeNotifier {
   String body;
 
   StepDetailData({
-    this.body,
+    @required this.body,
   });
 
   factory StepDetailData.fromJson(Map<String, dynamic> json) => StepDetailData(

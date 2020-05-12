@@ -7,10 +7,10 @@ class CategoryModel with ChangeNotifier {
   List<CategoryData> data;
 
   CategoryModel({
-    this.status,
-    this.error,
-    this.message,
-    this.data,
+    @required this.status,
+    @required this.error,
+    @required this.message,
+    @required this.data,
   });
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) => CategoryModel(
@@ -25,17 +25,20 @@ class CategoryData with ChangeNotifier {
   String id;
   String title;
   String color;
+  String cover;
   
   CategoryData({
     @required this.id,
     @required this.title,
-    @required this.color
+    @required this.color,
+    @required this.cover
   });
 
   factory CategoryData.fromJson(Map<String, dynamic> json) => CategoryData(
     id: json["id"] == null ? null : json["id"],
     title: json["title"] == null ? null : json["title"],
-    color: json["color"] == null ? null : json["color"]
+    color: json["color"] == null ? null : json["color"],
+    cover: json["cover"] == null ? null : json["cover"]
   );
 }
 

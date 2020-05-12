@@ -77,7 +77,13 @@ class MealsDetail with ChangeNotifier {
       data = model.data;
       favourite = data.meals.first.isfavourite;
       data.meals.forEach((item) {
-        availableMeals.add(MealsFavouriteData(id: item.id));
+        availableMeals.add(
+          MealsFavouriteData(
+            id: item.id,
+            title: item.title,
+            isfavourite: item.isfavourite
+          )
+        );
       });
       notifyListeners();
     } catch(error) {
@@ -85,6 +91,4 @@ class MealsDetail with ChangeNotifier {
       throw error;
     }
   }
-
-
 }

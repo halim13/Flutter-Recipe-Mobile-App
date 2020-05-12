@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/providers/meals_detail.dart';
 import 'package:provider/provider.dart';
+import '../providers/meals_detail.dart';
 import '../screens/meal_detail_screen.dart';
 import '../widgets/meal_item.dart';
-
 
 class FavoritesScreen extends StatelessWidget {
 
@@ -33,13 +32,22 @@ class FavoritesScreen extends StatelessWidget {
           );
         }
         return Consumer<MealsDetail>(
-          child: Container(
-            child: RefreshIndicator(
-              onRefresh: () => provider.refreshMealsFavourite(),
-              child: Center(
-                child: Text('You have no favorites yet - start adding some!'),
-              ),
-            )
+          child: RefreshIndicator(
+            onRefresh: () => provider.refreshMealsFavourite(),
+            child: ListView(
+              children: <Widget>[
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.75,
+                  child: Column( 
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text('You have no favorites yet.')
+                    ]
+                  ),
+                ),
+              ],
+            ),
           ),
           builder: (context, mealsdetail, ch) {
             if(mealsdetail.mealsFavouriteItems.length <= 0) {
@@ -51,7 +59,7 @@ class FavoritesScreen extends StatelessWidget {
               itemCount: mealsdetail.mealsFavouriteItems.length,
                 itemBuilder: (context, index) {
                   return MealItem(
-                    id: mealsdetail.mealsFavouriteItems[index].id,
+                    id: mealsdetail.mealsFavouriteItems[index].id.toString(),
                     title: mealsdetail.mealsFavouriteItems[index].title,
                     imageUrl: mealsdetail.mealsFavouriteItems[index].imageUrl,
                     duration: mealsdetail.mealsFavouriteItems[index].duration,

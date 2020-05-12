@@ -6,10 +6,8 @@ import '../models/Category.dart';
 
 class Categories with ChangeNotifier {
   List<CategoryData> categories = [];
-  List<CategoryData> get items {
-    return[...categories];
-  }
-
+  List<CategoryData> get items => [...categories];
+  
   Future<void> refreshProducts() async {
     await getCategories();
   }

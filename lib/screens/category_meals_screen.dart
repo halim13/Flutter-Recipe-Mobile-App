@@ -81,7 +81,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
                 if(index == value.showMealItem.length) 
                   return CircularProgressIndicator();
                   return InkWell(
-                    onTap: () => selectMeal(context, value.showMealItem[index].id),
+                    onTap: () => selectMeal(context, value.showMealItem[index].id.toString()),
                     child: Card(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15)
@@ -174,14 +174,14 @@ class DataSearch extends SearchDelegate<String> {
     final ThemeData theme = Theme.of(context);
     return theme.copyWith(
       inputDecorationTheme: InputDecorationTheme(
-        hintStyle: TextStyle(color: Colors.white),
+        hintStyle: TextStyle(color: Colors.black),
       ),
-      primaryIconTheme: theme.primaryIconTheme.copyWith(color: Colors.white),
+      primaryIconTheme: theme.primaryIconTheme.copyWith(color: Colors.black),
       textTheme: theme.textTheme.copyWith(
         headline6: TextStyle(
-          color: Colors.white,
+          color: Colors.black,
           fontSize: 20,
-          fontWeight: FontWeight.normal
+          fontWeight: FontWeight.w400
         ),
       ),
     );
@@ -351,7 +351,7 @@ class DataSearch extends SearchDelegate<String> {
               MealDetailScreen.routeName,
               arguments: suggestionsList[index].id
             );
-            provider.popularViews(suggestionsList[index].id);
+            provider.popularViews(suggestionsList[index].id.toString());
           },
           leading: Image.network(
             suggestionsList[index].imageurl,

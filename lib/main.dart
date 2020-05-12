@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import './providers/auth.dart';
 import './providers/categories.dart';
 import './providers/meals_show.dart';
 import './providers/meals_detail.dart';
@@ -7,6 +8,10 @@ import './screens/tabs_screen.dart';
 import './screens/categories_screen.dart';
 import './screens/category_meals_screen.dart';
 import './screens/meal_detail_screen.dart';
+import './screens/login_screen.dart';
+import './screens/register_screen.dart';
+import './colors/colors.dart';
+
 
 void main() => runApp(MyApp());
 
@@ -20,6 +25,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+         ChangeNotifierProvider.value(
+          value: Auth(),
+        ),
         ChangeNotifierProvider.value(
           value: Categories(),
         ),
@@ -35,9 +43,9 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           appBarTheme: AppBarTheme(elevation: 0.0),
-          primarySwatch: Colors.blue,
-          accentColor: Colors.amber,
-          canvasColor: Color.fromRGBO(255, 254, 229, 1),
+          primaryColor: primaryGrey.shade50,
+          accentColor: primaryRed.shade700,
+          canvasColor: const Color.fromARGB(255, 255, 255, 255),
           fontFamily: 'Raleway',
           textTheme: ThemeData.light().textTheme.copyWith(
             bodyText1: TextStyle(
@@ -47,6 +55,7 @@ class _MyAppState extends State<MyApp> {
               color: Color.fromRGBO(20, 51, 51, 1),
             ),
             headline6: TextStyle(
+              color: Colors.white,
               fontSize: 20,
               fontFamily: 'RobotoCondensed',
               fontWeight: FontWeight.bold,
@@ -56,6 +65,8 @@ class _MyAppState extends State<MyApp> {
         initialRoute: '/',
         routes: {
           '/': (ctx) => TabsScreen(),
+          LoginScreen.routeName: (ctx) => LoginScreen(),
+          RegisterScreen.routeName: (ctx) => RegisterScreen(),
           CategoryMealsScreen.routeName: (ctx) => CategoryMealsScreen(),
           MealDetailScreen.routeName: (ctx) => MealDetailScreen(),
         },
