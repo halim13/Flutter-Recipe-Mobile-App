@@ -1,8 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../providers/auth.dart';
 import './register_screen.dart';
+import './profile_screen.dart';
+import 'tabs_screen.dart';
+
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login';
@@ -16,6 +22,7 @@ class LoginScreenState extends State<LoginScreen> {
   final passwordController = TextEditingController();
   String email;
   String password;
+  bool loading = false;
   bool rememberMe = false;
   bool obscure = true;
 
@@ -26,11 +33,48 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   void login() async {
-    if (!formKey.currentState.validate()) {
-      return;
+    // if (!formKey.currentState.validate()) {
+    //   return;
+    // }
+    try {
+     if (emailController.text.isEmpty || !emailController.text.contains('@')) {
+        throw ErrorDescription("Invalid email.");
+      }
+      if (passwordController.text.isEmpty || passwordController.text.length < 6) {
+        throw ErrorDescription("Password is too short.");
+      }
+      formKey.currentState.save();
+      setState(() {
+        loading = true;
+      });
+      final response = await Provider.of<Auth>(context, listen: false).login(email, password);
+      if(response["status"] == 200) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => TabsScreen()));
+      }
+      setState(() {
+        loading = false;
+      });
+    } on HttpException catch(error) {
+      setState(() {
+        loading = false;
+      });
+       Fluttertoast.showToast(
+        msg: error.toString(),
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.red.shade700,
+        textColor: Colors.white
+      );
+    } on ErrorDescription catch(error) {
+      setState(() {
+        loading = false;
+      });
+      Fluttertoast.showToast(
+        msg: error.toString(),
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.red.shade700,
+        textColor: Colors.white
+      );
     }
-    formKey.currentState.save();
-    await Provider.of<Auth>(context, listen: false).login(email, password);
   }
 
   Widget buildEmailTF() {
@@ -65,12 +109,12 @@ class LoginScreenState extends State<LoginScreen> {
             style: TextStyle(
               color: Colors.white,
             ),
-            validator: (value) {
-              if (value.isEmpty || !value.contains('@')) {
-                return 'Invalid email!';
-              }
-              return null;
-            },
+            // validator: (value) {
+            //   // if (value.isEmpty || !value.contains('@')) {
+            //   //   return 'Invalid email';
+            //   // }
+            //   // return null;
+            // },
             onSaved: (value) {
               setState(() {
                 email = value;
@@ -126,12 +170,12 @@ class LoginScreenState extends State<LoginScreen> {
             style: TextStyle(
               color: Colors.white
             ),
-            validator: (value) {
-              if (value.isEmpty || value.length < 6) {
-                return 'Password is too short!';
-              }
-              return null;
-            },
+            // validator: (value) {
+            //   if (value.isEmpty || value.length < 6) {
+            //     return 'Password is too short!';
+            //   }
+            //   return null;
+            // },
             onSaved: (value) {
               password = value;
             },
@@ -223,7 +267,7 @@ class LoginScreenState extends State<LoginScreen> {
           borderRadius: BorderRadius.circular(30.0),
         ),
         color: Colors.white,
-        child: Text(
+        child: loading ? CircularProgressIndicator() : Text(
           'LOGIN',
           style: TextStyle(
             color: Color(0xFF527DAA),

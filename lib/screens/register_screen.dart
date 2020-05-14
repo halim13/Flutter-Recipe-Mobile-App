@@ -255,7 +255,7 @@ class RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget _buildSocialBtn(Function onTap, AssetImage logo) {
+  Widget _buildSocialBtn(Function onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -271,9 +271,6 @@ class RegisterScreenState extends State<RegisterScreen> {
               blurRadius: 6.0,
             ),
           ],
-          image: DecorationImage(
-            image: logo,
-          ),
         ),
       ),
     );
@@ -287,15 +284,10 @@ class RegisterScreenState extends State<RegisterScreen> {
         children: <Widget>[
           _buildSocialBtn(
             () => print('Login with Facebook'),
-            AssetImage(
-              'assets/logos/facebook.jpg',
-            ),
           ),
           _buildSocialBtn(
             () => print('Login with Google'),
-            AssetImage(
-              'assets/logos/google.jpg',
-            ),
+           
           ),
         ],
       ),

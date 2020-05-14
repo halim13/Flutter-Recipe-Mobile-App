@@ -50,7 +50,7 @@ class MainDrawer extends StatelessWidget {
             builder: (context, auth, child) {
               if(auth.isAuth) {
                 return buildListTile('Logout', Icons.account_circle, () {
-                  Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
+                  auth.logout();
                 });
               } else { 
                 return FutureBuilder(
@@ -60,7 +60,9 @@ class MainDrawer extends StatelessWidget {
                   ? buildListTile('Login', Icons.account_circle, () {
                       Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
                     })
-                  : LoginScreen(),
+                  : buildListTile('Login', Icons.account_circle, () {
+                      Navigator.of(context).pushNamed(LoginScreen.routeName);
+                    }),
                 );
               }
             },

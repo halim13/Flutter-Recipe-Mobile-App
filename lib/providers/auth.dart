@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,7 @@ class Auth with ChangeNotifier {
         "x-auth-token" : token 
       });
       final responseData = json.decode(response.body);
+      print(responseData["data"]["expiresIn"]);
       _token = token;
       userId = responseData["data"]["id"];
       userName = responseData["data"]["name"];
@@ -55,11 +57,10 @@ class Auth with ChangeNotifier {
       prefs.setString('userData', userData);
     } catch(error) {
       print(error);
-      throw error;
     }
   }
 
-  Future<void> login(String email, String password) async {
+  Future login(String email, String password) async {
     String url = 'http://192.168.43.85:5000/api/v1/accounts/login'; // 192.168.43.85 || 10.0.2.2
     try {
       http.Response response = await http.post(url, 
@@ -68,7 +69,11 @@ class Auth with ChangeNotifier {
         "password": password
       });
       final responseData = json.decode(response.body);
+      if(responseData["status"] == 500) {
+        throw HttpException(responseData["message"]);
+      }
       auth(responseData["data"]);
+      return responseData;
     } catch(error) {
       print(error);
       throw error;
