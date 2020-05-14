@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import '../models/MealDetail.dart';
 import '../models/MealFavourite.dart';
@@ -18,7 +19,6 @@ class MealsDetail with ChangeNotifier {
   List<MealDetailData> detailMeals = [];
   List<MealDetailData> get detailMealsItems => [...detailMeals];
 
-
   bool isMealFavorite(String mealId) {
     return mealsFavourite.any((meal) => meal.id == mealId);
   }
@@ -27,7 +27,14 @@ class MealsDetail with ChangeNotifier {
     if(favourite == 0) {
       updateToFavourite(mealId, 1);
       mealsFavourite.add(
-        availableMeals.firstWhere((meal) => meal.id == mealId),
+        availableMeals.firstWhere((meal) => meal.id == mealId)
+      );
+      favourite = 1;
+      Fluttertoast.showToast(
+        msg: 'Added to favourite.',
+        toastLength: Toast.LENGTH_SHORT,
+        backgroundColor: Colors.yellow.shade700,
+        textColor: Colors.white
       );
       notifyListeners();
     } else {
@@ -36,6 +43,13 @@ class MealsDetail with ChangeNotifier {
       if(existingIndex >= 0) {
         mealsFavourite.removeAt(existingIndex);
       }
+      favourite = 0;
+      Fluttertoast.showToast(
+        msg: 'Removed to favourite.',
+        toastLength: Toast.LENGTH_SHORT,
+        backgroundColor: Colors.yellow.shade700,
+        textColor: Colors.white
+      );
       notifyListeners();
     }
   }

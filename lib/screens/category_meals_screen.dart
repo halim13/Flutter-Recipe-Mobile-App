@@ -30,7 +30,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
     controller.dispose();
   }
 
-  void selectMeal(BuildContext context, String id) {
+  void selectMeal(context, String id) {
     Navigator.of(context).pushNamed(
       MealDetailScreen.routeName,
       arguments: id
@@ -81,7 +81,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
                 if(index == value.showMealItem.length) 
                   return CircularProgressIndicator();
                   return InkWell(
-                    onTap: () => selectMeal(context, value.showMealItem[index].id.toString()),
+                    onTap: () => selectMeal(context, value.showMealItem[index].id),
                     child: Card(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15)

@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../providers/auth.dart';
 import './register_screen.dart';
-import './profile_screen.dart';
 import 'tabs_screen.dart';
 
 
