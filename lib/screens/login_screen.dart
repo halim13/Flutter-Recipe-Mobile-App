@@ -36,11 +36,11 @@ class LoginScreenState extends State<LoginScreen> {
     //   return;
     // }
     try {
-     if (emailController.text.isEmpty || !emailController.text.contains('@')) {
+      if (emailController.text.isEmpty || !emailController.text.contains('@')) {
         throw ErrorDescription("Invalid email.");
       }
       if (passwordController.text.isEmpty || passwordController.text.length < 6) {
-        throw ErrorDescription("Password is too short.");
+        throw ErrorDescription("Password is too short. Minimum 6 characters.");
       }
       formKey.currentState.save();
       setState(() {
@@ -57,9 +57,9 @@ class LoginScreenState extends State<LoginScreen> {
       setState(() {
         loading = false;
       });
-       Fluttertoast.showToast(
+      Fluttertoast.showToast(
         msg: error.toString(),
-        toastLength: Toast.LENGTH_LONG,
+        toastLength: Toast.LENGTH_SHORT,
         backgroundColor: Colors.red.shade700,
         textColor: Colors.white
       );
@@ -69,7 +69,7 @@ class LoginScreenState extends State<LoginScreen> {
       });
       Fluttertoast.showToast(
         msg: error.toString(),
-        toastLength: Toast.LENGTH_LONG,
+        toastLength: Toast.LENGTH_SHORT,
         backgroundColor: Colors.red.shade700,
         textColor: Colors.white
       );

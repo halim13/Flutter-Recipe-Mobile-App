@@ -2,8 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+// import 'package:path/path.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/models/User.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,7 +14,7 @@ class Auth with ChangeNotifier {
   String _token;
   String userId;
   String userName;
-  String  userEmail;
+  String userEmail;
   DateTime _expiryDate;
   Timer authTimer;
 
@@ -23,16 +26,16 @@ class Auth with ChangeNotifier {
     if (_expiryDate != null && _expiryDate.isAfter(DateTime.now()) && _token != null) {
       return _token;
     }
-    return _token;
+    return null;
   }
+
   Future<void> auth(String token) async {
-    String url = 'http://192.168.43.85:5000/api/v1/accounts';
+    String url = 'http://192.168.43.85:5000/api/v1/accounts';  // 192.168.43.85 || 10.0.2.2
     try {
       http.Response response = await http.get(url, headers: {
         "x-auth-token" : token 
       });
       final responseData = json.decode(response.body);
-      print(responseData["data"]["expiresIn"]);
       _token = token;
       userId = responseData["data"]["id"];
       userName = responseData["data"]["name"];
@@ -80,14 +83,20 @@ class Auth with ChangeNotifier {
     }
   }
 
-  Future<void> register(String name, String email, String password) async {
+  Future register(String name, String email, String password) async {
     String url = 'http://192.168.43.85:5000/api/v1/accounts/register'; // 192.168.43.85 || 10.0.2.2
     try {
       http.Response response = await http.post(url, body: {
         "name": name,
         "email": email,
-        "password" : password
+        "password": password
       });
+      final responseData = json.decode(response.body);
+      if(responseData["status"] == 500) {
+        throw HttpException(responseData["message"]);
+      } 
+      auth(responseData["data"]);
+      return responseData;
     } catch(error) {
       print(error);
       throw error;
@@ -121,13 +130,14 @@ class Auth with ChangeNotifier {
     userName = null;
     userEmail = null;
     _expiryDate = null;
+
     if (authTimer != null) {
       authTimer.cancel();
       authTimer = null;
     }
     notifyListeners();
     final prefs = await SharedPreferences.getInstance();
-    // prefs.remove('userData'); specify remove
+    // prefs.remove('userData'); menghapus secara spesifik
     prefs.clear();
   }
 
@@ -138,4 +148,31 @@ class Auth with ChangeNotifier {
     final timeToExpiry = _expiryDate.difference(DateTime.now()).inSeconds;
     authTimer = Timer(Duration(seconds: timeToExpiry), logout);
   }
+
+  Future update(File avatar) async {
+    final prefs = await SharedPreferences.getInstance();
+    String url = 'http://192.168.43.85:5000/api/v1/accounts/users/profile/update/$userId'; // 192.168.43.85 || 10.0.2.2
+    try {
+      http.MultipartRequest request = http.MultipartRequest('PUT', Uri.parse(url));
+      http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
+        'avatar', avatar.path,
+      );
+      request.files.add(multipartFile);
+      http.StreamedResponse response = await request.send();
+      response.stream.transform(utf8.decoder).listen((value) async {
+        final responseData = json.decode(value);
+        if(responseData["status"] == 200) {
+          // await DefaultCacheManager().removeFile('http://192.168.43.85:5000/images/avatar/$userAvatar');
+          // prefs.setString('userAvatar', responseData["data"]["avatar"]);
+          tryAutoLogin();
+        }
+      });
+      notifyListeners();
+    } catch(error) {
+      print(error);
+      throw error;
+    }
+  }
+
+  
 }

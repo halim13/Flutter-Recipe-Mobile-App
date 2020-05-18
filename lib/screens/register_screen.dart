@@ -1,7 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth.dart';
 
 import './login_screen.dart';
+import './tabs_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   static const routeName = '/register';
@@ -17,6 +23,7 @@ class RegisterScreenState extends State<RegisterScreen> {
   String name;
   String email;
   String password;
+  bool loading = false; 
   bool obscure = true;
 
   void dispose() {
@@ -24,6 +31,54 @@ class RegisterScreenState extends State<RegisterScreen> {
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
+  }
+
+  void register() async {
+    // if (!formKey.currentState.validate()) {
+    //   return;
+    // }
+    try {
+      if(nameController.text.isEmpty || nameController.text.length < 3) {
+        throw ErrorDescription('Name is too short. Minimum 3 characters.');
+      }
+      if(emailController.text.isEmpty || !emailController.text.contains('@')) {
+        throw ErrorDescription('Invalid email.');
+      }
+      if(passwordController.text.isEmpty || passwordController.text.length < 6) {
+        throw ErrorDescription('Password is too short. Minimum 6 characters.');
+      }
+      formKey.currentState.save();
+      setState(() {
+        loading = true;
+      });
+      final response = await Provider.of<Auth>(context, listen: false).register(name, email, password);
+      if(response["status"] == 200) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => TabsScreen()));
+      }
+      setState(() {
+        loading = false;
+      });
+    } on HttpException catch(error) { 
+      setState(() {
+        loading = false;
+      });
+      Fluttertoast.showToast(
+        msg: error.toString(),
+        toastLength: Toast.LENGTH_SHORT,
+        backgroundColor: Colors.red.shade700,
+        textColor: Colors.white
+      );
+    } on ErrorDescription catch(error) {
+      setState(() {
+        loading = false;
+      });
+      Fluttertoast.showToast(
+        msg: error.toString(),
+        toastLength: Toast.LENGTH_SHORT,
+        backgroundColor: Colors.red.shade700,
+        textColor: Colors.white
+      );
+    }
   }
 
   Widget buildNameTF() {
@@ -58,6 +113,9 @@ class RegisterScreenState extends State<RegisterScreen> {
               color: Colors.white,
             ),
             controller: nameController,
+            onSaved: (value) {
+              name = value;
+            },
             decoration: InputDecoration(
               border: InputBorder.none,
               contentPadding: EdgeInsets.only(top: 14.0),
@@ -108,12 +166,12 @@ class RegisterScreenState extends State<RegisterScreen> {
             style: TextStyle(
               color: Colors.white,
             ),
-            validator: (value) {
-              if (value.isEmpty || !value.contains('@')) {
-                return 'Invalid email!';
-              }
-              return null;
-            },
+            // validator: (value) {
+            //   if (value.isEmpty || !value.contains('@')) {
+            //     return 'Invalid email!';
+            //   }
+            //   return null;
+            // },
             onSaved: (value) {
               email = value;
             },
@@ -167,12 +225,12 @@ class RegisterScreenState extends State<RegisterScreen> {
             style: TextStyle(
               color: Colors.white
             ),
-            validator: (value) {
-              if (value.isEmpty || value.length < 6) {
-                return 'Password is too short!';
-              }
-              return null;
-            },
+            // validator: (value) {
+              // if (value.isEmpty || value.length < 6) {
+              //   return 'Password is too short!';
+              // }
+              // return null;
+            // },
             onSaved: (value) {
               password  = value;    
             },
@@ -212,15 +270,13 @@ class RegisterScreenState extends State<RegisterScreen> {
       width: double.infinity,
       child: RaisedButton(
         elevation: 5.0,
-        onPressed: () async {
-
-        },
+        onPressed: register,
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
         color: Colors.white,
-        child: Text(
+        child: loading ? CircularProgressIndicator() : Text(
           'SIGN UP',
           style: TextStyle(
             color: Color(0xFF527DAA),
@@ -294,7 +350,7 @@ class RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget buildSignupBtn() {
+  Widget buildSignInBtn() {
     return GestureDetector(
       onTap: () => {
         Navigator.of(context).pushReplacementNamed(LoginScreen.routeName)
@@ -381,7 +437,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                         buildRegisterBtn(),
                         buildSignInWithText(),
                         buildSocialBtnRow(),
-                        buildSignupBtn(),
+                        buildSignInBtn(),
                       ],
                     ),
                   ),

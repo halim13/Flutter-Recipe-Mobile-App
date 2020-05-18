@@ -70,6 +70,7 @@ class MealsDetail with ChangeNotifier {
       throw error;
     }
   }
+  
   Future<void> updateToFavourite(String mealId, int isfavourite) async {
     String url = 'http://192.168.43.85:5000/api/v1/meals/update/favourite/$mealId'; // 192.168.43.85 || 10.0.2.2
     try {

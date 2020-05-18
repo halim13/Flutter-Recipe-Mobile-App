@@ -4,6 +4,7 @@ import './providers/auth.dart';
 import './providers/categories.dart';
 import './providers/meals_show.dart';
 import './providers/meals_detail.dart';
+import './providers/user.dart';
 import './screens/tabs_screen.dart';
 import './screens/categories_screen.dart';
 import './screens/category_meals_screen.dart';
@@ -11,6 +12,8 @@ import './screens/meal_detail_screen.dart';
 import './screens/login_screen.dart';
 import './screens/register_screen.dart';
 import './colors/colors.dart';
+
+
 
 
 void main() => runApp(MyApp());
@@ -25,8 +28,11 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-         ChangeNotifierProvider.value(
+        ChangeNotifierProvider.value(
           value: Auth(),
+        ),
+        ChangeNotifierProvider.value(
+          value: User(),
         ),
         ChangeNotifierProvider.value(
           value: Categories(),
