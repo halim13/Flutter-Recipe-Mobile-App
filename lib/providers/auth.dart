@@ -3,10 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 
 // import 'package:path/path.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/models/User.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,6 +13,8 @@ class Auth with ChangeNotifier {
   String userId;
   String userName;
   String userEmail;
+  String userAvatar;
+  String userBio;
   DateTime _expiryDate;
   Timer authTimer;
 
@@ -40,6 +40,8 @@ class Auth with ChangeNotifier {
       userId = responseData["data"]["id"];
       userName = responseData["data"]["name"];
       userEmail = responseData["data"]["email"];
+      userAvatar = responseData["data"]["avatar"];
+      userBio = responseData["data"]["bio"];
       _expiryDate = DateTime.now().add(
         Duration(
           seconds: responseData["data"]['expiresIn'],
@@ -57,6 +59,8 @@ class Auth with ChangeNotifier {
           'expiryDate': _expiryDate.toIso8601String(),
         },
       );
+      prefs.setString('userAvatar', userAvatar);
+      prefs.setString('userBio', userBio);
       prefs.setString('userData', userData);
     } catch(error) {
       print(error);
@@ -118,6 +122,8 @@ class Auth with ChangeNotifier {
     userId = extractedUserData['userId'];
     userName = extractedUserData['userName'];
     userEmail = extractedUserData['userEmail'];
+    userAvatar = prefs.getString('userAvatar');
+    userBio = prefs.getString('userBio');
     _expiryDate = expiryDate;
     notifyListeners();
     autoLogout();
@@ -129,16 +135,18 @@ class Auth with ChangeNotifier {
     userId = null;
     userName = null;
     userEmail = null;
+    userAvatar = null;
+    userBio = null;
     _expiryDate = null;
 
     if (authTimer != null) {
       authTimer.cancel();
       authTimer = null;
     }
-    notifyListeners();
     final prefs = await SharedPreferences.getInstance();
-    // prefs.remove('userData'); menghapus secara spesifik
+  // prefs.remove('userData'); menghapus secara spesifik
     prefs.clear();
+    notifyListeners();
   }
 
   void autoLogout() {
@@ -148,31 +156,4 @@ class Auth with ChangeNotifier {
     final timeToExpiry = _expiryDate.difference(DateTime.now()).inSeconds;
     authTimer = Timer(Duration(seconds: timeToExpiry), logout);
   }
-
-  Future update(File avatar) async {
-    final prefs = await SharedPreferences.getInstance();
-    String url = 'http://192.168.43.85:5000/api/v1/accounts/users/profile/update/$userId'; // 192.168.43.85 || 10.0.2.2
-    try {
-      http.MultipartRequest request = http.MultipartRequest('PUT', Uri.parse(url));
-      http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
-        'avatar', avatar.path,
-      );
-      request.files.add(multipartFile);
-      http.StreamedResponse response = await request.send();
-      response.stream.transform(utf8.decoder).listen((value) async {
-        final responseData = json.decode(value);
-        if(responseData["status"] == 200) {
-          // await DefaultCacheManager().removeFile('http://192.168.43.85:5000/images/avatar/$userAvatar');
-          // prefs.setString('userAvatar', responseData["data"]["avatar"]);
-          tryAutoLogin();
-        }
-      });
-      notifyListeners();
-    } catch(error) {
-      print(error);
-      throw error;
-    }
-  }
-
-  
 }

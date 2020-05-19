@@ -1,19 +1,17 @@
-
-
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/User.dart';
 
 class User extends ChangeNotifier {
   File file;
   bool formEditUsername = false;
-  bool formEditEmail = false;
+  bool formEditBio = false;
   bool isSaveChanges = false;
+  DateTime uniqueAvatar =  DateTime.now();
 
   bool isToggleSavedChanges() {
     if(isSaveChanges) {
@@ -29,8 +27,8 @@ class User extends ChangeNotifier {
       return false;
     }
   }
-  bool isToggleFormEditEmail() {
-    if(formEditEmail) {
+  bool isToggleFormEditBio() {
+    if(formEditBio) {
       return true;
     } else {
       return false;
@@ -45,14 +43,14 @@ class User extends ChangeNotifier {
     isSaveChanges = !isSaveChanges;
     notifyListeners();
   }
-  void toggleFormEditEmail() {
-    formEditEmail = !formEditEmail;
+   void toggleFormEditBio() {
+    formEditBio = !formEditBio;
     isSaveChanges = !isSaveChanges;
     notifyListeners();
   }
   void isCancelEditUser() {
     formEditUsername = false;
-    formEditEmail = false;
+    formEditBio = false;
     isSaveChanges = false;
     file = null;
     notifyListeners();
@@ -81,29 +79,50 @@ class User extends ChangeNotifier {
     await getCurrentProfile();
   }
 
-  Future update(File avatar) async {
+  Future update(String username, String bio) async {
     final prefs = await SharedPreferences.getInstance();
     final extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
     String userId = extractedUserData["userId"];
-    String pathAvatar = 'http://192.168.43.85:5000/images/avatar';
+    // String pathAvatar = 'http://192.168.43.85:5000/images/avatar';
     String url = 'http://192.168.43.85:5000/api/v1/accounts/users/profile/update/$userId'; // 192.168.43.85 || 10.0.2.2
     try {
       http.MultipartRequest request = http.MultipartRequest('PUT', Uri.parse(url));
-      http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
-        'avatar', avatar.path,
-      );
-      request.files.add(multipartFile);
+      if(file != null) {
+        http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
+          'avatar', file.path 
+        );
+        request.files.add(multipartFile);
+      }
+      request.fields['username'] = username;
+      request.fields['bio'] = bio;
       http.StreamedResponse response = await request.send();
-      response.stream.transform(utf8.decoder).listen((value) async {
-        final responseData = json.decode(value);
-        if(responseData["status"] == 200) {
-          await DefaultCacheManager().removeFile('$pathAvatar/${profile[0].avatar}');
-          refreshProfile();
+      String responseData = await response.stream.bytesToString();
+      final responseDataDecoded = json.decode(responseData);
+      if(responseDataDecoded["status"] == 200) {
+        if(file != null) {
+          // await DefaultCacheManager().removeFile('$pathAvatar/${profile[0].avatar}'); Gunakan jika menggunakan CacheNetworkImage
+          uniqueAvatar = DateTime.now();
+          file = null;
         }
-      });
+        refreshProfile();
+      }
+      // Alternative aja
+      // response.stream.transform(utf8.decoder).listen((value) async {
+      //   final responseData = json.decode(value);
+      //   if(responseData["status"] == 200) {
+      //     if(file != null) {
+      //       await DefaultCacheManager().removeFile('$pathAvatar/${profile[0].avatar}');
+      //       await DefaultCacheManager().emptyCache();
+      //       file = null;
+      //     }
+      //     refreshProfile();
+      //   }
+      // });
+      formEditUsername = false;
+      formEditBio = false;
       isSaveChanges = false;
-      file = null;
       notifyListeners();
+      return responseDataDecoded;
     } catch(error) {
       print(error);
       throw error;

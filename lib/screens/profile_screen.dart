@@ -1,12 +1,10 @@
 import 'dart:io';
 
-
 // import 'package:path/path.dart' as path; // gunakan as path agar tidak terjadi bentrok
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:transparent_image/transparent_image.dart';
 import 'package:image_cropper/image_cropper.dart';
-// import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth.dart';
@@ -22,6 +20,41 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class ProfileScreenState extends State<ProfileScreen> {
+  final GlobalKey<FormState> formUsernameKey = GlobalKey();
+  final GlobalKey<FormState> formBioKey = GlobalKey();
+  final usernameController = TextEditingController();
+  final bioController = TextEditingController();
+  Future save() async {
+    try {
+      if (usernameController.text.isEmpty || usernameController.text.length < 3) {
+        throw ErrorDescription("Username is too short. Minimum 3 characters.");
+      }
+      final response = await Provider.of<User>(context, listen: false).update(
+        usernameController.text, 
+        bioController.text
+      );
+      if(response["status"] == 200) {
+        Scaffold.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Succesfully updated data.'),
+            duration: Duration(seconds: 2)
+          ),
+        );
+      }
+    } on ErrorDescription catch(error) {
+      Fluttertoast.showToast(
+        msg: error.toString(),
+        toastLength: Toast.LENGTH_SHORT,
+        backgroundColor: Colors.red.shade700,
+        textColor: Colors.white
+      );
+    }
+  }
+
+  void dispose() {
+    usernameController.dispose();
+    super.dispose();
+  }
 
   void pickImage() async { 
     final imageSource = await showDialog<ImageSource>(context: context, builder: (context) => 
@@ -171,11 +204,13 @@ class ProfileScreenState extends State<ProfileScreen> {
         }
         return Consumer<User>(
           builder: (context, user, child) {
-              return RefreshIndicator(
-                  onRefresh: () => user.refreshProfile(),
-                  child: ListView.builder(
-                  itemCount: user.items.length,
-                  itemBuilder: (context, index) {
+            return RefreshIndicator(
+              onRefresh: () => user.refreshProfile(),
+              child: ListView.builder(
+              itemCount: user.items.length,
+              itemBuilder: (context, index) {
+              usernameController.text = user.items[index].name;
+              bioController.text = user.items[index].bio;
                   return Column(
                     children: [
                       Stack(
@@ -188,62 +223,36 @@ class ProfileScreenState extends State<ProfileScreen> {
                             image: AssetImage('assets/default-thumbnail-profile.jpg')
                             // image: NetworkImage('https://img.freepik.com/free-vector/vegetables-banner-collection_1268-12420.jpg?size=626&ext=jpg'),
                           ),
-                          Positioned(
-                            bottom: -50.0,
-                            width: 125,
-                            height: 125,
-                            child: InkWell(
-                              onTap: pickImage,
-                              child: ClipRRect(
-                              borderRadius: BorderRadius.circular(80),
-                              child: user.file == null
-                              ? CachedNetworkImage(
-                                  imageUrl: 'http://192.168.43.85:5000/images/avatar/${user.items[index].avatar}',
-                                  imageBuilder: (context, imageProvider) => Container(
-                                    decoration: BoxDecoration(
+                          Container(
+                            margin: EdgeInsets.only(top: 80.0),
+                            width: 120,
+                            height: 120,
+                            child: Column(
+                              children: [
+                                Stack(
+                                  overflow: Overflow.visible,
+                                  alignment: Alignment.center,
+                                  children: [
+                                    ClipRRect(
                                       borderRadius: BorderRadius.circular(80),
-                                      image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover
-                                      )
+                                      child: user.file == null 
+                                      ? currentAvatar(user, index)
+                                      : previewAvatar(user)
                                     ),
-                                  ),
-                                  fadeInDuration: const Duration(milliseconds: 3000),
-                                  placeholder: (context, url) => CircularProgressIndicator(),
-                                  errorWidget: (context, url, error) => Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(80),
-                                      image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: AssetImage('assets/default-avatar.png')
-                                      )
-                                    ),
-                                  ),
-                                )       
-                              : FadeInImage(
-                                  fit: BoxFit.cover,
-                                  image: FileImage(user.file),
-                                  placeholder: AssetImage("assets/default-avatar.png")
+                                   Positioned(     
+                                    child: IconButton(
+                                      color: Colors.white,
+                                      icon: Icon(Icons.camera_alt),
+                                      onPressed: () => pickImage()
+                                    )
+                                    )
+                                  ]
                                 ),
-                              )
-                              // CircleAvatar(
-                              //   radius: 80, 
-                              //   backgroundColor: Colors.white,
-                              //   backgroundImage: NetworkImage(),
-                              // ),
-                              // child: ClipRRect(
-                              //   borderRadius: BorderRadius.circular(80),
-                              //   child: FadeInImage(
-                              //     fit: BoxFit.cover,
-                              //     image: _file == null ? auth.userAvatar != "" ? NetworkImage("http://192.168.43.85:5000/images/avatar/${auth.userAvatar}") : FileImage(File(_avatar)) : FileImage(File(user.userAvatar)),
-                              //     placeholder: AssetImage("assets/default-avatar.png")
-                              //   ),
-                              // ),
+                              ],
                             )
                           )
                         ],
                       ),
-                      SizedBox(height: 40),
                       ListTile(
                         title: Container(
                           child: Row(
@@ -267,39 +276,48 @@ class ProfileScreenState extends State<ProfileScreen> {
                               return user.isToggleFormEditUsername()
                               ?
                                 Form(
+                                  key: formUsernameKey,
                                   child: TextFormField(
-                                    initialValue: user.items[index].name,
+                                    controller: usernameController,
                                   ),
                                 )
                               : Text(
-                                  user.items[index].name
+                                  user.items[index].name.toString()
                                 );
                             }
                           )
                       ),
                       ListTile(
-                        title: Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('E-mail Address'),
-                              IconButton(
-                                icon: Icon(Icons.edit),
-                                onPressed: () => user.toggleFormEditEmail(),
-                              )   
-                            ],
-                          )
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('E-mail Address'),
+                          ],
+                        ),
+                        subtitle:  Text(user.items[index].email.toString())
+                      ),
+                      ListTile(
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Bio'),
+                            IconButton(
+                              icon: Icon(Icons.edit),
+                              onPressed: () => user.toggleFormEditBio(),
+                            )   
+                          ],
                         ),
                         subtitle: 
-                        user.isToggleFormEditEmail()
+                        user.isToggleFormEditBio()
                         ? Form(
                             child: TextFormField(
-                              initialValue: user.items[index].email,
+                              controller: bioController,
+                              maxLines: null,
+                              keyboardType: TextInputType.multiline
                             ),
                           )
-                        : Text(user.items[index].email)
+                        : Text(user.items[index].bio.toString())
                       ),
-                      SizedBox(height: 30),
                       if(user.isToggleSavedChanges()) 
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -322,20 +340,37 @@ class ProfileScreenState extends State<ProfileScreen> {
                               textColor: Colors.white,
                               color: Color(0xFF478DE0),
                               child: Text('Save Changes'),
-                              onPressed: () {
-                                Provider.of<User>(context, listen: false).update(user.file);
-                              },
+                              onPressed: save
                             ),
                           ],
                         )
                       ],
-                    );
-                 },
-             ),
-              );
-            },
+                  );
+                },
+              ),
+            );
+          },
         );
       }
     );
   }
+  Widget currentAvatar(user, index) {
+    return FadeInImage.memoryNetwork(
+      width: 120,
+      height: 120,
+      fit: BoxFit.cover,
+      image: 'http://192.168.43.85:5000/images/avatar/${user.items[index].avatar}?${user.uniqueAvatar}',
+      placeholder: kTransparentImage
+    );
+  }
+  Widget previewAvatar(user) {
+    return FadeInImage(
+      width: 120,
+      height: 120,
+      fit: BoxFit.cover,
+      image: FileImage(user.file),
+      placeholder: AssetImage("assets/default-avatar.png")
+    );
+  }
 }
+

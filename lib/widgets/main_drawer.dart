@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth.dart';
+import '../screens/add_recipe_screen.dart';
 import '../screens/login_screen.dart';
 import '../screens/filters_screen.dart';
 
@@ -56,13 +57,24 @@ class MainDrawer extends StatelessWidget {
                 return FutureBuilder(
                   future: auth.tryAutoLogin(),
                   builder: (ctx, snapshot) =>
-                  snapshot.connectionState == ConnectionState.waiting
-                  ? buildListTile('Login', Icons.account_circle, () {
-                      Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
-                    })
-                  : buildListTile('Login', Icons.account_circle, () {
-                      Navigator.of(context).pushNamed(LoginScreen.routeName);
-                    }),
+                  buildListTile('Login', Icons.account_circle, () {
+                    Navigator.of(context).pushNamed(LoginScreen.routeName);
+                  }),
+                );
+              }
+            },
+          ),
+          Consumer<Auth>(
+            builder: (context, auth, child) {
+              if(auth.isAuth) {
+                return buildListTile('Add Recipe', Icons.restaurant_menu, () {
+                  Navigator.of(context).pushNamed(AddRecipeScreen.routeName);
+                });
+              } else {
+                return FutureBuilder(
+                  future: auth.tryAutoLogin(),
+                  builder: (ctx, snapshot) =>
+                  Container()
                 );
               }
             },

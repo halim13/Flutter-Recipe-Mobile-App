@@ -11,6 +11,7 @@ import './screens/category_meals_screen.dart';
 import './screens/meal_detail_screen.dart';
 import './screens/login_screen.dart';
 import './screens/register_screen.dart';
+import './screens/add_recipe_screen.dart';
 import './colors/colors.dart';
 
 
@@ -75,6 +76,7 @@ class _MyAppState extends State<MyApp> {
           RegisterScreen.routeName: (ctx) => RegisterScreen(),
           CategoryMealsScreen.routeName: (ctx) => CategoryMealsScreen(),
           MealDetailScreen.routeName: (ctx) => MealDetailScreen(),
+          AddRecipeScreen.routeName: (ctx) => AddRecipeScreen(),
         },
         onUnknownRoute: (settings) {
           return MaterialPageRoute(
