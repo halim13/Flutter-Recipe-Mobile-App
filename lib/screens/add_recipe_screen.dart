@@ -29,7 +29,12 @@ class _AddRecipeState extends State<AddRecipeScreen> {
     setState(() {
       startIngredients--;
       valueController.removeWhere((element) => element["id"] == i);
-      listController.remove(TextEditingController());
+      // Alternative bisa pake dibawah
+      // final existstingIndex = valueController.indexWhere((element) => element["id"] == i);
+      // if(existstingIndex > 0) {
+      //   valueController.removeAt(existstingIndex);
+      // }
+      listController.removeWhere((element) => element == listController[i]);
     });
   }
   void save() async {
