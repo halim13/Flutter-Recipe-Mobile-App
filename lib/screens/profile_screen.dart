@@ -355,12 +355,21 @@ class ProfileScreenState extends State<ProfileScreen> {
     );
   }
   Widget currentAvatar(user, index) {
-    return FadeInImage.memoryNetwork(
+    // return FadeInImage.memoryNetwork(
+    //   width: 120,
+    //   height: 120,
+    //   fit: BoxFit.cover,
+    //   image: 'http://192.168.43.85:5000/images/avatar/${user.items[index].avatar}?${user.uniqueAvatar}',
+    //   placeholder: kTransparentImage
+    // );
+    return Container(
       width: 120,
       height: 120,
-      fit: BoxFit.cover,
-      image: 'http://192.168.43.85:5000/images/avatar/${user.items[index].avatar}?${user.uniqueAvatar}',
-      placeholder: kTransparentImage
+      child: CircleAvatar(
+        radius: 80,
+        backgroundColor: Colors.grey,
+        backgroundImage: NetworkImage('http://192.168.43.85:5000/images/avatar/${user.items[index].avatar}?${user.uniqueAvatar}'),
+      ),
     );
   }
   Widget previewAvatar(user) {
