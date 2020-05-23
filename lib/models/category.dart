@@ -7,10 +7,10 @@ class CategoryModel with ChangeNotifier {
   List<CategoryData> data;
 
   CategoryModel({
-    @required this.status,
-    @required this.error,
-    @required this.message,
-    @required this.data,
+    this.status,
+    this.error,
+    this.message,
+    this.data,
   });
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) => CategoryModel(
@@ -30,9 +30,26 @@ class CategoryData with ChangeNotifier {
   CategoryData({
     @required this.id,
     @required this.title,
-    @required this.color,
-    @required this.cover
+    this.color,
+    this.cover
   });
+
+  static List<CategoryData> getCategoriesDropdown() {
+    return <CategoryData>[
+      CategoryData(
+        id: 'none',
+        title: 'Select a category'
+      ),
+      CategoryData(
+        id: '054ba002-0122-496b-937e-32d05acef05c',
+        title: 'Sayur'
+      ),
+      CategoryData(
+        id: '66c76b29-2c1d-4e2a-9cb9-8ea855c57610',
+        title: 'Daging'
+      )
+    ];
+  }
 
   factory CategoryData.fromJson(Map<String, dynamic> json) => CategoryData(
     id: json["id"] == null ? null : json["id"],

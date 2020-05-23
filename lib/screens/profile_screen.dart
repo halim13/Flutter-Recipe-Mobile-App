@@ -1,7 +1,7 @@
 import 'dart:io';
 
 // import 'package:path/path.dart' as path; // gunakan as path agar tidak terjadi bentrok
-import 'package:transparent_image/transparent_image.dart';
+// import 'package:transparent_image/transparent_image.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
