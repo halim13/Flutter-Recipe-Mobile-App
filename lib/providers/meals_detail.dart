@@ -59,7 +59,9 @@ class MealsDetail with ChangeNotifier {
   }
 
   Future<void> getMealsFavourite() async {
-    String url = 'http://192.168.43.85:5000/api/v1/meals/favourite'; // 192.168.43.85 || 10.0.2.2
+    String url = 'http://192.168.1.10:5000/api/v1/meals/favourite'; // 192.168.43.85 || 10.0.2.2
+    // wifi kantor 192.168.1.11
+    // yang samsung 192.168.43.226
     try {
       http.Response response = await http.get(url);
       MealsFavouriteModel model = MealsFavouriteModel.fromJson(json.decode(response.body));
@@ -72,7 +74,9 @@ class MealsDetail with ChangeNotifier {
   }
   
   Future<void> updateToFavourite(String mealId, int isfavourite) async {
-    String url = 'http://192.168.43.85:5000/api/v1/meals/update/favourite/$mealId'; // 192.168.43.85 || 10.0.2.2
+    String url = 'http://192.168.1.10:5000/api/v1/meals/update/favourite/$mealId'; // 192.168.43.85 || 10.0.2.2
+    // wifi kantor 192.168.1.11
+    // yang samsung 192.168.43.226
     try {
       await http.put(url, body: {
         "isFavourite": json.encode(isfavourite)
@@ -85,7 +89,9 @@ class MealsDetail with ChangeNotifier {
   }
 
   Future<void> detail(String mealId) async {
-    String url = 'http://192.168.43.85:5000/api/v1/meals/detail/$mealId'; // 192.168.43.85 || 10.0.2.2
+    String url = 'http://192.168.1.10:5000/api/v1/meals/detail/$mealId'; // 192.168.43.85 || 10.0.2.2
+    // wifi kantor 192.168.1.11
+    // yang samsung 192.168.43.226
     try {
       http.Response response = await http.get(url);
       MealDetailModel model = MealDetailModel.fromJson(json.decode(response.body));

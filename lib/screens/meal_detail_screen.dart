@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/meals_detail.dart';
+import './edit_recipe_screen.dart';
 
 class MealDetailScreen extends StatefulWidget {
   static const routeName = '/meal-detail';
@@ -10,6 +11,14 @@ class MealDetailScreen extends StatefulWidget {
 }
 
 class _MealDetailScreenState extends State<MealDetailScreen> {
+
+  void edit() {
+    final mealId = ModalRoute.of(context).settings.arguments;
+    Navigator.of(context).pushNamed(
+      EditRecipeScreen.routeName,
+      arguments: mealId
+    );
+  }
 
   Widget buildSectionTitle(BuildContext context, String text) {
     return Container(
@@ -37,6 +46,7 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    const baseurl = 'http://192.168.43.226:5000/images/recipe/';
     final mealId = ModalRoute.of(context).settings.arguments;
     final provider = Provider.of<MealsDetail>(context, listen: false);
     return FutureBuilder(
@@ -65,15 +75,24 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
         return Scaffold(
           appBar: AppBar(
             title: Text(provider.data.meals.first.title),
+            actions: [
+              IconButton(
+                icon: Icon(
+                  Icons.edit,
+                  color: Colors.blue,
+                ), 
+                onPressed: edit
+              )
+            ],
           ),
           body: SingleChildScrollView(
             child: Column(
-              children: <Widget>[
+              children: [
                 Container(
                   height: 300,
                   width: double.infinity,
                   child: Image.network(
-                    provider.data.meals.first.imageUrl,
+                    baseurl + provider.data.meals.first.imageUrl,
                     fit: BoxFit.cover,
                   ),
                 ),

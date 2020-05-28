@@ -20,7 +20,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
   File _file;
   final GlobalKey<FormState> formIngredientsKey = GlobalKey();
   final GlobalKey<FormState> formStepsKey = GlobalKey();
-  final GlobalKey<FormState> titleFormKey = GlobalKey();
+  final GlobalKey<FormState> formTitleKey = GlobalKey();
   List<CategoryData> categories = CategoryData.getCategoriesDropdown();
   List<DropdownMenuItem<CategoryData>> dropdownMenuItems = [];
   CategoryData selectedCategory;
@@ -93,7 +93,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
   void save() async {
     formIngredientsKey.currentState.save();
     formStepsKey.currentState.save();
-    titleFormKey.currentState.save();
+    formTitleKey.currentState.save();
     final seenSteps = Set<int>();
     final seenIngredients = Set<int>();
     final uniqueSteps = valueStepsController.where((str) => seenSteps.add(str["id"])).toList(); // Biar ngga duplicate
@@ -102,10 +102,8 @@ class _AddRecipeState extends State<AddRecipeScreen> {
     final ingredients = jsonEncode(uniqueIngredients); // Agar bisa di parse di backend 
    try {
       setState(() => loading = true);
-      final response = await Provider.of<Recipe>(context, listen: false).store(title, ingredients, steps, selectedCategory.id, _file);
-      if(response["status"] == 200) {
-        setState(() => loading = false);
-      }
+      await Provider.of<Recipe>(context, listen: false).store(title, ingredients, steps, selectedCategory.id, _file);
+      setState(() => loading = false);
     } catch(error) {
       setState(() => loading = false);
       print(error);
@@ -169,7 +167,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
             ]
           ),
           Form(
-            key: titleFormKey,
+            key: formTitleKey,
             child: Container(
               width: 300,
               margin: EdgeInsets.all(10),

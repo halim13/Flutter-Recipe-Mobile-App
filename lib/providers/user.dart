@@ -63,7 +63,9 @@ class User extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     final extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
     String userId = extractedUserData["userId"];
-    String url = 'http://192.168.43.85:5000/api/v1/accounts/users/profile/$userId'; // 192.168.43.85 || 10.0.2.2
+    String url = 'http://192.168.1.10:5000/api/v1/accounts/users/profile/$userId'; // 192.168.43.85 || 10.0.2.2
+    // wifi kantor 192.168.1.11
+    // yang samsung 192.168.43.226
     try {
       http.Response response = await http.get(url);
       UserModel model = UserModel.fromJson(json.decode(response.body));
@@ -84,7 +86,9 @@ class User extends ChangeNotifier {
     final extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
     String userId = extractedUserData["userId"];
     // String pathAvatar = 'http://192.168.43.85:5000/images/avatar';
-    String url = 'http://192.168.43.85:5000/api/v1/accounts/users/profile/update/$userId'; // 192.168.43.85 || 10.0.2.2
+    String url = 'http://192.168.1.10:5000/api/v1/accounts/users/profile/update/$userId'; // 192.168.43.85 || 10.0.2.2
+    // wifi kantor 192.168.1.11
+    // yang samsung 192.168.43.226
     try {
       http.MultipartRequest request = http.MultipartRequest('PUT', Uri.parse(url));
       if(file != null) {

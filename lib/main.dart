@@ -13,6 +13,7 @@ import './screens/meal_detail_screen.dart';
 import './screens/login_screen.dart';
 import './screens/register_screen.dart';
 import './screens/add_recipe_screen.dart';
+import './screens/edit_recipe_screen.dart';
 import './colors/colors.dart';
 
 void main() => runApp(MyApp());
@@ -78,6 +79,7 @@ class _MyAppState extends State<MyApp> {
           CategoryMealsScreen.routeName: (ctx) => CategoryMealsScreen(),
           MealDetailScreen.routeName: (ctx) => MealDetailScreen(),
           AddRecipeScreen.routeName: (ctx) => AddRecipeScreen(),
+          EditRecipeScreen.routeName: (ctx) => EditRecipeScreen()
         },
         onUnknownRoute: (settings) {
           return MaterialPageRoute(

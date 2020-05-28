@@ -39,6 +39,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    const baseurl = 'http://192.168.43.226:5000/images/recipe/';
     final routeArgs = ModalRoute.of(context).settings.arguments as Map<String, String>;
     String categoryTitle = routeArgs['title'];
     String mealId = routeArgs['id'];
@@ -97,7 +98,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
                                   topLeft: Radius.circular(15),
                                   topRight: Radius.circular(15),
                                 ),
-                                child: Image.network(value.showMealItem[index].imageurl,
+                                child: Image.network(baseurl + value.showMealItem[index].imageurl,
                                   height: 250,
                                   width: double.infinity,
                                   fit: BoxFit.cover,
@@ -113,7 +114,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
                                     vertical: 5,
                                     horizontal: 20,
                                   ),
-                                  child: Text(value.showMealItem[index].title,
+                                  child: Text(value.showMealItem[index].title.toString(),
                                     style: TextStyle(
                                       fontSize: 26,
                                       color: Colors.white,
@@ -134,21 +135,21 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
                                   children: <Widget>[
                                     Icon(Icons.schedule),
                                     SizedBox(width: 6),
-                                    Text('${value.showMealItem[index].duration} min'),
+                                    Text('${value.showMealItem[index].duration.toString()} min'),
                                   ],
                                 ),
                                 Row(
                                   children: <Widget>[
                                     Icon(Icons.work),
                                     SizedBox(width: 6),
-                                    Text(value.showMealItem[index].complexities),
+                                    Text(value.showMealItem[index].complexities.toString()),
                                   ],
                                 ),
                                 Row(
                                   children: <Widget>[
                                     Icon(Icons.attach_money),
                                     SizedBox(width: 6),
-                                    Text(value.showMealItem[index].affordabilities),
+                                    Text(value.showMealItem[index].affordabilities.toString()),
                                   ],
                                 ),
                               ],

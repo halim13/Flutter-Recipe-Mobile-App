@@ -368,7 +368,7 @@ class ProfileScreenState extends State<ProfileScreen> {
       child: CircleAvatar(
         radius: 80,
         backgroundColor: Colors.grey,
-        backgroundImage: NetworkImage('http://192.168.43.85:5000/images/avatar/${user.items[index].avatar}?${user.uniqueAvatar}'),
+        backgroundImage: NetworkImage('http://192.168.43.226:5000/images/avatar/${user.items[index].avatar}?${user.uniqueAvatar}'),
       ),
     );
   }
