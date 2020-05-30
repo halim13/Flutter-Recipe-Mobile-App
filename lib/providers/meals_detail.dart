@@ -59,7 +59,7 @@ class MealsDetail with ChangeNotifier {
   }
 
   Future<void> getMealsFavourite() async {
-    String url = 'http://192.168.1.10:5000/api/v1/meals/favourite'; // 192.168.43.85 || 10.0.2.2
+    String url = 'http://192.168.43.226:5000/api/v1/meals/favourite'; // 192.168.43.85 || 10.0.2.2
     // wifi kantor 192.168.1.11
     // yang samsung 192.168.43.226
     try {
@@ -74,7 +74,7 @@ class MealsDetail with ChangeNotifier {
   }
   
   Future<void> updateToFavourite(String mealId, int isfavourite) async {
-    String url = 'http://192.168.1.10:5000/api/v1/meals/update/favourite/$mealId'; // 192.168.43.85 || 10.0.2.2
+    String url = 'http://192.168.43.226:5000/api/v1/meals/update/favourite/$mealId'; // 192.168.43.85 || 10.0.2.2
     // wifi kantor 192.168.1.11
     // yang samsung 192.168.43.226
     try {
@@ -89,7 +89,7 @@ class MealsDetail with ChangeNotifier {
   }
 
   Future<void> detail(String mealId) async {
-    String url = 'http://192.168.1.10:5000/api/v1/meals/detail/$mealId'; // 192.168.43.85 || 10.0.2.2
+    String url = 'http://192.168.43.226:5000/api/v1/meals/detail/$mealId'; // 192.168.43.85 || 10.0.2.2
     // wifi kantor 192.168.1.11
     // yang samsung 192.168.43.226
     try {

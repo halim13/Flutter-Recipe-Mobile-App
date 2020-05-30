@@ -18,7 +18,7 @@ class MealsShow with ChangeNotifier {
   }
 
   Future<void> suggestions() async {
-    String url = 'http://192.168.1.10:5000/api/v1/meals/search-suggestions'; // 192.168.43.85 || 10.0.2.2
+    String url = 'http://192.168.43.226:5000/api/v1/meals/search-suggestions'; // 192.168.43.85 || 10.0.2.2
     // wifi kantor 192.168.1.11
     // yang samsung 192.168.43.226
     try {
@@ -34,7 +34,7 @@ class MealsShow with ChangeNotifier {
   }
 
   Future<void> popularViews(String mealId) async {
-    String url = 'http://192.168.1.10:5000/api/v1/meals/popular-views/$mealId'; // 192.168.43.85 || 10.0.2.2
+    String url = 'http://192.168.43.226:5000/api/v1/meals/popular-views/$mealId'; // 192.168.43.85 || 10.0.2.2
     // wifi kantor 192.168.1.11
     // yang samsung 192.168.43.226
     try { 
@@ -49,7 +49,7 @@ class MealsShow with ChangeNotifier {
 
   Future<void> show(String mealId, [int limit = 0]) async {
     limit = limit + 5;
-    String url = 'http://192.168.1.10:5000/api/v1/meals/show/$mealId?limit=$limit'; // 192.168.43.85 || 10.0.2.2
+    String url = 'http://192.168.43.226:5000/api/v1/meals/show/$mealId?limit=$limit'; // 192.168.43.85 || 10.0.2.2
     // wifi kantor 192.168.1.11
     // yang samsung 192.168.43.226
     try {

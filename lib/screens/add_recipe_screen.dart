@@ -113,10 +113,10 @@ class _AddRecipeState extends State<AddRecipeScreen> {
 
   @override
   void dispose() {
-    for (var i = 0; i < startIngredients; i++) {
+    for (int i = 0; i < startIngredients; i++) {
       listIngredientsController[i].dispose();
     }
-    for (var i = 0; i < startSteps; i++) {
+    for (int i = 0; i < startSteps; i++) {
       listStepsController[i].dispose();
     }
     super.dispose();

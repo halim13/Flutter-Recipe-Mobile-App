@@ -13,7 +13,7 @@ class Categories with ChangeNotifier {
   }
   
   Future<void> getCategories() async {
-    String url = 'http://192.168.1.10:5000/api/v1/categories'; // 192.168.43.85 || 10.0.2.2 
+    String url = 'http://192.168.43.226:5000/api/v1/categories'; // 192.168.43.85 || 10.0.2.2 
     // wifi kantor 192.168.1.11
     // yang samsung 192.168.43.226
     try {

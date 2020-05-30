@@ -15,10 +15,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
   int ingredientsLength;
   int stepsLength;
   File _file;
-  String idUpdate;
-  String bodyUpdate;
   String title;
-  String text;
   bool isInit = true;
   final GlobalKey<FormState> formTitleKey = GlobalKey();
   final GlobalKey<FormState> formIngredientsKey = GlobalKey();
@@ -29,13 +26,18 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
   List<Map<String, Object>> valueIngredientsController = [];
   List<Map<String, Object>> valueStepsController = [];
  
-  @override 
-  void initState() {
-    super.initState();
-  }
-
   @override
   void dispose() {
+    for (int i = 0; i < ingredientsLength; i++) {
+      listIngredientsController[i].dispose();
+    }
+    for (int i = 0; i < stepsLength; i++) {
+      listStepsController[i].dispose();
+    }
+    final provider = Provider.of<Recipe>(context, listen: false);
+     for (int i = 0; i < provider.getIngredients.length; i++) {
+      listIngredientsController[i].dispose();
+    }
     super.dispose();
   } 
 
@@ -67,17 +69,18 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
   }
 
   void save() {
-    formIngredientsKey.currentState.save();
-    formStepsKey.currentState.save();
+    final provider = Provider.of<Recipe>(context, listen: false);
+    provider.formIngredientsKey.currentState.save();
+    provider.formStepsKey.currentState.save();
     formTitleKey.currentState.save();
-    print(idUpdate);
-    print(bodyUpdate);
     final seenSteps = Set();
     final seenIngredients = Set();
-    final uniqueIngredients = valueIngredientsController.where((str) => seenIngredients.add(str["id"])).toList(); // Biar ngga duplicate
-    final uniqueSteps = valueStepsController.where((str) => seenSteps.add(str["id"])).toList(); // Biar ngga duplicate
+    final uniqueIngredients = provider.valueIngredientsController.where((str) => seenIngredients.add(str["id"])).toList(); // Biar ngga duplicate
+    final uniqueSteps = provider.valueStepsController.where((str) => seenSteps.add(str["id"])).toList(); // Biar ngga duplicate
     final ingredients = jsonEncode(uniqueIngredients);
     final steps = jsonEncode(uniqueSteps);
+    print(ingredients);
+    print(steps);
     final mealId = ModalRoute.of(context).settings.arguments;
     // Provider.of<Recipe>(context, listen: false).update(title, mealId, _file, ingredients, steps, '054ba002-0122-496b-937e-32d05acef05c');
   } 
@@ -199,15 +202,19 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                   padding: EdgeInsets.all(10),
                   height: 150,
                   width: 300,
-                  child: textFormIngredients(provider)
+                  child: textFormIngredientsNew()
                 ),
                 Container(
                   margin: EdgeInsets.all(10),
                   padding: EdgeInsets.all(10),
                   width: 300,
-                  child: RaisedButton(
-                    child: Text('Add ingredients'),
-                    onPressed: incrementIngredients
+                  child: Consumer<Recipe>(
+                    builder: (context, recipe, child) {
+                      return RaisedButton(
+                        child: Text('Add ingredients'),
+                        onPressed: () => recipe.incrementsIngredients()
+                      );
+                    }
                   ),
                 ),
                 Container(
@@ -220,24 +227,32 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                   padding: EdgeInsets.all(10),
                   height: 150,
                   width: 300,
-                  child: textFormSteps(provider)
+                  child: textFormStepsNew()
                 ),
                 Container(
                   margin: EdgeInsets.all(10),
                   padding: EdgeInsets.all(10),
                   width: 300,
-                  child: RaisedButton(
-                    child: Text('Add Steps'),
-                    onPressed: incrementSteps
+                  child: Consumer<Recipe>(
+                    builder: (context, recipe, child) {
+                      return RaisedButton(
+                        child: Text('Add Steps'),
+                        onPressed: () => recipe.incrementsSteps()
+                      );
+                    }
                   ),
                 ),
                 Container(
                   margin: EdgeInsets.all(10),
                   padding: EdgeInsets.all(10),
                   width: 300,
-                  child: RaisedButton(
-                    child: Text('Save'),
-                    onPressed: save,  
+                  child: Consumer<Recipe>(
+                    builder: (context, recipe, child) {
+                      return  RaisedButton(
+                        child: Text('Save'),
+                        onPressed: () => recipe.updateBtn('Daging Asap', '058fec4e-dbed-4eff-9f33-fb33bebadfff', _file, '054ba002-0122-496b-937e-32d05acef05c'),  
+                      );
+                    },
                   ),
                 )
               ],
@@ -245,6 +260,58 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
           )
         );
       },
+    );
+  }
+
+
+  Widget textFormIngredientsNew() {
+    return Consumer<Recipe>(
+      builder: (context, recipe, child) {
+        return SingleChildScrollView(
+          child: Form(
+          key: recipe.formIngredientsKey,
+          child: Column( 
+            children: List.generate(recipe.ingredientsLength, (i) {
+              return Column(  
+                children: [
+                  TextFormField(
+                    controller: recipe.listIngredientsController[i],
+                    decoration: InputDecoration(
+                      hintText: "Item ${recipe.ingredientsLength}",
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ) 
+                    ),
+                    onSaved: (value) {               
+                      recipe.valueIngredientsController.add({
+                        "id": i,
+                        "item": value
+                      });
+                    
+                      if(i >= recipe.getIngredients.length) { 
+                      } else {    
+                        final edited = recipe.indexRecipes(i);
+                        edited["item"] = value;
+                      }
+                    },
+                  ),
+                  i > 0 
+                  ? 
+                    RaisedButton(
+                      child: Text('Remove'),
+                      onPressed: () => recipe.decrementIngredients(i)
+                    )
+                  : Container()
+                ]
+              );
+            })
+          ),
+        )
+      );
+      }
     );
   }
 
@@ -268,12 +335,14 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                       borderSide: BorderSide(color: Colors.grey),
                     ) 
                   ),
-                  onSaved: (value) {                      
+                  onSaved: (value) {               
+                    final provider = Provider.of<Recipe>(context, listen: false);       
                     valueIngredientsController.add({
                       "id": i,
                       "item": value
                     });
-                    setState(() => bodyUpdate = value);
+                    final edited = valueIngredientsController.firstWhere((item) => item["idclone"] == provider.getIngredients[i].id);
+                    setState(() => edited["item"] = value);
                   },
                 ),
                 i > 0 
@@ -288,6 +357,56 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
           })
         ),
       )
+    );
+  }
+
+  Widget textFormStepsNew() {
+    return Consumer<Recipe>(
+      builder: (context, recipe, child) {
+        return  SingleChildScrollView(
+          child: Form(
+            key: recipe.formStepsKey,
+            child: Column( 
+              children: List.generate(recipe.stepsLength, (i) {
+                return Column(  
+                  children: [
+                    TextFormField(
+                      controller: recipe.listStepsController[i],
+                      decoration: InputDecoration(
+                        hintText: "Item ${recipe.stepsLength}",
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ) 
+                      ),
+                      onSaved: (value) {    
+                        recipe.valueStepsController.add({
+                          "id": i,
+                          "item": value
+                        });
+                        if(i >= recipe.getSteps.length) {
+                        } else {
+                          final edited = recipe.indexSteps(i);
+                          edited["item"] = value;   
+                        }        
+                      },
+                    ),
+                    i > 0 
+                    ? 
+                      RaisedButton(
+                        child: Text('Remove'),
+                        onPressed: () => recipe.decrementSteps(i)
+                      )
+                    : Container()
+                  ]
+                );
+              })
+            ),
+          )
+        ); 
+      }
     );
   }
 
@@ -316,7 +435,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                     valueStepsController.add({
                       "id": provider.getSteps[i].id,
                       "item": value
-                    }); 
+                    });
                   },
                 ),
                 i > 0 
