@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import '../constants/connection.dart';
 import '../models/SearchSuggestion.dart';
 import '../models/MealShow.dart';
-import 'package:http/http.dart' as http;
 
 class MealsShow with ChangeNotifier {
 
@@ -18,7 +19,7 @@ class MealsShow with ChangeNotifier {
   }
 
   Future<void> suggestions() async {
-    String url = 'http://192.168.43.226:5000/api/v1/meals/search-suggestions'; // 192.168.43.85 || 10.0.2.2
+    String url = 'http://$baseurl:$port/api/v1/meals/search-suggestions'; // 192.168.43.85 || 10.0.2.2
     // wifi kantor 192.168.1.11
     // yang samsung 192.168.43.226
     try {
@@ -34,7 +35,7 @@ class MealsShow with ChangeNotifier {
   }
 
   Future<void> popularViews(String mealId) async {
-    String url = 'http://192.168.43.226:5000/api/v1/meals/popular-views/$mealId'; // 192.168.43.85 || 10.0.2.2
+    String url = 'http://$baseurl:$port/api/v1/meals/popular-views/$mealId'; // 192.168.43.85 || 10.0.2.2
     // wifi kantor 192.168.1.11
     // yang samsung 192.168.43.226
     try { 
@@ -49,7 +50,7 @@ class MealsShow with ChangeNotifier {
 
   Future<void> show(String mealId, [int limit = 0]) async {
     limit = limit + 5;
-    String url = 'http://192.168.43.226:5000/api/v1/meals/show/$mealId?limit=$limit'; // 192.168.43.85 || 10.0.2.2
+    String url = 'http://$baseurl:$port/api/v1/meals/show/$mealId?limit=$limit'; // 192.168.43.85 || 10.0.2.2
     // wifi kantor 192.168.1.11
     // yang samsung 192.168.43.226
     try {

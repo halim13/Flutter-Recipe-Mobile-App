@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/constants/connection.dart';
 import 'package:provider/provider.dart';
 import '../providers/meals_detail.dart';
 import './edit_recipe_screen.dart';
@@ -91,8 +92,7 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                 Container(
                   height: 300,
                   width: double.infinity,
-                  child: Image.network(
-                    baseurl + provider.data.meals.first.imageUrl,
+                  child: Image.network('$imagesRecipesUrl/${provider.data.meals.first.imageUrl}',
                     fit: BoxFit.cover,
                   ),
                 ),

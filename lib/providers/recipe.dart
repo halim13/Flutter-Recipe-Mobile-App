@@ -1,98 +1,133 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import '../constants/connection.dart';
 import '../models/RecipeEdit.dart';
 
 class Recipe extends ChangeNotifier {
-  int ingredientsLength;
-  int stepsLength;
   Data data;
-
+  final TextEditingController titleController = TextEditingController();
+  final GlobalKey<FormState> formTitleKey = GlobalKey();
   final GlobalKey<FormState> formIngredientsKey = GlobalKey();
   final GlobalKey<FormState> formStepsKey = GlobalKey();
-  List<TextEditingController> listIngredientsController = [TextEditingController()];
-  List<TextEditingController> listStepsController = [TextEditingController()];
-  List<Map<String, Object>> valueIngredientsController = [];
-  List<Map<String, Object>> valueStepsController = [];
+  List<Map<String, Object>> controllerIngredients = [];
+  List<Map<String, Object>> controllerSteps = [];
+  List<Map<String, Object>> valueIngredients = [];
+  List<Map<String, Object>> valueSteps = [];
+  List<Map<String, Object>> valueIngredientsRemove = []; 
+  List<Map<String, Object>> valueStepsRemove = [];
 
   List<Recipes> get getRecipes => [...data.recipes];
+  List<Map<String, Object>> initialIngredients = [];
+  List<Map<String, Object>> ingredients = [];
   List<Ingredients> get getIngredients => [...data.ingredients];
+  List<Map<String, Object>> steps = [];
+  List<Map<String, Object>> initialSteps = [];
   List<Steps> get getSteps => [...data.steps];
 
-  Map<String, Object> indexRecipes(i) { 
-    return valueIngredientsController.firstWhere((item) => item["idclone"] == getIngredients[i].id, orElse: () => null);
-  }
-
-  Map<String, Object> indexSteps(i) {
-    return valueStepsController.firstWhere((item) => item["idclone"] == getSteps[i].id, orElse: null);
-  }
-
   void incrementsIngredients() {
-    ingredientsLength++;
-    listIngredientsController.add(TextEditingController());
+    Uuid uuid = new Uuid();
+    String uuid4 = uuid.v4();
+    controllerIngredients.add({
+      "id": uuid4,
+      "item": TextEditingController(text: "Contoh: 1 Cabe Merah")
+    });
+    ingredients.add({
+      "id": uuid4,
+    });
     notifyListeners();
   }
   void incrementsSteps() {
-    stepsLength++;
-    listStepsController.add(TextEditingController());
+    Uuid uuid = new Uuid();
+    String uuid4 = uuid.v4();
+    controllerSteps.add({
+      "id": uuid4,
+      "item": TextEditingController(text: "Contoh: Iris Cabe dengan Pisau")
+    });
+    steps.add({
+      "id": uuid4
+    });
     notifyListeners();
   }
-  void decrementIngredients(i) {
-    ingredientsLength--;
-    valueIngredientsController.removeWhere((element) => element["id"] == i);
-    listIngredientsController.removeWhere((element) => element == listIngredientsController[i]);
+  void decrementIngredients(String i) {
+    valueIngredientsRemove.add({
+      "id": i
+    });    
+    final existingIngredients = ingredients.indexWhere((element) => element["id"] == i);
+    final existingListIngredients = controllerIngredients.indexWhere((element) => element["id"] == i);
+    if(existingIngredients >= 0) {
+      ingredients.removeAt(existingIngredients);
+    }
+    if(existingListIngredients >= 0) {
+      controllerIngredients.removeAt(existingListIngredients);
+    }
     notifyListeners();
   }
-  void decrementSteps(i) {
-    stepsLength--;
-    valueStepsController.removeWhere((element) => element["id"] == i);
-    listStepsController.removeWhere((element) => element == listStepsController[i]);
+  void decrementSteps(String i) {
+   valueStepsRemove.add({
+      "id": i
+    });    
+    final existingSteps = steps.indexWhere((element) => element["id"] == i);
+    final existingListSteps = controllerSteps.indexWhere((element) => element["id"] == i);
+    if(existingSteps >= 0) {
+      steps.removeAt(existingSteps);
+    }
+    if(existingListSteps >= 0) {
+      controllerSteps.removeAt(existingListSteps);
+    }
     notifyListeners();
-  }
-
-  void updateBtn(String title, String mealId, File file, String categoryId) async {
-    formIngredientsKey.currentState.save();
-    formStepsKey.currentState.save();
-    final seenIngredients = Set();
-    final seenSteps = Set();
-    final uniqueIngredients = valueIngredientsController.where((str) => seenIngredients.add(str["id"])).toList(); // Biar ngga duplicate
-    final uniqueSteps = valueStepsController.where((str) => seenSteps.add(str["id"])).toList(); // Biar ngga duplicate
-    final ingredients = jsonEncode(uniqueIngredients);
-    final steps = jsonEncode(uniqueSteps);
-    await update(title, mealId, file, ingredients, steps, categoryId);
   }
 
   Future edit(String mealId) async {
-    String url = 'http://192.168.43.226:5000/api/v1/recipes/edit/$mealId'; // 192.168.43.85 || 10.0.2.2
-    // wifi kantor 192.168.1.11
-    // yang samsung 192.168.43.226
+    String url = 'http://$baseurl:$port/api/v1/recipes/edit/$mealId'; 
     try {
       http.Response response = await http.get(url);
       RecipeEditModel model = RecipeEditModel.fromJson(json.decode(response.body));
       data = model.data;
-      ingredientsLength = getIngredients.length;
-      stepsLength = getSteps.length;
-      for (int i = 0; i < ingredientsLength; i++) {
-        listIngredientsController[i].text = getIngredients[i].body;
-        valueIngredientsController.add({
-          "id": i,
-          "idclone": getIngredients[i].id,
-          "item": getIngredients[i].body
+      titleController.text = data.recipes.first.title;
+      final List<Map<String, Object>> initialSteps = [];
+      final List<Map<String, Object>> initialValueSteps = [];
+      final List<Map<String, Object>> initialControllerSteps = [];
+      final List<Map<String, Object>> initialIngredients = [];
+      final List<Map<String, Object>> initialValueIngredients = [];
+      final List<Map<String, Object>> initialControllerIngredients = []; 
+      getIngredients.forEach((item) {
+        initialIngredients.add({
+          "id": item.id
         });
-        listIngredientsController.add(TextEditingController());
-      }
-      for (int i = 0; i < stepsLength; i++) {
-        listStepsController[i].text = getSteps[i].body;
-        valueStepsController.add({
-          "id": i,
-          "idclone": getSteps[i].id,
-          "item": getSteps[i].body
+        initialValueIngredients.add({
+          "id": item.id,
+          "idclone": item.id,
+          "body": item.body 
         });
-        listStepsController.add(TextEditingController());
-      }
+        initialControllerIngredients.add({
+          "id": item.id,
+          "item": TextEditingController(text: item.body)
+        });
+      });
+      getSteps.forEach((item) {
+        initialSteps.add({
+          "id": item.id
+        });
+        initialValueSteps.add({
+          "id": item.id,
+          "idclone": item.id,
+          "body": item.body
+        });
+        initialControllerSteps.add({
+          "id": item.id,
+          "item": TextEditingController(text: item.body)
+        });
+      });
+      ingredients = initialIngredients;
+      steps = initialSteps;
+      valueIngredients = initialValueIngredients;
+      valueSteps = initialValueSteps;
+      controllerIngredients = initialControllerIngredients;
+      controllerSteps = initialControllerSteps;
       notifyListeners();
     } catch(error) {
       print(error);
@@ -103,9 +138,7 @@ class Recipe extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     final extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
     String userId = extractedUserData["userId"];
-    String url = 'http://192.168.43.226:5000/api/v1/recipes/store'; // 192.168.43.85 || 10.0.2.2
-    // wifi kantor 192.168.1.11
-    // yang samsung 192.168.43.226
+    String url = 'http://$baseurl:$port/api/v1/recipes/store'; 
     try {
       http.MultipartRequest request = http.MultipartRequest('POST', Uri.parse(url));
       http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
@@ -127,13 +160,11 @@ class Recipe extends ChangeNotifier {
     }
   }
 
-  Future update(String title, String mealId, File file, String ingredients, String steps, String categoryId) async {
+  Future update(String title, String mealId, File file, String ingredients, String steps, String removeIngredients, String removeSteps, String categoryId) async {
     final prefs = await SharedPreferences.getInstance();
     final extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
     String userId = extractedUserData["userId"];
-    String url = 'http://192.168.43.226:5000/api/v1/recipes/update/$mealId'; // 192.168.43.85 || 10.0.2.2
-    // wifi kantor 192.168.1.11
-    // yang samsung 192.168.43.226
+    String url = 'http://$baseurl:$port/api/v1/recipes/update/$mealId'; 
     // http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
     //   'imageurl', file.path 
     // );
@@ -143,14 +174,18 @@ class Recipe extends ChangeNotifier {
       request.fields["title"] = title;
       request.fields["ingredients"] = ingredients;
       request.fields["steps"] = steps;
+      request.fields["removeIngredients"] = removeIngredients;
+      request.fields["removeSteps"] = removeSteps;
       request.fields["categoryId"] = categoryId;
       request.fields["userId"] = userId; 
       http.StreamedResponse response = await request.send();
       String responseData = await response.stream.bytesToString();
-      notifyListeners();
+      final responseDecoded = jsonDecode(responseData);
+      notifyListeners();    
     } catch(error) {
       print(error);
     }
   }
+
 
 }

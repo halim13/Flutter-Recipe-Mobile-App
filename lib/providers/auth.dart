@@ -5,6 +5,7 @@ import 'dart:io';
 // import 'package:path/path.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import '../constants/connection.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,7 +31,7 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> auth(String token) async {
-    String url = 'http://192.168.43.226:5000/api/v1/accounts';  // 192.168.43.85 || 10.0.2.2
+    String url = 'http://$baseurl:$port/api/v1/accounts';  // 192.168.43.85 || 10.0.2.2
     // wifi kantor 192.168.1.11
     // yang samsung 192.168.43.226
     try {
@@ -70,7 +71,7 @@ class Auth with ChangeNotifier {
   }
 
   Future login(String email, String password) async {
-    String url = 'http://192.168.43.226:5000/api/v1/accounts/login'; // 192.168.43.85 || 10.0.2.2
+    String url = 'http://$baseurl:$port/api/v1/accounts/login'; // 192.168.43.85 || 10.0.2.2
     // wifi kantor 192.168.1.11
     // yang samsung 192.168.43.226
     try {
@@ -92,7 +93,7 @@ class Auth with ChangeNotifier {
   }
 
   Future register(String name, String email, String password) async {
-    String url = 'http://192.168.43.226:5000/api/v1/accounts/register'; // 192.168.43.85 || 10.0.2.2
+    String url = 'http://$baseurl:$port/api/v1/accounts/register'; // 192.168.43.85 || 10.0.2.2
     // wifi kantor 192.168.1.11
     // yang samsung 192.168.43.226
     try {

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import '../constants/connection.dart';
 import '../models/Category.dart';
 
 class Categories with ChangeNotifier {
@@ -13,7 +14,7 @@ class Categories with ChangeNotifier {
   }
   
   Future<void> getCategories() async {
-    String url = 'http://192.168.43.226:5000/api/v1/categories'; // 192.168.43.85 || 10.0.2.2 
+    String url = 'http://$baseurl:$port/api/v1/categories'; // 192.168.43.85 || 10.0.2.2 
     // wifi kantor 192.168.1.11
     // yang samsung 192.168.43.226
     try {

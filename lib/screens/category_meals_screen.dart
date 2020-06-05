@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../constants/connection.dart';
 import '../helpers/highlight_occurences.dart';
 import '../providers/meals_show.dart';
 import '../screens/meal_detail_screen.dart';
@@ -39,7 +40,6 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const baseurl = 'http://192.168.43.226:5000/images/recipe/';
     final routeArgs = ModalRoute.of(context).settings.arguments as Map<String, String>;
     String categoryTitle = routeArgs['title'];
     String mealId = routeArgs['id'];
@@ -98,7 +98,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
                                   topLeft: Radius.circular(15),
                                   topRight: Radius.circular(15),
                                 ),
-                                child: Image.network(baseurl + value.showMealItem[index].imageurl,
+                                child: Image.network('$imagesRecipesUrl/${value.showMealItem[index].imageurl}',
                                   height: 250,
                                   width: double.infinity,
                                   fit: BoxFit.cover,

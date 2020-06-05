@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import '../constants/connection.dart';
 import '../models/MealDetail.dart';
 import '../models/MealFavourite.dart';
 
@@ -59,9 +60,7 @@ class MealsDetail with ChangeNotifier {
   }
 
   Future<void> getMealsFavourite() async {
-    String url = 'http://192.168.43.226:5000/api/v1/meals/favourite'; // 192.168.43.85 || 10.0.2.2
-    // wifi kantor 192.168.1.11
-    // yang samsung 192.168.43.226
+    String url = 'http://$baseurl:$port/api/v1/meals/favourite'; 
     try {
       http.Response response = await http.get(url);
       MealsFavouriteModel model = MealsFavouriteModel.fromJson(json.decode(response.body));
@@ -74,7 +73,7 @@ class MealsDetail with ChangeNotifier {
   }
   
   Future<void> updateToFavourite(String mealId, int isfavourite) async {
-    String url = 'http://192.168.43.226:5000/api/v1/meals/update/favourite/$mealId'; // 192.168.43.85 || 10.0.2.2
+    String url = 'http://$baseurl:$port/api/v1/meals/update/favourite/$mealId'; // 192.168.43.85 || 10.0.2.2
     // wifi kantor 192.168.1.11
     // yang samsung 192.168.43.226
     try {
@@ -89,7 +88,7 @@ class MealsDetail with ChangeNotifier {
   }
 
   Future<void> detail(String mealId) async {
-    String url = 'http://192.168.43.226:5000/api/v1/meals/detail/$mealId'; // 192.168.43.85 || 10.0.2.2
+    String url = 'http://$baseurl:$port/api/v1/meals/detail/$mealId'; // 192.168.43.85 || 10.0.2.2
     // wifi kantor 192.168.1.11
     // yang samsung 192.168.43.226
     try {
