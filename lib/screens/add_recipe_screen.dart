@@ -169,7 +169,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
           Form(
             key: formTitleKey,
             child: Container(
-              width: 300,
+              width: double.infinity,
               margin: EdgeInsets.all(10),
               padding: EdgeInsets.all(10),
               child: TextFormField(
@@ -198,13 +198,13 @@ class _AddRecipeState extends State<AddRecipeScreen> {
             margin: EdgeInsets.all(10),
             padding: EdgeInsets.all(10),
             height: 150,
-            width: 300,
+            width: double.infinity,
             child: textFormIngredients()
           ),
           Container(
             margin: EdgeInsets.all(10),
             padding: EdgeInsets.all(10),
-            width: 300,
+            width: double.infinity,
             child: RaisedButton(
               child: Text('Add ingredients'),
               onPressed: incrementIngredients
@@ -219,20 +219,20 @@ class _AddRecipeState extends State<AddRecipeScreen> {
             margin: EdgeInsets.all(10),
             padding: EdgeInsets.all(10),
             height: 150,
-            width: 300,
+            width: double.infinity,
             child: textFormSteps()
           ),
           Container(
             margin: EdgeInsets.all(10),
             padding: EdgeInsets.all(10),
-            width: 300,
+            width: double.infinity,
             child: RaisedButton(
               child: Text('Add Steps'),
               onPressed: incrementSteps
             ),
           ),
           Container(
-            width: 300,
+            width: double.infinity,
             margin: EdgeInsets.all(10),
             padding: EdgeInsets.all(10),
             child: DropdownButton<CategoryData>(
@@ -251,7 +251,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
           Container(
             margin: EdgeInsets.all(10),
             padding: EdgeInsets.all(10),
-            width: 300,
+            width: double.infinity,
             child: RaisedButton(
               child: Text('Save'),
               onPressed: save,

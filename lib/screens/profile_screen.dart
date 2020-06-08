@@ -29,18 +29,16 @@ class ProfileScreenState extends State<ProfileScreen> {
       if (usernameController.text.isEmpty || usernameController.text.length < 3) {
         throw ErrorDescription("Username is too short. Minimum 3 characters.");
       }
-      final response = await Provider.of<User>(context, listen: false).update(
+      await Provider.of<User>(context, listen: false).update(
         usernameController.text, 
         bioController.text
       );
-      if(response["status"] == 200) {
-        Scaffold.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Succesfully updated data.'),
-            duration: Duration(seconds: 2)
-          ),
-        );
-      }
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Succesfully updated data.'),
+          duration: Duration(seconds: 2)
+        ),
+      );
     } on ErrorDescription catch(error) {
       Fluttertoast.showToast(
         msg: error.toString(),

@@ -19,6 +19,7 @@ class Auth with ChangeNotifier {
   DateTime _expiryDate;
   Timer authTimer;
 
+
   bool get isAuth {
     return token != null;
   }
@@ -31,9 +32,7 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> auth(String token) async {
-    String url = 'http://$baseurl:$port/api/v1/accounts';  // 192.168.43.85 || 10.0.2.2
-    // wifi kantor 192.168.1.11
-    // yang samsung 192.168.43.226
+    String url = 'http://$baseurl:$port/api/v1/accounts';  
     try {
       http.Response response = await http.get(url, headers: {
         "x-auth-token" : token 
@@ -45,11 +44,7 @@ class Auth with ChangeNotifier {
       userEmail = responseData["data"]["email"];
       userAvatar = responseData["data"]["avatar"];
       userBio = responseData["data"]["bio"];
-      _expiryDate = DateTime.now().add(
-        Duration(
-          seconds: responseData["data"]['expiresIn'],
-        ),
-      );
+      _expiryDate = DateTime.fromMillisecondsSinceEpoch(responseData["data"]["expiresIn"] * 1000);
       autoLogout();
       notifyListeners();
       final prefs = await SharedPreferences.getInstance();
@@ -71,9 +66,7 @@ class Auth with ChangeNotifier {
   }
 
   Future login(String email, String password) async {
-    String url = 'http://$baseurl:$port/api/v1/accounts/login'; // 192.168.43.85 || 10.0.2.2
-    // wifi kantor 192.168.1.11
-    // yang samsung 192.168.43.226
+    String url = 'http://$baseurl:$port/api/v1/accounts/login'; 
     try {
       http.Response response = await http.post(url, 
       body: {
@@ -93,9 +86,7 @@ class Auth with ChangeNotifier {
   }
 
   Future register(String name, String email, String password) async {
-    String url = 'http://$baseurl:$port/api/v1/accounts/register'; // 192.168.43.85 || 10.0.2.2
-    // wifi kantor 192.168.1.11
-    // yang samsung 192.168.43.226
+    String url = 'http://$baseurl:$port/api/v1/accounts/register'; 
     try {
       http.Response response = await http.post(url, body: {
         "name": name,
@@ -151,16 +142,40 @@ class Auth with ChangeNotifier {
       authTimer = null;
     }
     final prefs = await SharedPreferences.getInstance();
-  // prefs.remove('userData'); menghapus secara spesifik
+  // prefs.remove('userData'); Menghapus secara spesifik
     prefs.clear();
     notifyListeners();
+  }
+
+  Future refreshToken(String token) async {
+    String url = 'http://$baseurl:$port/api/v1/token/refresh-token';
+     try {
+      http.Response response = await http.post(url, body: {
+        "token": token,
+      });
+      final responseData = json.decode(response.body);
+      if(responseData["status"] == 500) {
+        throw HttpException(responseData["message"]);
+      } 
+      auth(responseData["data"]);
+    } catch(error) {
+      print(error);
+      throw error;
+    }
+  }
+
+  void checkToken() {
+    if(isAuth) { // Kalo masih ada token di refresh ulang
+      refreshToken(_token);
+    }
   }
 
   void autoLogout() {
     if (authTimer != null) {
       authTimer.cancel();
     }
-    final timeToExpiry = _expiryDate.difference(DateTime.now()).inSeconds;
-    authTimer = Timer(Duration(seconds: timeToExpiry), logout);
+ 
+    final timeToExpiry = _expiryDate.difference(DateTime.now()).inSeconds; // Kalo ini udah lewat dari perjanjian batas waktu maka otomatis logout
+    authTimer = Timer(Duration(seconds: timeToExpiry), checkToken);
   }
 }

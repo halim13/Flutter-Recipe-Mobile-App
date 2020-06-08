@@ -9,10 +9,15 @@ import '../models/RecipeEdit.dart';
 
 class Recipe extends ChangeNotifier {
   Data data;
+  FocusNode titleFocusNode = FocusNode();
+  FocusNode ingredientsNode = FocusNode(); 
+  FocusNode stepsNode = FocusNode();
   final TextEditingController titleController = TextEditingController();
   final GlobalKey<FormState> formTitleKey = GlobalKey();
   final GlobalKey<FormState> formIngredientsKey = GlobalKey();
   final GlobalKey<FormState> formStepsKey = GlobalKey();
+  List<Map<String, Object>> focusIngredientsNode = [];
+  List<Map<String, Object>> focusStepsNode = [];
   List<Map<String, Object>> controllerIngredients = [];
   List<Map<String, Object>> controllerSteps = [];
   List<Map<String, Object>> valueIngredients = [];
@@ -35,8 +40,12 @@ class Recipe extends ChangeNotifier {
       "id": uuid4,
       "item": TextEditingController(text: "Contoh: 1 Cabe Merah")
     });
-    ingredients.add({
+    focusIngredientsNode.add({
       "id": uuid4,
+      "item": FocusNode(canRequestFocus: true)
+    });
+    ingredients.add({
+      "id": uuid4
     });
     notifyListeners();
   }
@@ -46,6 +55,10 @@ class Recipe extends ChangeNotifier {
     controllerSteps.add({
       "id": uuid4,
       "item": TextEditingController(text: "Contoh: Iris Cabe dengan Pisau")
+    });
+    focusStepsNode.add({
+      "id": uuid4,
+      "item": FocusNode(canRequestFocus: true)
     });
     steps.add({
       "id": uuid4
@@ -88,6 +101,8 @@ class Recipe extends ChangeNotifier {
       RecipeEditModel model = RecipeEditModel.fromJson(json.decode(response.body));
       data = model.data;
       titleController.text = data.recipes.first.title;
+      final List<Map<String, Object>> initialFocusIngredientsNode = [];
+      final List<Map<String, Object>> initialFocusStepsNode = [];
       final List<Map<String, Object>> initialSteps = [];
       final List<Map<String, Object>> initialValueSteps = [];
       final List<Map<String, Object>> initialControllerSteps = [];
@@ -95,6 +110,14 @@ class Recipe extends ChangeNotifier {
       final List<Map<String, Object>> initialValueIngredients = [];
       final List<Map<String, Object>> initialControllerIngredients = []; 
       getIngredients.forEach((item) {
+        initialFocusIngredientsNode.add({
+          "id": item.id,
+          "item": ingredientsNode
+        });
+        initialFocusStepsNode.add({
+          "id": item.id,
+          "item": stepsNode
+        });
         initialIngredients.add({
           "id": item.id
         });
@@ -122,6 +145,8 @@ class Recipe extends ChangeNotifier {
           "item": TextEditingController(text: item.body)
         });
       });
+      focusIngredientsNode = initialFocusIngredientsNode;
+      focusStepsNode = initialFocusStepsNode;
       ingredients = initialIngredients;
       steps = initialSteps;
       valueIngredients = initialValueIngredients;
@@ -182,10 +207,9 @@ class Recipe extends ChangeNotifier {
       String responseData = await response.stream.bytesToString();
       final responseDecoded = jsonDecode(responseData);
       notifyListeners();    
+      return responseDecoded;
     } catch(error) {
       print(error);
     }
   }
-
-
 }
