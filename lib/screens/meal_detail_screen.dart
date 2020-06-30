@@ -47,7 +47,6 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const baseurl = 'http://192.168.43.226:5000/images/recipe/';
     final mealId = ModalRoute.of(context).settings.arguments;
     final provider = Provider.of<MealsDetail>(context, listen: false);
     return FutureBuilder(

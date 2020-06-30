@@ -2,6 +2,8 @@ import 'dart:io';
 
 // import 'package:path/path.dart' as path; // gunakan as path agar tidak terjadi bentrok
 // import 'package:transparent_image/transparent_image.dart';
+import '../constants/connection.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -87,7 +89,7 @@ class ProfileScreenState extends State<ProfileScreen> {
         final user = Provider.of<User>(context, listen: false);
         // setState(() => _file = file); cara penulisan singkat setState
         user.file = file;
-        File cropped = await ImageCropper.cropImage(
+        final cropped = await ImageCropper.cropImage(
           sourcePath: user.file.path,
           androidUiSettings: AndroidUiSettings(
           toolbarTitle: 'Crop It',
@@ -363,10 +365,11 @@ class ProfileScreenState extends State<ProfileScreen> {
     return Container(
       width: 120,
       height: 120,
-      child: CircleAvatar(
-        radius: 80,
-        backgroundColor: Colors.grey,
-        backgroundImage: NetworkImage('http://192.168.43.226:5000/images/avatar/${user.items[index].avatar}?${user.uniqueAvatar}'),
+      child: CachedNetworkImage(progressIndicatorBuilder: (context, url, progress) =>
+          CircularProgressIndicator(
+            value: progress.progress,
+          ),
+        imageUrl: '$imagesAvatarUrl/${user.items[index].avatar}?${user.uniqueAvatar}',
       ),
     );
   }

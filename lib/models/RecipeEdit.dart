@@ -55,17 +55,59 @@ class Ingredients {
 class Steps {
   String id;
   String body;
+  List<StepsImages> images;
 
   Steps({
     this.id,
     this.body,
+    this.images
   });
 
   factory Steps.fromJson(Map<String, dynamic> json) => Steps(
     id: json["id"] == null ? null : json["id"],
     body: json["body"] == null ? null : json["body"],
+    images: json["stepsImages"] == null ? null : List<StepsImages>.from(json["stepsImages"].map((x) => StepsImages.fromJson(x)))
   );
 }
+
+class StepsImages {
+  String id;
+  dynamic body;
+  String filename;
+
+  StepsImages({
+    this.id,
+    this.body,
+    this.filename
+  });
+
+  factory StepsImages.fromJson(Map<String, dynamic> json) => StepsImages(
+    id: json["id"] == null ? null : json["id"],
+    body: json["body"] == null ? null : json["body"],
+    filename: json["filename"] == null ? null : json["filename"]
+  );
+}
+
+// class StepImage {
+//   String id;
+//   dynamic item;
+//   String filename;
+//   List<StepImage> stepsImages; 
+
+//   StepImage({
+//     this.id,
+//     this.item,
+//     this.filename,
+//     this.stepsImages
+//   });
+
+//   factory StepImage.fromJson(Map<String, dynamic> json) => StepImage(
+//     id: json["id"] == null ? null : json["id"],
+//     item: json["item"] == null ? null : json['item'],
+//     filename: json["filename"] == null ? null : json['filename'],
+//     stepsImages: List<StepImage>.from(json["stepsImages"].map((x) => StepImage.fromJson(x))),
+//   );
+// }
 
 class Recipes {
   String id;
