@@ -1,51 +1,52 @@
 import 'package:flutter/material.dart';
-import '../screens/meal_detail_screen.dart';
+import '../constants/url.dart';
+import '../screens/recipe.detail.dart';
 
-class MealItem extends StatelessWidget {
-  final String id;
+class RecipeItem extends StatelessWidget {
+  final String uuid;
   final String title;
   final String imageUrl;
   final int duration;
   final String complexity;
   final String affordability;
 
-  MealItem({
-    @required this.id,
-    @required this.title,
-    @required this.imageUrl,
-    @required this.affordability,
-    @required this.complexity,
-    @required this.duration
+  RecipeItem({
+    this.uuid,
+    this.title,
+    this.imageUrl,
+    this.affordability,
+    this.complexity,
+    this.duration
   });
 
-  void selectMeal(context) {
+  void selectRecipe(context) {
     Navigator.of(context).pushNamed(
-      MealDetailScreen.routeName,
-      arguments: id,
+      RecipeDetailScreen.routeName,
+      arguments: uuid,
     );
   }  
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => selectMeal(context),
+      onTap: () => selectRecipe(context),
       child: Card(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(15.0),
         ),
         elevation: 4,
-        margin: EdgeInsets.all(10),
+        margin: EdgeInsets.all(10.0),
         child: Column(
-          children: <Widget>[
+          children: [
             Stack(
-              children: <Widget>[
+              children: [
                 ClipRRect(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(15),
                     topRight: Radius.circular(15),
                   ),
                   child: Image.network(
-                    imageUrl,
+                    '$imagesRecipesUrl/$imageUrl',
                     height: 250,
                     width: double.infinity,
                     fit: BoxFit.cover,
@@ -78,38 +79,38 @@ class MealItem extends StatelessWidget {
               padding: EdgeInsets.all(20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
+                children: [
                   Row(
-                    children: <Widget>[
+                    children: [
                       Icon(
                         Icons.schedule,
                       ),
                       SizedBox(
                         width: 6,
                       ),
-                      Text('$duration min'),
+                      Text('${duration.toString()} min'),
                     ],
                   ),
                   Row(
-                    children: <Widget>[
+                    children: [
                       Icon(
                         Icons.work,
                       ),
                       SizedBox(
                         width: 6,
                       ),
-                      Text(complexity),
+                      Text(complexity.toString()),
                     ],
                   ),
                   Row(
-                    children: <Widget>[
+                    children: [
                       Icon(
                         Icons.attach_money,
                       ),
                       SizedBox(
                         width: 6,
                       ),
-                      Text(affordability),
+                      Text(affordability.toString()),
                     ],
                   ),
                 ],

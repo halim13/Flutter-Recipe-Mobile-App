@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../custom/bottom_navy_bar.dart';
-import '../widgets/main_drawer.dart';
-import './profile_screen.dart';
-import './favorites_screen.dart';
-import './categories_screen.dart';
+import '../widgets/main.drawer.dart';
+import 'profile.dart';
+import 'favorites.recipe.dart';
+import 'categories.dart';
 
 class TabsScreen extends StatefulWidget {
 

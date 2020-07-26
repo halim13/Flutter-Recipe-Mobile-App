@@ -6,8 +6,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth.dart';
 
-import './login_screen.dart';
-import './tabs_screen.dart';
+import 'login.dart';
+import 'tabs.dart';
 
 class RegisterScreen extends StatefulWidget {
   static const routeName = '/register';

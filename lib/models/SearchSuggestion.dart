@@ -20,18 +20,18 @@ class SearchSuggestionModel {
 }
 
 class SearchSuggestionsData {
-  String id;
+  String uuid;
   String title;
   String imageUrl;
 
   SearchSuggestionsData({
-    this.id,
+    this.uuid,
     this.title,
     this.imageUrl,
   });
 
   factory SearchSuggestionsData.fromJson(Map<String, dynamic> json) => SearchSuggestionsData(
-    id: json["id"],
+    uuid: json["uuid"],
     title: json["title"],
     imageUrl: json["imageUrl"],
   );

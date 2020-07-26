@@ -22,14 +22,16 @@ class CategoryModel with ChangeNotifier {
 }
 
 class CategoryData with ChangeNotifier {
-  String id;
+  int id;
+  String uuid;
   String title;
   String color;
   String cover;
   
   CategoryData({
-    @required this.id,
-    @required this.title,
+    this.id,
+    this.uuid,
+    this.title,
     this.color,
     this.cover
   });
@@ -37,15 +39,15 @@ class CategoryData with ChangeNotifier {
   static List<CategoryData> getCategoriesDropdown() {
     return <CategoryData>[
       CategoryData(
-        id: 'none',
+        uuid: 'none',
         title: 'Select a category'
       ),
       CategoryData(
-        id: '054ba002-0122-496b-937e-32d05acef05c',
+        uuid: '054ba002-0122-496b-937e-32d05acef05c',
         title: 'Sayur'
       ),
       CategoryData(
-        id: '66c76b29-2c1d-4e2a-9cb9-8ea855c57610',
+        uuid: '66c76b29-2c1d-4e2a-9cb9-8ea855c57610',
         title: 'Daging'
       )
     ];
@@ -53,6 +55,7 @@ class CategoryData with ChangeNotifier {
 
   factory CategoryData.fromJson(Map<String, dynamic> json) => CategoryData(
     id: json["id"] == null ? null : json["id"],
+    uuid: json["uuid"] == null ? null : json["uuid"],
     title: json["title"] == null ? null : json["title"],
     color: json["color"] == null ? null : json["color"],
     cover: json["cover"] == null ? null : json["cover"]

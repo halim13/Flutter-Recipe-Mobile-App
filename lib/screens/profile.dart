@@ -1,8 +1,7 @@
-import 'dart:io';
-
 // import 'package:path/path.dart' as path; // gunakan as path agar tidak terjadi bentrok
 // import 'package:transparent_image/transparent_image.dart';
-import '../constants/connection.dart';
+import 'package:flutter_complete_guide/constants/url.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +10,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth.dart';
 import '../providers/user.dart';
-import './login_screen.dart';
-import './register_screen.dart';
+import './login.dart';
+import './register.dart';
 
 
 class ProfileScreen extends StatefulWidget {
@@ -84,13 +83,13 @@ class ProfileScreenState extends State<ProfileScreen> {
       ],
     ));
     if (imageSource != null) {
-      File file = await ImagePicker.pickImage(source: imageSource);
+      PickedFile file = await ImagePicker().getImage(source: imageSource);
       if (file != null) {
         final user = Provider.of<User>(context, listen: false);
         // setState(() => _file = file); cara penulisan singkat setState
-        user.file = file;
+        user.file = file.path;
         final cropped = await ImageCropper.cropImage(
-          sourcePath: user.file.path,
+          sourcePath: user.file,
           androidUiSettings: AndroidUiSettings(
           toolbarTitle: 'Crop It',
           toolbarColor: Colors.blueGrey[900],

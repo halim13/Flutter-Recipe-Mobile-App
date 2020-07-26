@@ -19,11 +19,9 @@ class Auth with ChangeNotifier {
   DateTime _expiryDate;
   Timer authTimer;
 
-
   bool get isAuth {
     return token != null;
   }
-
   String get token {
     if (_expiryDate != null && _expiryDate.isAfter(DateTime.now()) && _token != null) {
       return _token;
@@ -39,7 +37,7 @@ class Auth with ChangeNotifier {
       });
       final responseData = json.decode(response.body);
       _token = token;
-      userId = responseData["data"]["id"];
+      userId = responseData["data"]["uuid"];
       userName = responseData["data"]["name"];
       userEmail = responseData["data"]["email"];
       userAvatar = responseData["data"]["avatar"];
@@ -64,7 +62,6 @@ class Auth with ChangeNotifier {
       print(error);
     }
   }
-
   Future login(String email, String password) async {
     String url = 'http://$baseurl:$port/api/v1/accounts/login'; 
     try {
@@ -84,7 +81,6 @@ class Auth with ChangeNotifier {
       throw error;
     }
   }
-
   Future register(String name, String email, String password) async {
     String url = 'http://$baseurl:$port/api/v1/accounts/register'; 
     try {
@@ -104,7 +100,6 @@ class Auth with ChangeNotifier {
       throw error;
     }
   }
-
   Future<bool> tryAutoLogin() async {
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('userData')) {
@@ -112,7 +107,6 @@ class Auth with ChangeNotifier {
     }
     final extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
     final expiryDate = DateTime.parse(extractedUserData['expiryDate']);
-
     if (expiryDate.isBefore(DateTime.now())) {
       return false;
     }
@@ -127,7 +121,6 @@ class Auth with ChangeNotifier {
     autoLogout();
     return true;
   }
-
   Future<void> logout() async {
     _token = null;
     userId = null;
@@ -146,7 +139,6 @@ class Auth with ChangeNotifier {
     prefs.clear();
     notifyListeners();
   }
-
   Future refreshToken(String token) async {
     String url = 'http://$baseurl:$port/api/v1/token/refresh-token';
      try {
@@ -163,19 +155,17 @@ class Auth with ChangeNotifier {
       throw error;
     }
   }
-
   void checkToken() {
     if(isAuth) { // Kalo masih ada token di refresh ulang
       refreshToken(_token);
     }
   }
-
   void autoLogout() {
     if (authTimer != null) {
       authTimer.cancel();
     }
- 
-    final timeToExpiry = _expiryDate.difference(DateTime.now()).inSeconds; // Kalo ini udah lewat dari perjanjian batas waktu maka otomatis logout
+    final timeToExpiry = _expiryDate.difference(DateTime.now()).inSeconds; 
+    // Kalo ini udah lewat dari perjanjian batas waktu, maka otomatis logout
     authTimer = Timer(Duration(seconds: timeToExpiry), checkToken);
   }
 }

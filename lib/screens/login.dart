@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../providers/auth.dart';
-import './register_screen.dart';
-import 'tabs_screen.dart';
+import 'register.dart';
+import 'tabs.dart';
 
 
 class LoginScreen extends StatefulWidget {

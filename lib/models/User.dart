@@ -22,7 +22,8 @@ class UserModel with ChangeNotifier {
 }
 
 class UserData with ChangeNotifier{
-  String id;
+  int id;
+  String uuid;
   String name;
   String email;
   DateTime createdAt;
@@ -32,6 +33,7 @@ class UserData with ChangeNotifier{
   
   UserData({
     this.id,
+    this.uuid,
     this.name,
     this.email,
     this.createdAt,
@@ -42,6 +44,7 @@ class UserData with ChangeNotifier{
 
   factory UserData.fromJson(Map<String, dynamic> json) => UserData(
     id: json["id"],
+    uuid: json["uuid"],
     name: json["name"],
     email: json["email"],
     createdAt: DateTime.parse(json["created_at"]),

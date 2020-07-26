@@ -1,36 +1,38 @@
 import 'package:flutter/material.dart';
 
-class MealShowModel with ChangeNotifier {
+class RecipeShowModel with ChangeNotifier {
   int status;
   bool error;
   String message;
-  List<MealShowData> data;
+  List<RecipeShowData> data;
 
-  MealShowModel({
+  RecipeShowModel({
     this.status,
     this.error,
     this.message,
     this.data,
   });
 
-  factory MealShowModel.fromJson(Map<String, dynamic> json) => MealShowModel(
+  factory RecipeShowModel.fromJson(Map<String, dynamic> json) => RecipeShowModel(
     status: json["status"] == null ? null : json["status"],
     error: json["error"] == null ? null : json["error"],
     message: json["message"] == null ? null : json["message"],
-    data: json["data"] == null ? null : List<MealShowData>.from(json["data"].map((x) => MealShowData.fromJson(x))),
+    data: json["data"] == null ? null : List<RecipeShowData>.from(json["data"].map((x) => RecipeShowData.fromJson(x))),
   );
 }
 
-class MealShowData with ChangeNotifier {
-  String id;
+class RecipeShowData with ChangeNotifier {
+  int id;
+  String uuid;
   String title;
   int duration;
   String imageurl;
   String affordabilities;
   String complexities;
 
-  MealShowData({
-    @required this.id,
+  RecipeShowData({
+    this.id,
+    this.uuid,
     this.title,
     this.duration,
     this.imageurl,
@@ -38,8 +40,9 @@ class MealShowData with ChangeNotifier {
     this.complexities,
   });
 
-  factory MealShowData.fromJson(Map<String, dynamic> json) => MealShowData(
+  factory RecipeShowData.fromJson(Map<String, dynamic> json) => RecipeShowData(
     id: json["id"] == null ? null : json["id"],
+    uuid: json["uuid"] == null ? null : json["uuid"],
     title: json["title"] == null ? null : json["title"],
     duration: json["duration"] == null ? null : json["duration"],
     imageurl: json["imageurl"] == null ? null : json["imageurl"],

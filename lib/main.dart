@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './providers/auth.dart';
 import './providers/categories.dart';
-import './providers/meals_show.dart';
-import './providers/meals_detail.dart';
+import './providers/recipe.show.dart';
+import './providers/recipe.detail.dart';
 import './providers/user.dart';
 import './providers/recipe.dart';
-import './screens/tabs_screen.dart';
-import './screens/categories_screen.dart';
-import './screens/category_meals_screen.dart';
-import './screens/meal_detail_screen.dart';
-import './screens/login_screen.dart';
-import './screens/register_screen.dart';
-import './screens/add_recipe_screen.dart';
-import './screens/edit_recipe_screen.dart';
 import './colors/colors.dart';
+import './screens/tabs.dart';
+import './screens/categories.dart';
+import './screens/category.recipe.dart';
+import './screens/recipe.detail.dart';
+import './screens/login.dart';
+import './screens/register.dart';
+import './screens/add.recipe.dart';
+import './screens/edit.recipe.dart';
 
 void main() => runApp(MyApp());
 
@@ -41,10 +41,10 @@ class _MyAppState extends State<MyApp> {
           value: Categories(),
         ),
         ChangeNotifierProvider.value(
-          value: MealsShow(),
+          value: RecipeShow(),
         ),
         ChangeNotifierProvider.value(
-          value: MealsDetail(),
+          value: RecipeDetail(),
         ),
       ],
       child: MaterialApp(
@@ -77,7 +77,7 @@ class _MyAppState extends State<MyApp> {
           LoginScreen.routeName: (ctx) => LoginScreen(),
           RegisterScreen.routeName: (ctx) => RegisterScreen(),
           CategoryMealsScreen.routeName: (ctx) => CategoryMealsScreen(),
-          MealDetailScreen.routeName: (ctx) => MealDetailScreen(),
+          RecipeDetailScreen.routeName: (ctx) => RecipeDetailScreen(),
           AddRecipeScreen.routeName: (ctx) => AddRecipeScreen(),
           EditRecipeScreen.routeName: (ctx) => EditRecipeScreen()
         },

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../constants/connection.dart';
-import '../helpers/highlight_occurences.dart';
-import '../providers/meals_show.dart';
-import '../screens/meal_detail_screen.dart';
+import '../helpers/highlight.occurences.dart';
+import '../providers/recipe.show.dart';
+import '../constants/url.dart';
+import './recipe.detail.dart';
 
 class CategoryMealsScreen extends StatefulWidget {
   static const routeName = '/category-meals';
@@ -21,7 +21,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
     controller.addListener(() {
       if (controller.position.pixels == controller.position.maxScrollExtent) {
         final routeArgs = ModalRoute.of(context).settings.arguments as Map<String, String>;
-        Provider.of<MealsShow>(context, listen: false).show(routeArgs['id'], 5);
+        Provider.of<RecipeShow>(context, listen: false).show(routeArgs['uuid'], 5);
       }
     });
   }
@@ -31,10 +31,10 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
     controller.dispose();
   }
 
-  void selectMeal(context, String id) {
+  void selectMeal(context, String uuid) {
     Navigator.of(context).pushNamed(
-      MealDetailScreen.routeName,
-      arguments: id
+      RecipeDetailScreen.routeName,
+      arguments: uuid
     );
   }
 
@@ -42,7 +42,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
   Widget build(BuildContext context) {
     final routeArgs = ModalRoute.of(context).settings.arguments as Map<String, String>;
     String categoryTitle = routeArgs['title'];
-    String mealId = routeArgs['id'];
+    String mealId = routeArgs['uuid'];
     return Scaffold(
       appBar: AppBar(
         title: Text(categoryTitle),
@@ -56,7 +56,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
         ],
       ),
       body: FutureBuilder(
-        future: Provider.of<MealsShow>(context, listen: false).show(mealId),
+        future: Provider.of<RecipeShow>(context, listen: false).show(mealId),
         builder: (context, snapshot) {
           if(snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -68,21 +68,21 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
               child: Text('Oops! Something went wrong! Please Try Again.')
             );
           }
-          return Consumer<MealsShow>(
+          return Consumer<RecipeShow>(
             child: Center(
               child: const Text('You have no meals yet, start adding some!'),
             ),
-            builder: (context, value, ch) => value.showMealItem.length <= 0 ? ch :
+            builder: (context, value, ch) => value.showRecipeItem.length <= 0 ? ch :
             RefreshIndicator(
-              onRefresh: () => value.refreshMeals(mealId),
+              onRefresh: () => value.refreshRecipe(mealId),
               child: ListView.builder(
               controller: controller,
-              itemCount: value.showMealItem.length,
+              itemCount: value.showRecipeItem.length,
               itemBuilder: (context, index) {
-                if(index == value.showMealItem.length) 
+                if(index == value.showRecipeItem.length) 
                   return CircularProgressIndicator();
                   return InkWell(
-                    onTap: () => selectMeal(context, value.showMealItem[index].id),
+                    onTap: () => selectMeal(context, value.showRecipeItem[index].uuid),
                     child: Card(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15)
@@ -98,7 +98,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
                                   topLeft: Radius.circular(15),
                                   topRight: Radius.circular(15),
                                 ),
-                                child: Image.network('$imagesRecipesUrl/${value.showMealItem[index].imageurl}',
+                                child: Image.network('$imagesRecipesUrl/${value.showRecipeItem[index].imageurl}',
                                   height: 250,
                                   width: double.infinity,
                                   fit: BoxFit.cover,
@@ -114,7 +114,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
                                     vertical: 5,
                                     horizontal: 20,
                                   ),
-                                  child: Text(value.showMealItem[index].title.toString(),
+                                  child: Text(value.showRecipeItem[index].title.toString(),
                                     style: TextStyle(
                                       fontSize: 26,
                                       color: Colors.white,
@@ -135,21 +135,21 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
                                   children: <Widget>[
                                     Icon(Icons.schedule),
                                     SizedBox(width: 6),
-                                    Text('${value.showMealItem[index].duration.toString()} min'),
+                                    Text('${value.showRecipeItem[index].duration.toString()} min'),
                                   ],
                                 ),
                                 Row(
                                   children: <Widget>[
                                     Icon(Icons.work),
                                     SizedBox(width: 6),
-                                    Text(value.showMealItem[index].complexities.toString()),
+                                    Text(value.showRecipeItem[index].complexities.toString()),
                                   ],
                                 ),
                                 Row(
                                   children: <Widget>[
                                     Icon(Icons.attach_money),
                                     SizedBox(width: 6),
-                                    Text(value.showMealItem[index].affordabilities.toString()),
+                                    Text(value.showRecipeItem[index].affordabilities.toString()),
                                   ],
                                 ),
                               ],
@@ -215,8 +215,8 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    final provider = Provider.of<MealsShow>(context);
-    final results = provider.showMealItem.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
+    final provider = Provider.of<RecipeShow>(context);
+    final results = provider.showRecipeItem.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
 
     return ListView.builder(
       itemCount: results.length,
@@ -224,7 +224,7 @@ class DataSearch extends SearchDelegate<String> {
         return InkWell(
           onTap: () => {
             Navigator.of(context).pushNamed(
-              MealDetailScreen.routeName,
+              RecipeDetailScreen.routeName,
               arguments: results[index].id
             )
           },
@@ -309,7 +309,7 @@ class DataSearch extends SearchDelegate<String> {
   }
   @override
   Widget buildSuggestions(BuildContext context) {
-    final provider = Provider.of<MealsShow>(context);
+    final provider = Provider.of<RecipeShow>(context);
     if(query.isEmpty) {
       return ListView.builder(
         itemCount: provider.searchSuggestionsItem.length,
@@ -317,10 +317,10 @@ class DataSearch extends SearchDelegate<String> {
           child: ListTile(
             onTap: () {
               Navigator.of(context).pushNamed(
-                MealDetailScreen.routeName,
-                arguments: provider.searchSuggestionsItem[index].id
+                RecipeDetailScreen.routeName,
+                arguments: provider.searchSuggestionsItem[index].uuid
               );
-              provider.popularViews(provider.searchSuggestionsItem[index].id);
+              provider.popularViews(provider.searchSuggestionsItem[index].uuid);
             },
             leading: Image.network(
               provider.searchSuggestionsItem[index].imageUrl,
@@ -342,17 +342,17 @@ class DataSearch extends SearchDelegate<String> {
         ),
       );
     }
-    final suggestionsList = provider.showMeal.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
+    final suggestionsList = provider.showRecipe.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
     return ListView.builder(
       itemCount: suggestionsList.length,
       itemBuilder: (context, index) => Card(
         child: ListTile(
           onTap: () {
             Navigator.of(context).pushNamed(
-              MealDetailScreen.routeName,
-              arguments: suggestionsList[index].id
+              RecipeDetailScreen.routeName,
+              arguments: suggestionsList[index].uuid
             );
-            provider.popularViews(suggestionsList[index].id.toString());
+            provider.popularViews(suggestionsList[index].uuid);
           },
           leading: Image.network(
             suggestionsList[index].imageurl,

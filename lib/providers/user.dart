@@ -1,19 +1,20 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/connection.dart';
 import '../models/User.dart';
 
 class User extends ChangeNotifier {
-  File file;
+  String file;
   bool formEditUsername = false;
   bool formEditBio = false;
   bool isSaveChanges = false;
   DateTime uniqueAvatar =  DateTime.now();
+
+  List<UserData> profile;
+  List<UserData> get items => [...profile];
 
   bool isToggleSavedChanges() {
     if(isSaveChanges) {
@@ -36,6 +37,7 @@ class User extends ChangeNotifier {
       return false;
     }
   }
+
   void toggleSaveChanges() {
     isSaveChanges = !isSaveChanges;
     notifyListeners();
@@ -58,9 +60,6 @@ class User extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<UserData> profile;
-  List<UserData> get items => [...profile];
-
   Future<void> getCurrentProfile() async {
     final prefs = await SharedPreferences.getInstance();
     final extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
@@ -76,11 +75,9 @@ class User extends ChangeNotifier {
       throw error;
     }
   }
-
   Future<void> refreshProfile() async {
     await getCurrentProfile();
   }
-
   Future update(String username, String bio) async {
     Map<String, String> fields = {
       "username": username,
@@ -88,18 +85,14 @@ class User extends ChangeNotifier {
     };
     Map<String, String> headers = { "Content-Type": "application/json"};
     final prefs = await SharedPreferences.getInstance();
-    final avatarExtractedData = prefs.getString('userAvatar');
     final extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
     String userId = extractedUserData["userId"];
-    String avatar = avatarExtractedData;
-
-    // String pathAvatar = 'http://192.168.43.85:5000/images/avatar';
     String url = 'http://$baseurl:$port/api/v1/accounts/users/profile/update/$userId'; 
     try {
       http.MultipartRequest request = http.MultipartRequest('PUT', Uri.parse(url));
       if(file != null) {
         http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
-          'avatar', file.path
+          'avatar', file
         );
         request.files.add(multipartFile);
       }

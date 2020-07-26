@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/meals_detail.dart';
-import '../screens/meal_detail_screen.dart';
-import '../widgets/meal_item.dart';
+import './recipe.detail.dart';
+import '../providers/recipe.detail.dart';
+import '../widgets/recipe.item.dart';
 
 class FavoritesScreen extends StatelessWidget {
 
-   void selectMeal(BuildContext context, String id) {
+  void selectMeal(BuildContext context, String uuid) {
     Navigator.of(context).pushNamed(
-      MealDetailScreen.routeName,
-      arguments: id,
+      RecipeDetailScreen.routeName,
+      arguments: uuid,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<MealsDetail>(context, listen: false);
+    final provider = Provider.of<RecipeDetail>(context, listen: false);
     return FutureBuilder(
-      future: Provider.of<MealsDetail>(context, listen: false).getMealsFavourite(),
+      future: Provider.of<RecipeDetail>(context, listen: false).getRecipeFavourite(),
       builder: (context, snapshot) {
         if(snapshot.connectionState == ConnectionState.waiting) {
           return Center(
@@ -31,9 +31,9 @@ class FavoritesScreen extends StatelessWidget {
             )
           );
         }
-        return Consumer<MealsDetail>(
+        return Consumer<RecipeDetail>(
           child: RefreshIndicator(
-            onRefresh: () => provider.refreshMealsFavourite(),
+            onRefresh: () => provider.refreshRecipeFavourite(),
             child: ListView(
               children: <Widget>[
                 Container(
@@ -49,22 +49,22 @@ class FavoritesScreen extends StatelessWidget {
               ],
             ),
           ),
-          builder: (context, mealsdetail, ch) {
-            if(mealsdetail.mealsFavouriteItems.length <= 0) {
+          builder: (context, value, ch) {
+            if(value.displayRecipeFavourite.length <= 0) {
               return ch;
             }
             return RefreshIndicator(
-              onRefresh: () => mealsdetail.refreshMealsFavourite(),
+              onRefresh: () => value.refreshRecipeFavourite(),
               child: ListView.builder(
-              itemCount: mealsdetail.mealsFavouriteItems.length,
+              itemCount: value.displayRecipeFavourite.length,
                 itemBuilder: (context, index) {
-                  return MealItem(
-                    id: mealsdetail.mealsFavouriteItems[index].id.toString(),
-                    title: mealsdetail.mealsFavouriteItems[index].title,
-                    imageUrl: mealsdetail.mealsFavouriteItems[index].imageUrl,
-                    duration: mealsdetail.mealsFavouriteItems[index].duration,
-                    affordability: mealsdetail.mealsFavouriteItems[index].affordability,
-                    complexity: mealsdetail.mealsFavouriteItems[index].complexity,
+                  return RecipeItem(
+                    uuid: value.displayRecipeFavourite[index].uuid,
+                    title: value.displayRecipeFavourite[index].title,
+                    imageUrl: value.displayRecipeFavourite[index].imageUrl,
+                    duration: value.displayRecipeFavourite[index].duration,
+                    affordability: value.displayRecipeFavourite[index].affordability,
+                    complexity: value.displayRecipeFavourite[index].complexity,
                   );
                 }
               ),

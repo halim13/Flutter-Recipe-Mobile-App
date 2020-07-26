@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/constants/connection.dart';
 import 'package:provider/provider.dart';
-import '../providers/meals_detail.dart';
-import './edit_recipe_screen.dart';
+import '../constants/url.dart';
+import '../providers/recipe.detail.dart';
+import './edit.recipe.dart';
 
-class MealDetailScreen extends StatefulWidget {
-  static const routeName = '/meal-detail';
+class RecipeDetailScreen extends StatefulWidget {
+  static const routeName = '/recipe-detail';
 
   @override
-  _MealDetailScreenState createState() => _MealDetailScreenState();
+  _RecipeDetailScreenState createState() => _RecipeDetailScreenState();
 }
 
-class _MealDetailScreenState extends State<MealDetailScreen> {
+class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
 
   void edit() {
-    final mealId = ModalRoute.of(context).settings.arguments;
+    final recipeId = ModalRoute.of(context).settings.arguments;
     Navigator.of(context).pushNamed(
       EditRecipeScreen.routeName,
-      arguments: mealId
+      arguments: recipeId
     );
   }
 
@@ -39,18 +39,18 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
       ),
       margin: EdgeInsets.all(10),
       padding: EdgeInsets.all(10),
-      height: 150,
-      width: 300,
+      height: 150.0,
+      width: double.infinity,
       child: child,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final mealId = ModalRoute.of(context).settings.arguments;
-    final provider = Provider.of<MealsDetail>(context, listen: false);
+    final recipeId = ModalRoute.of(context).settings.arguments;
+    final provider = Provider.of<RecipeDetail>(context, listen: false);
     return FutureBuilder(
-      future: Provider.of<MealsDetail>(context, listen: false).detail(mealId),
+      future: Provider.of<RecipeDetail>(context, listen: false).detail(recipeId),
       builder: (context, snapshot) {
         if(snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
@@ -65,7 +65,7 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
         if(snapshot.hasError) {
           return Scaffold(
             appBar: AppBar(
-              title: Text(provider.data.meals.first.title),
+              title: Text(provider.data.recipes.first.title),
             ),
             body: Center(
               child: Text('Oops! Something went wrong! Please Try Again.'),
@@ -74,7 +74,7 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
         }
         return Scaffold(
           appBar: AppBar(
-            title: Text(provider.data.meals.first.title),
+            title: Text(provider.data.recipes.first.title),
             actions: [
               IconButton(
                 icon: Icon(
@@ -91,7 +91,7 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                 Container(
                   height: 300,
                   width: double.infinity,
-                  child: Image.network('$imagesRecipesUrl/${provider.data.meals.first.imageUrl}',
+                  child: Image.network('$imagesRecipesUrl/${provider.data.recipes.first.imageUrl}',
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -99,7 +99,7 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                 buildContainer(
                   ListView.builder(
                     itemCount: provider.data.ingredients.length,
-                    itemBuilder: (ctx, index) => Card(
+                    itemBuilder: (context, index) => Card(
                       color: Theme.of(context).accentColor,
                       child: Padding(
                         padding: EdgeInsets.symmetric(
@@ -132,13 +132,13 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
               ],
             ),
           ),
-          floatingActionButton: Consumer<MealsDetail>(
+          floatingActionButton: Consumer<RecipeDetail>(
             builder: (context, value, ch) {
               return FloatingActionButton(
                 backgroundColor: Colors.yellow.shade700,
                 foregroundColor: Colors.black,
-                child: Icon(value.isMealFavorite(mealId) ? Icons.star : Icons.star_border),
-                onPressed: () => value.toggleFavourite(mealId)
+                child: Icon(value.isRecipeFavorite(recipeId) ? Icons.star : Icons.star_border),
+                onPressed: () => value.toggleFavourite(recipeId)
               );
             },
           )

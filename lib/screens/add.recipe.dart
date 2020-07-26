@@ -17,7 +17,7 @@ class AddRecipeScreen extends StatefulWidget {
 class _AddRecipeState extends State<AddRecipeScreen> {
   bool loading = false;
   String title;
-  File _file;
+  String _file;
   final GlobalKey<FormState> formIngredientsKey = GlobalKey();
   final GlobalKey<FormState> formStepsKey = GlobalKey();
   final GlobalKey<FormState> formTitleKey = GlobalKey();
@@ -84,9 +84,9 @@ class _AddRecipeState extends State<AddRecipeScreen> {
       ],
     ));
     if(imageSource != null) {
-      File file = await ImagePicker.pickImage(source: imageSource);
+      PickedFile file = await ImagePicker().getImage(source: imageSource);
       if(file != null) {
-        setState(() => _file = file);
+        setState(() => _file = file.path);
       }
     }
   }
@@ -102,7 +102,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
     final ingredients = jsonEncode(uniqueIngredients); // Agar bisa di parse di backend 
    try {
       setState(() => loading = true);
-      await Provider.of<Recipe>(context, listen: false).store(title, ingredients, steps, selectedCategory.id, _file);
+      await Provider.of<Recipe>(context, listen: false).store(title, ingredients, steps, selectedCategory.uuid, _file);
       setState(() => loading = false);
     } catch(error) {
       setState(() => loading = false);
@@ -155,8 +155,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
                 child: _file == null ? Image.asset(
                   'assets/default-thumbnail.jpg',
                   fit: BoxFit.cover,
-                ) : Image.file(_file),
-              ),
+                ) :  Image.file(File(_file))),
               Positioned(
                 child: IconButton(
                   color: Colors.white,
