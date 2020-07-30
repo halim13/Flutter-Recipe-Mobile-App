@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../custom/bottom_navy_bar.dart';
+import '../providers/custom/bottom_navy_bar.dart';
 import '../widgets/main.drawer.dart';
 import 'profile.dart';
 import 'favorites.recipe.dart';

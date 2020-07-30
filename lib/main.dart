@@ -35,10 +35,10 @@ class _MyAppState extends State<MyApp> {
           value: User(),
         ),
         ChangeNotifierProvider.value(
-          value: Recipe(),
+          value: Categories(),
         ),
         ChangeNotifierProvider.value(
-          value: Categories(),
+          value: Recipe(),
         ),
         ChangeNotifierProvider.value(
           value: RecipeShow(),

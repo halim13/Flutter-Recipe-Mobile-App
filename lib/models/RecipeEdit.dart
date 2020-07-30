@@ -37,6 +37,57 @@ class Data {
   );
 }
 
+class Recipes {
+  int id;
+  String uuid;
+  String title;
+  String imageUrl;
+  String categoryName;
+  List<CategoryList> categoryList;
+
+  Recipes({
+    this.id,
+    this.uuid,
+    this.title,
+    this.imageUrl,
+    this.categoryName,
+    this.categoryList,
+  });
+
+  factory Recipes.fromJson(Map<String, dynamic> json) => Recipes(
+    id: json["id"] == null ? null : json["id"],
+    uuid: json["uuid"] == null ? null : json["uuid"],
+    title: json["title"] == null ? null : json["title"],
+    imageUrl: json["imageUrl"] == null ? null : json["imageUrl"],
+    categoryName: json["category_name"] == null ? null : json["category_name"],
+    categoryList: List<CategoryList>.from(json["category_list"].map((x) => CategoryList.fromJson(x))),
+  );
+}
+
+class CategoryList {
+  int id;
+  String uuid;
+  String title;
+  String color;
+  String cover;
+  
+  CategoryList({
+    this.id,
+    this.uuid,
+    this.title,
+    this.color,
+    this.cover
+  });
+  
+  factory CategoryList.fromJson(Map<String, dynamic> json) => CategoryList(
+    id: json["id"] == null ? null : json["id"],
+    uuid: json["uuid"] == null ? null : json["uuid"],
+    title: json["title"] == null ? null : json["title"],
+    color: json["color"] == null ? null : json["color"],
+    cover: json["cover"] == null ? null : json["cover"]
+  );
+}
+
 class Ingredients {
   int id;
   String uuid;
@@ -97,29 +148,5 @@ class StepsImages {
     uuid: json["uuid"] == null ? null : json["uuid"],
     body: json["body"] == null ? null : json["body"],
     filename: json["filename"] == null ? null : json["filename"]
-  );
-}
-
-class Recipes {
-  int id;
-  String uuid;
-  String title;
-  String imageUrl;
-  String categoryId;
-
-  Recipes({
-    this.id,
-    this.uuid,
-    this.title,
-    this.imageUrl,
-    this.categoryId,
-  });
-
-  factory Recipes.fromJson(Map<String, dynamic> json) => Recipes(
-    id: json["id"] == null ? null : json["id"],
-    uuid: json["uuid"] == null ? null : json["uuid"],
-    title: json["title"] == null ? null : json["title"],
-    imageUrl: json["imageUrl"] == null ? null : json["imageUrl"],
-    categoryId: json["category_id"] == null ? null : json["category_id"],
   );
 }

@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/models/Company.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import '../constants/url.dart';
@@ -141,7 +143,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
       builder: (context) => AlertDialog(
         title: Text('Batal mengubah?', style: TextStyle(color: Colors.black)),
         content: Text('Data akan hilang apabila Anda keluar'),
-        actions: <Widget>[
+        actions: [
           FlatButton(
             onPressed: () => Navigator.of(context).pop(false),
             child: Text('Tidak'),
@@ -157,6 +159,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
     )) ?? false;
   }
 
+  @override
   void dispose() {
     super.dispose();
     final recipe = Provider.of<Recipe>(context, listen: false);
@@ -171,8 +174,6 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
     recipe.titleFocusNode.dispose();
     timer.cancel();
   } 
-
-  @override
   Widget build(BuildContext context) {
     final recipeId = ModalRoute.of(context).settings.arguments;
     final recipe = Provider.of<Recipe>(context, listen: false);
@@ -230,10 +231,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                     ]
                   ),
                   Container(
-                    margin: EdgeInsets.only(
-                      left: 16.0,
-                      top: 20.0
-                    ),
+                    margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
                     child: Text(
                       'Kamu ingin buat masakan apa ?',
                       style: TextStyle(
@@ -245,8 +243,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                     key: recipe.formTitleKey,
                     child: Container(
                       width: double.infinity,
-                      margin: EdgeInsets.all(10.0),
-                      padding: EdgeInsets.all(10.0),
+                      margin: EdgeInsets.only(left: 18.0, right: 18.0),
                       child: TextFormField(
                         focusNode: recipe.titleFocusNode,
                         controller: recipe.titleController,
@@ -264,6 +261,34 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                         },
                       ),
                     ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
+                    child: Text(
+                      'Kategori',
+                      style: TextStyle(
+                        fontSize: 15.0
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 18.0, top: 15.0, right: 18.0),
+                    child: Column(
+                      children: [
+                        Consumer<Recipe>(
+                          builder: (context, value, child) => DropdownSearch(
+                            mode: Mode.BOTTOM_SHEET,
+                            showSelectedItem: true,
+                            items: value.categoriesDisplay,
+                            label: "Pilih Kategori",
+                            onChanged: (value) {
+                              
+                            },
+                            selectedItem: value.categoryName
+                          ),
+                        )
+                      ]
+                    )
                   ),
                   Container(
                     margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),

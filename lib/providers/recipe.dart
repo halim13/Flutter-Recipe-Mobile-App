@@ -18,6 +18,8 @@ class Recipe extends ChangeNotifier {
   FocusNode titleFocusNode = FocusNode();
   FocusNode ingredientsNode = FocusNode(); 
   FocusNode stepsNode = FocusNode();
+  List<String> categoriesDisplay = [];
+  String categoryName;
   final TextEditingController titleController = TextEditingController();
   final GlobalKey<FormState> formTitleKey = GlobalKey();
   final GlobalKey<FormState> formIngredientsKey = GlobalKey();
@@ -128,6 +130,15 @@ class Recipe extends ChangeNotifier {
       http.Response response = await http.get(url);
       RecipeEditModel model = RecipeEditModel.fromJson(json.decode(response.body));
       data = model.data;
+      List<CategoryList> categories = data.recipes.first.categoryList;
+      categoryName = data.recipes.first.categoryName;
+      List<String> tempCategoriesDisplay = [];
+      categories.forEach((element) {
+        tempCategoriesDisplay.add(
+          element.title,
+        );
+      });
+      categoriesDisplay = tempCategoriesDisplay;
       titleController.text = data.recipes.first.title;
       final List<Map<String, Object>> initialFocusIngredientsNode = [];
       final List<Map<String, Object>> initialFocusStepsNode = [];
