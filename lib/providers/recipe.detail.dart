@@ -90,11 +90,6 @@ class RecipeDetail with ChangeNotifier {
       RecipeDetailModel model = RecipeDetailModel.fromJson(json.decode(response.body));
       data = model.data;
       favourite = model.data.recipes.first.isfavourite;
-      // tests.add({
-      //   "i":  model.data.recipes.first.uuid,
-      //   "f": favourite 
-      // });   
-
       notifyListeners();
     } catch(error) {
       print(error); // in-development
