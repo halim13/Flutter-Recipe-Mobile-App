@@ -30,7 +30,10 @@ class RecipeDetail with ChangeNotifier {
       notifyListeners();
     } else {
       updateToFavourite(recipeId, 0);
-      displayRecipeFavourite = [];
+      int existingIndex = displayRecipeFavourite.indexWhere((el) => el.uuid == recipeId);
+      if(existingIndex >= 0) {
+        displayRecipeFavourite.removeAt(existingIndex);
+      }
       favourite = 0;
       Fluttertoast.showToast(
         msg: 'Removed to favourite.',

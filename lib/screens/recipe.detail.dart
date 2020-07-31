@@ -12,6 +12,7 @@ class RecipeDetailScreen extends StatefulWidget {
 }
 
 class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
+
   void edit() {
     final routeArgs = ModalRoute.of(context).settings.arguments as Map<String, String>;
     Navigator.of(context).pushNamed(

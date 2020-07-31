@@ -244,7 +244,6 @@ class Recipe extends ChangeNotifier {
     }
   }
   Future update(String title, String recipeId, String ingredients, String stepsP, String removeIngredients, String removeSteps, String categoryName) async {
-    print(categoryName);
     final prefs = await SharedPreferences.getInstance();
     final extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
     String userId = extractedUserData["userId"];

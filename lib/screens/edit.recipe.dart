@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/models/Company.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import '../screens/categories.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import '../constants/url.dart';
@@ -115,10 +115,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
       );
       Scaffold.of(context).showSnackBar(snackbar);
       timer = Timer(const Duration(seconds: 3), () {
-        return Navigator.of(context).pushReplacementNamed( 
-          RecipeDetailScreen.routeName, 
-          arguments: recipeId
-        );
+        Navigator.pop(context, true);
       });
     } on Exception catch(error) {
       final errorSplit = error.toString();
@@ -161,17 +158,6 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
 
   @override
   void dispose() {
-    final recipe = Provider.of<Recipe>(context, listen: false);
-    for (int i = 0; i < recipe.ingredients.length; i++) {
-      TextEditingController controller = recipe.controllerIngredients[i]["item"];
-      controller.dispose();
-    }
-     for (int i = 0; i < recipe.steps.length; i++) {
-      TextEditingController controller = recipe.controllerSteps[i]["item"];
-      controller.dispose();
-    }
-    recipe.titleFocusNode.dispose();
-    timer.cancel();
     super.dispose();
   } 
   Widget build(BuildContext context) {
