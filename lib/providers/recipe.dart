@@ -131,13 +131,13 @@ class Recipe extends ChangeNotifier {
       RecipeEditModel model = RecipeEditModel.fromJson(json.decode(response.body));
       data = model.data;
       List<CategoryList> categories = data.recipes.first.categoryList;
-      categoryName = data.recipes.first.categoryName;
       List<String> tempCategoriesDisplay = [];
       categories.forEach((element) {
         tempCategoriesDisplay.add(
           element.title,
         );
       });
+      categoryName = data.recipes.first.categoryName;
       categoriesDisplay = tempCategoriesDisplay;
       titleController.text = data.recipes.first.title;
       final List<Map<String, Object>> initialFocusIngredientsNode = [];
@@ -243,7 +243,8 @@ class Recipe extends ChangeNotifier {
       print(error);
     }
   }
-  Future update(String title, String recipeId, String ingredients, String stepsP, String removeIngredients, String removeSteps, String categoryId) async {
+  Future update(String title, String recipeId, String ingredients, String stepsP, String removeIngredients, String removeSteps, String categoryName) async {
+    print(categoryName);
     final prefs = await SharedPreferences.getInstance();
     final extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
     String userId = extractedUserData["userId"];
@@ -267,7 +268,7 @@ class Recipe extends ChangeNotifier {
       request.fields["steps"] = stepsP;
       request.fields["removeIngredients"] = removeIngredients;
       request.fields["removeSteps"] = removeSteps;
-      request.fields["categoryId"] = categoryId;
+      request.fields["categoryName"] = categoryName;
       request.fields["userId"] = userId; 
       http.StreamedResponse response = await request.send();
       String responseData = await response.stream.bytesToString();

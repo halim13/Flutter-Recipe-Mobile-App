@@ -12,12 +12,11 @@ class RecipeDetailScreen extends StatefulWidget {
 }
 
 class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
-
   void edit() {
-    final recipeId = ModalRoute.of(context).settings.arguments;
+    final routeArgs = ModalRoute.of(context).settings.arguments as Map<String, String>;
     Navigator.of(context).pushNamed(
       EditRecipeScreen.routeName,
-      arguments: recipeId
+      arguments: routeArgs['uuid']
     );
   }
 
@@ -47,45 +46,35 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final recipeId = ModalRoute.of(context).settings.arguments;
+    final routeArgs = ModalRoute.of(context).settings.arguments as Map<String, String>;
     final provider = Provider.of<RecipeDetail>(context, listen: false);
-    return FutureBuilder(
-      future: Provider.of<RecipeDetail>(context, listen: false).detail(recipeId),
-      builder: (context, snapshot) {
-        if(snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text("")
-            ),
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
-        if(snapshot.hasError) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text(provider.data.recipes.first.title),
-            ),
-            body: Center(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(routeArgs['title']),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.edit,
+              color: Colors.blue,
+            ), 
+            onPressed: edit
+          )
+        ],
+      ),
+      body: FutureBuilder(
+        future: Provider.of<RecipeDetail>(context, listen: false).detail(routeArgs['uuid']),
+        builder: (context, snapshot) {
+          if(snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator() 
+            );
+          }
+          if(snapshot.hasError) {
+            return Center(
               child: Text('Oops! Something went wrong! Please Try Again.'),
-            )
-          );
-        }
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(provider.data.recipes.first.title),
-            actions: [
-              IconButton(
-                icon: Icon(
-                  Icons.edit,
-                  color: Colors.blue,
-                ), 
-                onPressed: edit
-              )
-            ],
-          ),
-          body: SingleChildScrollView(
+            );
+          }
+          return SingleChildScrollView(
             child: Column(
               children: [
                 Container(
@@ -131,19 +120,19 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                 ),
               ],
             ),
-          ),
-          floatingActionButton: Consumer<RecipeDetail>(
-            builder: (context, value, ch) {
-              return FloatingActionButton(
-                backgroundColor: Colors.yellow.shade700,
-                foregroundColor: Colors.black,
-                child: Icon(value.isRecipeFavorite(recipeId) ? Icons.star : Icons.star_border),
-                onPressed: () => value.toggleFavourite(recipeId)
-              );
-            },
-          )
-        );
-      },
+          );
+        }
+      ),
+      floatingActionButton: Consumer<RecipeDetail>(
+        builder: (context, value, ch) {
+          return FloatingActionButton(
+            backgroundColor: Colors.yellow.shade700,
+            foregroundColor: Colors.black,
+            child: Icon(value.isRecipeFavorite(routeArgs['uuid'], value.favourite) ? Icons.star : Icons.star_border),
+            onPressed: () => value.toggleFavourite(routeArgs['uuid'], value.favourite)
+          );
+        },
+      )
     );
   }
 }

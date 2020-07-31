@@ -31,10 +31,13 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
     controller.dispose();
   }
 
-  void selectMeal(context, String uuid) {
+  void selectMeal(context, String title, String uuid) {
     Navigator.of(context).pushNamed(
       RecipeDetailScreen.routeName,
-      arguments: uuid
+      arguments: {
+        'uuid': uuid,
+        'title': title,
+      },
     );
   }
 
@@ -82,7 +85,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
                 if(index == value.showRecipeItem.length) 
                   return CircularProgressIndicator();
                   return InkWell(
-                    onTap: () => selectMeal(context, value.showRecipeItem[index].uuid),
+                    onTap: () => selectMeal(context, value.showRecipeItem[index].title.toString(), value.showRecipeItem[index].uuid),
                     child: Card(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15)

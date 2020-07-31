@@ -12,19 +12,14 @@ class RecipeDetail with ChangeNotifier {
   Data data;
   int favourite;
 
-  List<RecipeFavouriteData> recipeFavourite = [];
   List<RecipeFavouriteData> displayRecipeFavourite = [];
-  List<RecipeFavouriteData> availableRecipe = [];
 
-  bool isRecipeFavorite(String recipeId) {
-    return recipeFavourite.any((recipe) => recipe.uuid == recipeId);
+  bool isRecipeFavorite(String recipeId, int f) {
+    return favourite == 1 ? true : false;
   }
-  void toggleFavourite(String recipeId) {
+  void toggleFavourite(String recipeId, int f) {
     if(favourite == 0) {
       updateToFavourite(recipeId, 1);
-      recipeFavourite.add(
-        availableRecipe.firstWhere((recipe) => recipe.uuid == recipeId)
-      );
       favourite = 1;
       Fluttertoast.showToast(
         msg: 'Added to favourite.',
@@ -35,10 +30,7 @@ class RecipeDetail with ChangeNotifier {
       notifyListeners();
     } else {
       updateToFavourite(recipeId, 0);
-      final existingIndex = recipeFavourite.indexWhere((recipe) => recipe.uuid == recipeId);
-      if(existingIndex >= 0) {
-        recipeFavourite.removeAt(existingIndex);
-      }
+      displayRecipeFavourite = [];
       favourite = 0;
       Fluttertoast.showToast(
         msg: 'Removed to favourite.',
@@ -57,7 +49,22 @@ class RecipeDetail with ChangeNotifier {
     try {
       http.Response response = await http.get(url);
       RecipeFavouriteModel model = RecipeFavouriteModel.fromJson(json.decode(response.body));
-      displayRecipeFavourite = model.data;
+      List<RecipeFavouriteData> tempDisplayRecipeFavourite = [];
+      model.data.forEach((item) {
+        tempDisplayRecipeFavourite.add(
+          RecipeFavouriteData(
+            id: item.id,
+            uuid: item.uuid,
+            title: item.title,
+            imageUrl: item.imageUrl,
+            affordability: item.affordability,
+            complexity: item.complexity,
+            duration: item.duration,
+            isfavourite: item.isfavourite
+          )
+        );
+      });
+      displayRecipeFavourite = tempDisplayRecipeFavourite;
       notifyListeners();
     } catch(error) {
       print(error); // in-development
@@ -82,16 +89,12 @@ class RecipeDetail with ChangeNotifier {
       http.Response response = await http.get(url);
       RecipeDetailModel model = RecipeDetailModel.fromJson(json.decode(response.body));
       data = model.data;
-      favourite = data.recipes.first.isfavourite;
-      data.recipes.forEach((item) {
-        availableRecipe.add(
-          RecipeFavouriteData(
-            uuid: item.uuid,
-            title: item.title,
-            isfavourite: item.isfavourite
-          )
-        );
-      });
+      favourite = model.data.recipes.first.isfavourite;
+      // tests.add({
+      //   "i":  model.data.recipes.first.uuid,
+      //   "f": favourite 
+      // });   
+
       notifyListeners();
     } catch(error) {
       print(error); // in-development

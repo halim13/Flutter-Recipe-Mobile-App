@@ -1,17 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import './recipe.detail.dart';
 import '../providers/recipe.detail.dart';
 import '../widgets/recipe.item.dart';
 
 class FavoritesScreen extends StatelessWidget {
-
-  void selectMeal(BuildContext context, String uuid) {
-    Navigator.of(context).pushNamed(
-      RecipeDetailScreen.routeName,
-      arguments: uuid,
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +27,7 @@ class FavoritesScreen extends StatelessWidget {
           child: RefreshIndicator(
             onRefresh: () => provider.refreshRecipeFavourite(),
             child: ListView(
-              children: <Widget>[
+              children: [
                 Container(
                   height: MediaQuery.of(context).size.height * 0.75,
                   child: Column( 
@@ -59,6 +51,7 @@ class FavoritesScreen extends StatelessWidget {
               itemCount: value.displayRecipeFavourite.length,
                 itemBuilder: (context, index) {
                   return RecipeItem(
+                    id: value.displayRecipeFavourite[index].id,
                     uuid: value.displayRecipeFavourite[index].uuid,
                     title: value.displayRecipeFavourite[index].title,
                     imageUrl: value.displayRecipeFavourite[index].imageUrl,

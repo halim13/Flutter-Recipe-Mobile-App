@@ -3,6 +3,7 @@ import '../constants/url.dart';
 import '../screens/recipe.detail.dart';
 
 class RecipeItem extends StatelessWidget {
+  final int id;
   final String uuid;
   final String title;
   final String imageUrl;
@@ -11,6 +12,7 @@ class RecipeItem extends StatelessWidget {
   final String affordability;
 
   RecipeItem({
+    this.id,
     this.uuid,
     this.title,
     this.imageUrl,
@@ -22,7 +24,10 @@ class RecipeItem extends StatelessWidget {
   void selectRecipe(context) {
     Navigator.of(context).pushNamed(
       RecipeDetailScreen.routeName,
-      arguments: uuid,
+      arguments: {
+        "uuid": uuid, 
+        "title": title
+      },
     );
   }  
 
@@ -88,7 +93,7 @@ class RecipeItem extends StatelessWidget {
                       SizedBox(
                         width: 6,
                       ),
-                      Text('${duration.toString()} min'),
+                      Text('$duration min'),
                     ],
                   ),
                   Row(
