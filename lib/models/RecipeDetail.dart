@@ -81,13 +81,30 @@ class IngredientDetailData with ChangeNotifier {
 class StepDetailData with ChangeNotifier {
   String uuid;
   String body;
-
+  List<StepsDetailImages> stepsImages;
   StepDetailData({
     this.uuid,
     this.body,
+    this.stepsImages
   });
 
   factory StepDetailData.fromJson(Map<String, dynamic> json) => StepDetailData(
+    uuid: json["uuid"] == null ? null : json["uuid"],
+    body: json["body"] == null ? null : json["body"],
+    stepsImages: json["stepsImages"] == null ? null : List<StepsDetailImages>.from(json["stepsImages"].map((x) => StepsDetailImages.fromJson(x)))
+  );
+}
+
+class StepsDetailImages {
+  String uuid;
+  String body;
+
+  StepsDetailImages({
+    this.uuid,
+    this.body
+  });
+
+  factory StepsDetailImages.fromJson(Map<String, dynamic> json) => StepsDetailImages(
     uuid: json["uuid"] == null ? null : json["uuid"],
     body: json["body"] == null ? null : json["body"],
   );

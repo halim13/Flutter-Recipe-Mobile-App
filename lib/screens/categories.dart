@@ -4,6 +4,7 @@ import '../providers/categories.dart';
 import 'category.recipe.dart';
 
 class CategoriesScreen extends StatelessWidget {
+  static const routeName = '/categories';
   void selectCategory(BuildContext context, String uuid, String title) {
     Navigator.of(context).pushNamed(
       CategoryMealsScreen.routeName,

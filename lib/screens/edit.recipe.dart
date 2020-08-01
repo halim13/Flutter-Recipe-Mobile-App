@@ -3,12 +3,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
-import '../screens/categories.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import '../constants/url.dart';
 import '../providers/recipe.dart';
-import './recipe.detail.dart';
+import '../screens/tabs.dart';
 
 class EditRecipeScreen extends StatefulWidget {
   static const routeName = '/edit-recipe-screen';
@@ -115,7 +114,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
       );
       Scaffold.of(context).showSnackBar(snackbar);
       timer = Timer(const Duration(seconds: 3), () {
-        Navigator.pop(context, true);
+        Navigator.of(context).popUntil((route) => route.isFirst);
       });
     } on Exception catch(error) {
       final errorSplit = error.toString();
@@ -135,37 +134,32 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
     }
   }
   
-  Future<bool> onWillPop() async {
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: Text('Batal mengubah?', style: TextStyle(color: Colors.black)),
-        content: Text('Data akan hilang apabila Anda keluar'),
-        actions: [
-          FlatButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text('Tidak'),
-          ),
-          FlatButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text('Ya'),
-          ),
-        ],
-      ),
-    );
-    return true;
-  }
+  // onWillPop() {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) => AlertDialog(
+  //       title: Text('Batal Edit?', style: TextStyle(color: Colors.black)),
+  //       content: Text('Data akan hilang apabila Anda keluar'),
+  //       actions: [
+  //         FlatButton(
+  //           onPressed: () => Navigator.pop(context, false),
+  //           child: Text('Tidak'),
+  //         ),
+  //         FlatButton(
+  //           onPressed: () => Navigator.pop(context, true),
+  //           child: Text('Ya'),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  @override
-  void dispose() {
-    super.dispose();
-  } 
   Widget build(BuildContext context) {
     final recipeId = ModalRoute.of(context).settings.arguments;
     final recipe = Provider.of<Recipe>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit'),
+        title: Text('Ubah Resep'),
       ),
       body: FutureBuilder(
         future: Provider.of<Recipe>(context, listen: false).edit(recipeId),
@@ -255,8 +249,8 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                           showSelectedItem: true,
                           items: value.categoriesDisplay,
                           label: "Pilih Kategori",
-                          onChanged: (value) {
-                            
+                          onChanged: (v) {
+                            value.categoryName = v;
                           },
                           selectedItem: value.categoryName
                         ),
@@ -349,7 +343,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                     builder: (context) => 
                       RaisedButton(
                       child: Text(
-                        'Ubah Resep',
+                        'Simpan Perubahan',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 14.0

@@ -16,8 +16,6 @@ class Recipe extends ChangeNotifier {
   Data data;
   String path;
   FocusNode titleFocusNode = FocusNode();
-  FocusNode ingredientsNode = FocusNode(); 
-  FocusNode stepsNode = FocusNode();
   List<String> categoriesDisplay = [];
   String categoryName;
   final TextEditingController titleController = TextEditingController();
@@ -145,17 +143,13 @@ class Recipe extends ChangeNotifier {
       final List<Steps> initialSteps = [];
       final List<Map<String, Object>> initialValueSteps = [];
       final List<Map<String, Object>> initialControllerSteps = [];
-      List<Ingredients> initialIngredients = [];
+      final List<Ingredients> initialIngredients = [];
       final List<Map<String, Object>> initialValueIngredients = [];
       final List<Map<String, Object>> initialControllerIngredients = []; 
       getIngredients.forEach((item) {
         initialFocusIngredientsNode.add({
           "uuid": item.uuid,
-          "item": ingredientsNode
-        });
-        initialFocusStepsNode.add({
-          "uuid": item.uuid,
-          "item": stepsNode
+          "item": FocusNode()
         });
         initialIngredients.add(Ingredients(
           uuid: item.uuid
@@ -198,7 +192,7 @@ class Recipe extends ChangeNotifier {
         });
         initialFocusStepsNode.add({
           "uuid": item.uuid,
-          "item": FocusNode(canRequestFocus: true)
+          "item": FocusNode()
         });
         initialControllerSteps.add({
           "uuid": item.uuid,

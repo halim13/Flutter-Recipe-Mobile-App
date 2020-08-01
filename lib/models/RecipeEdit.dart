@@ -110,14 +110,12 @@ class Steps {
   int id;
   String uuid;
   String body;
-  int test;
   List<StepsImages> images;
 
   Steps({
     this.id,
     this.uuid,
     this.body,
-    this.test,
     this.images
   });
 
@@ -125,7 +123,6 @@ class Steps {
     id: json["id"] == null ? null : json["id"],
     uuid: json["uuid"] == null ? null : json["uuid"],
     body: json["body"] == null ? null : json["body"],
-    test:  json["test"] == null ? null : json["test"],
     images: json["stepsImages"] == null ? null : List<StepsImages>.from(json["stepsImages"].map((x) => StepsImages.fromJson(x)))
   );
 }
