@@ -14,14 +14,17 @@ import '../models/RecipeEdit.dart';
 
 class Recipe extends ChangeNotifier {
   Data data;
-  String path;
-  FocusNode titleFocusNode = FocusNode();
-  List<String> categoriesDisplay = [];
   String categoryName;
+  String path;
+  ScrollController ingredientsScrollController = ScrollController();
+  FocusNode titleFocusNode = FocusNode();
+ 
+
   final TextEditingController titleController = TextEditingController();
   final GlobalKey<FormState> formTitleKey = GlobalKey();
   final GlobalKey<FormState> formIngredientsKey = GlobalKey();
   final GlobalKey<FormState> formStepsKey = GlobalKey();
+  List<String> categoriesDisplay = [];
   List<Map<String, Object>> focusIngredientsNode = [];
   List<Map<String, Object>> focusStepsNode = [];
   List<Map<String, Object>> controllerIngredients = [];
@@ -61,6 +64,13 @@ class Recipe extends ChangeNotifier {
     ingredients.add(Ingredients(
       uuid: uuid4
     ));
+    Future.delayed(Duration(milliseconds: 300), () {
+      ingredientsScrollController.animateTo(
+        ingredientsScrollController.position.maxScrollExtent,
+        curve: Curves.easeOut,
+        duration: const Duration(milliseconds: 300),
+      );
+    });
     notifyListeners();
   }
   void incrementsSteps() {
@@ -79,15 +89,33 @@ class Recipe extends ChangeNotifier {
       images: [
         StepsImages(
           uuid: uuid.v4(),
-          body: Image.network('$imagesStepsUrl/default-image.png', fit: BoxFit.fitHeight)
+          body: CachedNetworkImage(
+            width: 100.0,
+            height: 100.0,
+            imageUrl: '$imagesStepsUrl/default-image.png',
+            placeholder: (context, url) => const CircularProgressIndicator(),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+          )
         ),
         StepsImages(
           uuid: uuid.v4(),
-          body: Image.network('$imagesStepsUrl/default-image.png', fit: BoxFit.fitHeight)
+          body: CachedNetworkImage(
+            width: 100.0,
+            height: 100.0,
+            imageUrl: '$imagesStepsUrl/default-image.png',
+            placeholder: (context, url) => const CircularProgressIndicator(),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+          )
         ),
         StepsImages(
           uuid: uuid.v4(),
-          body: Image.network('$imagesStepsUrl/default-image.png', fit: BoxFit.fitHeight)
+          body: CachedNetworkImage(
+            width: 100.0,
+            height: 100.0,
+            imageUrl: '$imagesStepsUrl/default-image.png',
+            placeholder: (context, url) => const CircularProgressIndicator(),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+          )
         )
       ]
     ));

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/screens/preview.image.dart';
+import 'package:quartet/quartet.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../screens/preview.image.dart';
 import '../constants/url.dart';
 import '../providers/recipe.detail.dart';
 import './edit.recipe.dart';
@@ -53,7 +54,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
     final provider = Provider.of<RecipeDetail>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: Text(routeArgs['title']),
+        title: Text(titleCase(routeArgs['title'])),
         actions: [
           IconButton(
             icon: Icon(

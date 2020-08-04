@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quartet/quartet.dart';
 import '../helpers/highlight.occurences.dart';
 import '../providers/recipe.show.dart';
 import '../constants/url.dart';
@@ -48,7 +49,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
     String mealId = routeArgs['uuid'];
     return Scaffold(
       appBar: AppBar(
-        title: Text(categoryTitle),
+        title: Text(titleCase(categoryTitle)),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.search),
@@ -73,7 +74,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
           }
           return Consumer<RecipeShow>(
             child: Center(
-              child: const Text('You have no meals yet, start adding some!'),
+              child: const Text('Belum ada Resep Nih, Coba Buat Resep!'),
             ),
             builder: (context, value, ch) => value.showRecipeItem.length <= 0 ? ch :
             RefreshIndicator(
