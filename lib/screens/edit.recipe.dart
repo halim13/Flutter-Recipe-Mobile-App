@@ -17,6 +17,40 @@ class EditRecipeScreen extends StatefulWidget {
 class _EditRecipeScreenState extends State<EditRecipeScreen> {
   Timer timer;
 
+  void changeImage() async {
+    final imageSource = await showDialog<ImageSource>(context: context, builder: (context) => 
+      AlertDialog(
+        title: Text("Pilih sumber gambar",
+        style: TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold, 
+        ),
+      ),
+      actions: [
+        MaterialButton(
+          child: Text(
+            "Camera",
+            style: TextStyle(
+              color: Colors.blueAccent
+            )
+          ),
+          onPressed: () => Navigator.pop(context, ImageSource.camera),
+        ),
+        MaterialButton(
+          child: Text(
+            "Gallery",
+            style: TextStyle(color: Colors.blueAccent),
+          ),
+          onPressed: () => Navigator.pop(context, ImageSource.gallery),
+        )
+      ],
+      )
+    );
+    if(imageSource != null) {
+      // PickedFile pickedFile = await ImagePicker().getImage(source: imageSource);
+    }
+  }
+
   void pickImage(int i, int z) async {
     final imageSource = await showDialog<ImageSource>(context: context, builder: (context) => 
       AlertDialog(
@@ -44,7 +78,8 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
           onPressed: () => Navigator.pop(context, ImageSource.gallery),
         )
       ],
-    ));
+      )
+    );
     if(imageSource != null) {
       final recipe = Provider.of<Recipe>(context, listen: false);
       PickedFile pickedFile = await ImagePicker().getImage(source: imageSource);
@@ -196,7 +231,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                         child: IconButton(
                           color: Colors.brown[300],
                           icon: Icon(Icons.camera_alt), 
-                          onPressed: null
+                          onPressed: changeImage
                         )
                       )
                     ]
@@ -298,7 +333,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                               fontSize: 14.0
                             ),  
                           ),
-                          onPressed: () => recipe.incrementsIngredients()
+                          onPressed: () => recipe.incrementsIngredients(context)
                         );
                       }
                     ),

@@ -21,14 +21,6 @@ class Categories with ChangeNotifier {
       http.Response response = await http.get(url);
       CategoryModel model = CategoryModel.fromJson(json.decode(response.body));
       List<CategoryData> loadedCategories = model.data; 
-      // loadedCategories.forEach((category) {
-      //   dropdownCategoriesMenuItems.add(
-      //     DropdownMenuItem(
-      //       value: category,
-      //       child: Text(category.title),
-      //     )
-      //   );
-      // });
       categories = loadedCategories;
       notifyListeners();
     } catch(error) {

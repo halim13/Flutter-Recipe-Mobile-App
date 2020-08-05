@@ -18,7 +18,7 @@ class Recipe extends ChangeNotifier {
   String path;
   ScrollController ingredientsScrollController = ScrollController();
   FocusNode titleFocusNode = FocusNode();
- 
+  FocusNode ingredientsFocusNode = FocusNode();
 
   final TextEditingController titleController = TextEditingController();
   final GlobalKey<FormState> formTitleKey = GlobalKey();
@@ -50,7 +50,7 @@ class Recipe extends ChangeNotifier {
     }
   }
 
-  void incrementsIngredients() {
+  void incrementsIngredients(context) {
     Uuid uuid = new Uuid();
     String uuid4 = uuid.v4();
     controllerIngredients.add({
@@ -63,18 +63,23 @@ class Recipe extends ChangeNotifier {
     });
     ingredients.add(Ingredients(
       uuid: uuid4
-    ));
-    Future.delayed(Duration(milliseconds: 300), () {
-      ingredientsScrollController.animateTo(
-        ingredientsScrollController.position.maxScrollExtent,
-        curve: Curves.easeOut,
-        duration: const Duration(milliseconds: 300),
-      );
-    });
-    notifyListeners();
-  }
+    ));  
+    FocusNode nextNode = focusIngredientsNode[focusIngredientsNode.length-1]["item"];
+    nextNode.requestFocus();
+    // ingredientsFocusNode.requestFocus();
+    // ingredientsFocusNode.unfocus();
+    
+  Future.delayed(Duration(milliseconds: 300), () {
+    ingredientsScrollController.animateTo(
+      ingredientsScrollController.position.maxScrollExtent,
+      curve: Curves.easeOut,
+      duration: const Duration(milliseconds: 300),
+    );
+  });
+  notifyListeners();
+}
   void incrementsSteps() {
-    Uuid uuid = new Uuid();
+    Uuid uuid = Uuid();
     String uuid4 = uuid.v4(); 
     controllerSteps.add({
       "uuid": uuid4,
@@ -82,7 +87,7 @@ class Recipe extends ChangeNotifier {
     });
     focusStepsNode.add({
       "uuid": uuid4,
-      "item": FocusNode(canRequestFocus: true)
+      "item": FocusNode()
     });
     steps.add(Steps(
       uuid: uuid4,
@@ -125,10 +130,14 @@ class Recipe extends ChangeNotifier {
     valueIngredientsRemove.add({
       "uuid": i
     });    
+    final existingIngredientsFocusNode = focusIngredientsNode.indexWhere((element) => element['uuid'] == i);
     final existingIngredients = ingredients.indexWhere((element) => element.uuid == i);
     final existingListIngredients = controllerIngredients.indexWhere((element) => element["uuid"] == i);
     if(existingIngredients >= 0) {
       ingredients.removeAt(existingIngredients);
+    }
+    if(existingIngredientsFocusNode >= 0) {
+      focusIngredientsNode.removeAt(existingIngredientsFocusNode);
     }
     if(existingListIngredients >= 0) {
       controllerIngredients.removeAt(existingListIngredients);
@@ -177,7 +186,7 @@ class Recipe extends ChangeNotifier {
       getIngredients.forEach((item) {
         initialFocusIngredientsNode.add({
           "uuid": item.uuid,
-          "item": FocusNode()
+          "item": FocusNode(canRequestFocus: true)
         });
         initialIngredients.add(Ingredients(
           uuid: item.uuid
@@ -194,7 +203,7 @@ class Recipe extends ChangeNotifier {
       });
       getSteps.asMap().forEach((i, item) {   
         List<StepsImages> initialStepsImages = [];
-        Uuid uuid = new Uuid();
+        Uuid uuid = Uuid();
         for (int j = 0; j < 3; j++) {
           final checkUuid = getSteps[i].images.asMap().containsKey(j) ? getSteps[i].images[j].uuid : uuid.v4();
           final checkImage = getSteps[i].images.asMap().containsKey(j) ? '$imagesStepsUrl/${getSteps[i].images[j].body}' : '$imagesStepsUrl/default-image.png'; 
