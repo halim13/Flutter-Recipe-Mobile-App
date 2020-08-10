@@ -1,12 +1,12 @@
-// import 'dart:collection'; Dipakai jika menggunakan linkedhash
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
+import '../widgets/text.form.ingredients.add.dart';
+import '../widgets/text.form.steps.add.dart';
+import '../providers/recipe.add.dart';
 import '../models/Category.dart';
-import '../providers/recipe.dart';
 
 class AddRecipeScreen extends StatefulWidget {
   static const routeName = '/add-recipe';
@@ -90,7 +90,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
       }
     }
   }
-  void save() async {
+  void save(BuildContext context) async {
     formIngredientsKey.currentState.save();
     formStepsKey.currentState.save();
     formTitleKey.currentState.save();
@@ -102,7 +102,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
     final ingredients = jsonEncode(uniqueIngredients); // Agar bisa di parse di backend 
    try {
       setState(() => loading = true);
-      await Provider.of<Recipe>(context, listen: false).store(title, ingredients, steps, selectedCategory.uuid, _file);
+      await Provider.of<RecipeAdd>(context, listen: false).store(title, ingredients, steps, selectedCategory.uuid, _file);
       setState(() => loading = false);
     } catch(error) {
       setState(() => loading = false);
@@ -141,7 +141,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Recipe'),
+        title: Text('Buat Resep'),
       ),
       body: ListView(
         children: [
@@ -165,184 +165,152 @@ class _AddRecipeState extends State<AddRecipeScreen> {
               )
             ]
           ),
-          Form(
-            key: formTitleKey,
-            child: Container(
-              width: double.infinity,
-              margin: EdgeInsets.all(10),
-              padding: EdgeInsets.all(10),
-              child: TextFormField(
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                  hintText: 'Title',
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ) 
+          Container(
+            margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
+            child: Text(
+              'Kamu ingin buat masakan apa ?',
+              style: TextStyle(
+                fontSize: 15.0
+              ),
+            ),
+          ),
+          Consumer<RecipeAdd>(
+            builder: (context, value, child) { 
+              return Form(
+                key: value.formTitleKey,
+                child: Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.only(left: 18.0, right: 18.0),
+                  child: TextFormField(
+                    focusNode: value.titleFocusNode,
+                    controller: value.titleController,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ) 
+                    ),
+                    onSaved: (val) {
+                      value.titleController.text = val;
+                    },
+                  )
                 ),
-                onSaved: (value) {
-                  setState(() => title = value);
-                },
-              )
+              );
+            }
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
+            child: Text(
+              'Apa saja bahan - bahan nya ?',
+              style: TextStyle(
+                fontSize: 15.0
+              ),
             ),
           ),
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(6.0),
             ),
+            margin: EdgeInsets.all(18.0),
+            padding: EdgeInsets.all(18.0),
+            width: double.infinity,
+            child: textFormIngredientsAdd()
+          ),
+          // Container(
+          //   margin: EdgeInsets.only(left: 10.0, right: 10.0),
+          //   padding: EdgeInsets.all(10.0),
+          //   width: double.infinity,
+          //   child: RaisedButton(
+          //     elevation: 0.0,
+          //     color: Colors.brown[300],
+          //     child: Text(
+          //       'Tambah bahan',
+          //       style: TextStyle(
+          //         color: Colors.white,
+          //         fontSize: 14.0
+          //       ),
+          //     ),
+          //     onPressed: incrementIngredients
+          //   ),
+          // ),
+          Container(
+            margin: EdgeInsets.only(left: 10.0, right: 10.0),
+            padding: EdgeInsets.all(10.0),
+            width: double.infinity,
+            child: Consumer<RecipeAdd>(
+              builder: (context, value, child) {
+                return RaisedButton(
+                  elevation: 0.0,
+                  color: Colors.brown[300],
+                  child: Text(
+                    'Tambah grup',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14.0
+                    ),
+                  ),
+                  onPressed: () => value.incrementIngredientPerGroup()
+                );
+              },
+            ),
+          ),
+          Container(
             margin: EdgeInsets.all(10),
             padding: EdgeInsets.all(10),
-            height: 150,
             width: double.infinity,
-            child: textFormIngredients()
+            child: textFormStepsAdd()
           ),
           Container(
             margin: EdgeInsets.all(10),
             padding: EdgeInsets.all(10),
             width: double.infinity,
             child: RaisedButton(
-              child: Text('Add ingredients'),
-              onPressed: incrementIngredients
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            margin: EdgeInsets.all(10),
-            padding: EdgeInsets.all(10),
-            height: 150,
-            width: double.infinity,
-            child: textFormSteps()
-          ),
-          Container(
-            margin: EdgeInsets.all(10),
-            padding: EdgeInsets.all(10),
-            width: double.infinity,
-            child: RaisedButton(
-              child: Text('Add Steps'),
+              elevation: 0.0,
+              color: Colors.brown[300],
+              child: Text('Tambah langkah', 
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14.0
+                ),  
+              ),
               onPressed: incrementSteps
             ),
           ),
           Container(
-            width: double.infinity,
             margin: EdgeInsets.all(10),
             padding: EdgeInsets.all(10),
-            child: DropdownButton<CategoryData>(
-              value: selectedCategory,
-              elevation: 16,
-              underline: Container(
-                height: 1,
-                color: Colors.grey,
-              ),
-              onChanged: (CategoryData value) {
-                setState(() => selectedCategory = value);
+            width: double.infinity,
+            child: Consumer<RecipeAdd>(
+              builder: (context, value, child) {
+                return RaisedButton(
+                child: value.isLoading ? SizedBox(
+                    height: 20.0,
+                    width: 20.0,
+                    child: CircularProgressIndicator()
+                  ) : Text('Simpan perubahan', 
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14.0
+                    ),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    side: BorderSide(color: Colors.white)
+                  ),
+                  elevation: 0.0,
+                  color: Colors.blue[300],
+                  onPressed: () => save(context),
+                );
               },
-              items: dropdownMenuItems,
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.all(10),
-            padding: EdgeInsets.all(10),
-            width: double.infinity,
-            child: RaisedButton(
-              child: Text('Save'),
-              onPressed: save,
             ),
           )
         ]
       ),
     );
   }
-
-  Widget textFormIngredients() {
-    int itemStart = 1;
-    return SingleChildScrollView(
-      child: Form(
-        key: formIngredientsKey,
-        child: Column( 
-          children: List.generate(startIngredients, (i) {
-            return Column(  
-              children: [
-                TextFormField(
-                  controller: listIngredientsController[i],
-                  decoration: InputDecoration(
-                    hintText: "Item ${itemStart++}",
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ) 
-                  ),
-                  onSaved: (value) {    
-                    valueIngredientsController.add({
-                      "id": i,
-                      "item": value
-                    }); 
-                  },
-                ),
-                i > 0 
-                ? 
-                  RaisedButton(
-                    child: Text('Remove'),
-                    onPressed: () => decrementIngredients(i)
-                  )
-                : Container()
-              ]
-            );
-          })
-        ),
-      )
-    );
-  }
-  Widget textFormSteps() {
-    int itemStart = 1;
-    return SingleChildScrollView(
-      child: Form(
-        key: formStepsKey,
-        child: Column( 
-          children: List.generate(startSteps, (i) {
-            return Column(  
-              children: [
-                TextFormField(
-                  controller: listStepsController[i],
-                  decoration: InputDecoration(
-                    hintText: "Step ${itemStart++}",
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ) 
-                  ),
-                  onSaved: (value) {    
-                    valueStepsController.add({
-                      "id": i,
-                      "item": value
-                    }); 
-                  },
-                ),
-                i > 0 
-                ? 
-                  RaisedButton(
-                    child: Text('Remove'),
-                    onPressed: () => decrementSteps(i)
-                  )
-                : Container()
-              ]
-            );
-          })
-        ),
-      )
-    );
-  }
-
-
 }

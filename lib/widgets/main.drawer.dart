@@ -67,7 +67,7 @@ class MainDrawer extends StatelessWidget {
           Consumer<Auth>(
             builder: (context, auth, child) {
               if(auth.isAuth) {
-                return buildListTile('Add Recipe', Icons.restaurant_menu, () {
+                return buildListTile('Buat Resep', Icons.restaurant_menu, () {
                   Navigator.of(context).pushNamed(AddRecipeScreen.routeName);
                 });
               } else {
@@ -82,7 +82,7 @@ class MainDrawer extends StatelessWidget {
           buildListTile('Meals', Icons.restaurant, () {
             Navigator.of(context).pushReplacementNamed('/');
           }),
-          buildListTile('Filters', Icons.settings, () {
+          buildListTile('Filter', Icons.settings, () {
             Navigator.of(context).pushReplacementNamed(FiltersScreen.routeName);
           }),
         ],

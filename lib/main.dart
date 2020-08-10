@@ -5,7 +5,8 @@ import './providers/categories.dart';
 import './providers/recipe.show.dart';
 import './providers/recipe.detail.dart';
 import './providers/user.dart';
-import './providers/recipe.dart';
+import './providers/recipe.edit.dart';
+import './providers/recipe.add.dart';
 import './colors/colors.dart';
 import './screens/tabs.dart';
 import './screens/categories.dart';
@@ -15,6 +16,7 @@ import './screens/login.dart';
 import './screens/register.dart';
 import './screens/add.recipe.dart';
 import './screens/edit.recipe.dart';
+
 
 void main() => runApp(MyApp());
 
@@ -38,7 +40,10 @@ class _MyAppState extends State<MyApp> {
           value: Categories(),
         ),
         ChangeNotifierProvider.value(
-          value: Recipe(),
+          value: RecipeEdit(),
+        ),
+        ChangeNotifierProvider.value(
+          value: RecipeAdd(),
         ),
         ChangeNotifierProvider.value(
           value: RecipeShow(),

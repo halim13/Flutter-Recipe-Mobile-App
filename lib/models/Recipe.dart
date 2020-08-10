@@ -1,17 +1,17 @@
-class RecipeEditModel {
+class RecipeModel {
   int status;
   bool error;
   String message;
   Data data;
 
-  RecipeEditModel({
+  RecipeModel({
     this.status,
     this.error,
     this.message,
     this.data,
   });
 
-  factory RecipeEditModel.fromJson(Map<String, dynamic> json) => RecipeEditModel(
+  factory RecipeModel.fromJson(Map<String, dynamic> json) => RecipeModel(
     status: json["status"] == null ? null : json["status"],
     error: json["error"] == null ? null : json["error"],
     message: json["message"] == null ? null : json["message"],
@@ -87,6 +87,27 @@ class CategoryList {
     cover: json["cover"] == null ? null : json["cover"]
   );
 }
+
+class IngredientsGroup {
+  int id;
+  String uuid;
+  dynamic body;
+  List<Ingredients> ingredients;
+
+  IngredientsGroup({
+    this.id,
+    this.uuid,
+    this.body,
+    this.ingredients
+  });
+
+  factory IngredientsGroup.fromJson(Map<String, dynamic> json) => IngredientsGroup(
+    id: json["id"] == null ? null : json["id"],
+    uuid: json["uuid"] == null ? null : json["uuid"],
+    body: json["body"] == null ? null : json["body"],
+    ingredients: List<Ingredients>.from(json["ingredients"].map((x) => Ingredients.fromJson(x))),
+  );
+ }
 
 class Ingredients {
   int id;
