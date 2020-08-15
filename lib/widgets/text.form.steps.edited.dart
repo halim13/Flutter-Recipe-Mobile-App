@@ -53,7 +53,7 @@ Widget textFormStepsEdited(BuildContext context) {
                 child: Column(  
                 children: [
                   TextFormField(
-                    maxLines: 2,
+                    maxLines: 3,
                     style: TextStyle(
                       fontSize: 15.0
                     ),
@@ -72,7 +72,7 @@ Widget textFormStepsEdited(BuildContext context) {
                             '${i + 1}.', 
                             style: TextStyle(
                               color: Colors.black,
-                              fontSize: 19.0,
+                              fontSize: 18.0,
                             )
                           )
                         ]
@@ -82,11 +82,7 @@ Widget textFormStepsEdited(BuildContext context) {
                           Icons.delete_outline,
                           color: i > 0 ? Colors.grey : Colors.white,
                         ),
-                        onPressed: () {
-                          if(i > 0) {
-                            recipe.decrementSteps(recipe.steps[i].uuid);
-                          }
-                        },
+                        onPressed: i > 0 ? () => recipe.decrementSteps(recipe.steps[i].uuid) : null             
                       ),
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.grey),
@@ -100,8 +96,7 @@ Widget textFormStepsEdited(BuildContext context) {
                     children: List.generate(recipe.steps[i].images.length, (z) =>
                       Expanded(
                         child: Container(
-                          margin: EdgeInsets.only(top: 10.0),
-                          height: 100.0,
+                          margin: EdgeInsets.only(top: 15.0),
                           child: InkWell( 
                             child: recipe.steps[i].images[z].body,                                                   
                             onTap: () => pickImage(i, z)

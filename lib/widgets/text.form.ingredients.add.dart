@@ -8,7 +8,6 @@ Widget textFormIngredientsAdd() {
       return SingleChildScrollView(
         controller: value.ingredientsScrollController,
         child: Form(
-          key: value.formIngredientsKey,
           child: ListView.builder(
             shrinkWrap: true,
             itemCount: value.ingredientsGroup.length,
@@ -30,8 +29,8 @@ Widget textFormIngredientsAdd() {
                             style: TextStyle(
                               fontSize: 15.0
                             ),
-                            focusNode: value.focusIngredientPerGroupNode[i]["item"],
-                            controller: value.controllerIngredientPerGroup[i]["item"],
+                            focusNode: value.ingredientsGroup[i].focusNode,
+                            controller: value.ingredientsGroup[i].textEditingController,
                             decoration: InputDecoration(
                               border: InputBorder.none,   
                               hintStyle: TextStyle(
@@ -41,13 +40,10 @@ Widget textFormIngredientsAdd() {
                             ),
                           ),
                         ),
-                        RaisedButton(
-                          elevation: 0.0,
+                        IconButton(
                           color: Colors.brown[300],
-                          child: Text('Tambah bahan', style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14.0
-                            )
+                          icon: Icon(
+                            Icons.add_circle_outline,
                           ),
                           onPressed: () {
                             value.incrementIngredients(i);
@@ -77,8 +73,8 @@ Widget textFormIngredientsAdd() {
                             SizedBox(width: 15.0),
                             Flexible(
                               child: TextFormField(         
-                                focusNode: value.focusIngredientsNode[z]["item"],
-                                controller: value.controllerIngredients[z]["item"],
+                                focusNode: value.ingredientsGroup[i].ingredients[z].focusNode,
+                                controller: value.ingredientsGroup[i].ingredients[z].textEditingController,
                                 decoration: InputDecoration(
                                   hintText: 'Mis: 1 kg sapi',
                                 ),

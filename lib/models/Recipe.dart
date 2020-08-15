@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 class RecipeModel {
   int status;
   bool error;
@@ -93,12 +95,16 @@ class IngredientsGroup {
   String uuid;
   dynamic body;
   List<Ingredients> ingredients;
+  FocusNode focusNode;
+  TextEditingController textEditingController;
 
   IngredientsGroup({
     this.id,
     this.uuid,
     this.body,
-    this.ingredients
+    this.ingredients,
+    this.focusNode,
+    this.textEditingController
   });
 
   factory IngredientsGroup.fromJson(Map<String, dynamic> json) => IngredientsGroup(
@@ -113,11 +119,15 @@ class Ingredients {
   int id;
   String uuid;
   String body;
+  FocusNode focusNode;
+  TextEditingController textEditingController;
 
   Ingredients({
     this.id,
     this.uuid,
     this.body,
+    this.focusNode,
+    this.textEditingController
   });
 
   factory Ingredients.fromJson(Map<String, dynamic> json) => Ingredients(
@@ -132,12 +142,16 @@ class Steps {
   String uuid;
   String body;
   List<StepsImages> images;
+  FocusNode focusNode;
+  TextEditingController textEditingController;
 
   Steps({
     this.id,
     this.uuid,
     this.body,
-    this.images
+    this.images,
+    this.focusNode,
+    this.textEditingController
   });
 
   factory Steps.fromJson(Map<String, dynamic> json) => Steps(
