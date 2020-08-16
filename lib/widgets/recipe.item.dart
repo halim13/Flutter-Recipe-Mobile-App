@@ -7,7 +7,7 @@ class RecipeItem extends StatelessWidget {
   final String uuid;
   final String title;
   final String imageUrl;
-  final int duration;
+  final String duration;
   final String complexity;
   final String affordability;
 

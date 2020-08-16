@@ -26,7 +26,7 @@ class RecipeFavouriteData with ChangeNotifier {
   int id;
   String uuid;
   String title;
-  int duration;
+  String duration;
   int isfavourite;
   String affordability;
   String complexity;
@@ -47,7 +47,7 @@ class RecipeFavouriteData with ChangeNotifier {
     id: json["id"] == null ? null : json["id"],
     uuid: json["uuid"] == null ? null : json["uuid"],
     title: json["title"] == null ? null : json["title"],
-    duration: json["duration"] == null ? 0 : json["duration"],
+    duration: json["duration"] == null ? null : json["duration"],
     isfavourite: json["isfavourite"] == null ? null : json["isfavourite"],
     affordability: json["affordability"] == null ? "" : json["affordability"],
     complexity: json["complexity"] == null ? "" : json["complexity"],

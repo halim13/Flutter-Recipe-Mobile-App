@@ -55,7 +55,7 @@ class FavoritesScreen extends StatelessWidget {
                     uuid: value.displayRecipeFavourite[index].uuid,
                     title: value.displayRecipeFavourite[index].title,
                     imageUrl: value.displayRecipeFavourite[index].imageUrl,
-                    duration: value.displayRecipeFavourite[index].duration,
+                    duration: value.displayRecipeFavourite[index].duration.toString(),
                     affordability: value.displayRecipeFavourite[index].affordability,
                     complexity: value.displayRecipeFavourite[index].complexity,
                   );

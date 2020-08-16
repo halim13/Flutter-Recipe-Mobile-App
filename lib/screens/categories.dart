@@ -63,16 +63,8 @@ class CategoriesScreen extends StatelessWidget {
                       ),
                     ),
                     decoration: BoxDecoration(
-                      // gradient: LinearGradient(
-                      //   colors: [
-                      //     hexToColor(value.items[index].color).withOpacity(0.7),
-                      //     hexToColor(value.items[index].color),
-                      //   ],
-                      //   begin: Alignment.topLeft,
-                      //   end: Alignment.bottomRight,
-                      // ),
                       image: DecorationImage(
-                        image: value.items[index].cover != "" ? NetworkImage(value.items[index].cover) : AssetImage('assets/default-thumbnail.jpg'),
+                        image: value.items[index].cover != null ? value.items[index].cover != "" ? NetworkImage(value.items[index].cover) : AssetImage('assets/default-thumbnail.jpg') : AssetImage('assets/default-thumbnail.jpg'),
                         fit: BoxFit.cover
                       ),
                       borderRadius: BorderRadius.circular(15.0),

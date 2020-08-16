@@ -115,7 +115,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
         if(value["status"] == 200) {
           SnackBar snackbar = SnackBar(
             backgroundColor: Colors.green[300],
-            content: Text('Berhasil Mengubah Resep.'),
+            content: Text('Berhasil Menambah Resep.'),
             action: SnackBarAction(
               label: 'Tutup',
               textColor: Colors.yellow[300],
