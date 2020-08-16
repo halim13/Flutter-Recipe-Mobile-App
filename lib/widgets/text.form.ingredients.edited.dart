@@ -6,45 +6,93 @@ Widget textFormIngredientsEdit(BuildContext context) {
   return Consumer<RecipeEdit>(
     builder: (context, value, child) {
       return SingleChildScrollView(
-          controller: value.ingredientsScrollController,
+        controller: value.ingredientsScrollController,
           child: Form(
-          key: value.formIngredientsKey,
           child: ListView.builder( 
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: value.ingredients.length,
+            itemCount: value.ingredientsGroup.length,
             itemBuilder: (context, i) {
-              return TextFormField(
-                style: TextStyle(
-                  fontSize: 15.0
-                ),
-                  focusNode: value.focusIngredientsNode[i]["item"],
-                  controller: value.controllerIngredients[i]["item"],
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                    border: InputBorder.none,
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        Icons.delete_outline,
-                        color: i > 0 ? Colors.grey : Colors.transparent,
+              return Container(
+                child: Column(
+                  children: [
+                    Row(
+                      children: [ 
+                        IconButton(
+                          icon: Icon(
+                            Icons.more_vert,
+                            color: Colors.grey,
+                          ),
+                          onPressed: null,
+                        ),
+                        Flexible(
+                          child: TextFormField(
+                            style: TextStyle(
+                              fontSize: 15.0
+                            ),
+                              focusNode: value.ingredientsGroup[i].focusNode,
+                              controller: value.ingredientsGroup[i].textEditingController,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                
+                                hintStyle: TextStyle(
+                                  fontSize: 15.0
+                                ),
+                                hintText: "Mis: 1 kg sapi",
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            color: Colors.brown[300],
+                            icon: Icon(
+                              Icons.add_circle_outline,
+                            ),
+                            onPressed: () {
+                              value.incrementIngredients(i);
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.delete_outline,
+                              color: i > 0 ? Colors.grey : Colors.transparent,
+                            ),
+                            onPressed: () => i > 0 ? value.decrementIngredientsPerGroup(value.ingredientsGroup[i].uuid) : null
+                          ),
+                        ]
                       ),
-                      onPressed: () { 
-                        if(i > 0) {
-                          value.decrementIngredients(value.ingredients[i].uuid);
-                        }
-                      },
-                    ),
-                    prefixIcon: IconButton(
-                      icon: Icon(
-                        Icons.more_vert,
-                        color: Colors.grey,
-                      ),
-                      onPressed: null,
-                    ),
-                    hintStyle: TextStyle(
-                      fontSize: 15.0
-                    ),
-                    hintText: "Mis: 1 kg sapi",
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: value.ingredientsGroup[i].ingredients.length,
+                        itemBuilder: (context, z) {
+                          return Row(
+                            children: [
+                              SizedBox(width: 20.0),
+                              Text('${z + 1}.', style: TextStyle(
+                                fontSize: 18.0
+                                )
+                              ),
+                              SizedBox(width: 15.0),
+                              Flexible(
+                                child: TextFormField(         
+                                  focusNode: value.ingredientsGroup[i].ingredients[z].focusNode,
+                                  controller: value.ingredientsGroup[i].ingredients[z].textEditingController,
+                                  decoration: InputDecoration(
+                                    hintText: 'Mis: 1 kg sapi',
+                                  ),
+                                )
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.delete_outline,
+                                  color: z > 0 ? Colors.grey : Colors.transparent
+                                ),
+                                onPressed: () => z > 0 ? value.decrementIngredients(i, value.ingredientsGroup[i].ingredients[z].uuid) : null
+                              )
+                            ],
+                          );
+                        }, 
+                      )
+                    ]
                   ),
                 );
               },

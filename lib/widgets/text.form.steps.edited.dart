@@ -42,7 +42,6 @@ Widget textFormStepsEdited(BuildContext context) {
   return Consumer<RecipeEdit>(
     builder: (context, recipe, child) {
       return Form(
-        key: recipe.formStepsKey,
         child: ListView.builder(
             shrinkWrap: true,
             controller: recipe.stepsScrollController,
@@ -57,8 +56,8 @@ Widget textFormStepsEdited(BuildContext context) {
                     style: TextStyle(
                       fontSize: 15.0
                     ),
-                    focusNode: recipe.focusStepsNode[i]["item"],
-                    controller: recipe.controllerSteps[i]["item"],
+                    focusNode: recipe.steps[i].focusNode,
+                    controller: recipe.steps[i].textEditingController,
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                       border: InputBorder.none,

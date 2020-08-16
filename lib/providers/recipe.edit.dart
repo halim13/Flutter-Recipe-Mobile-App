@@ -17,30 +17,22 @@ class RecipeEdit extends ChangeNotifier {
   String categoryName;
   String getFileImageRecipe;
   String filenameImageRecipe;
-  bool isLoadingEdited = false;
+  bool isLoading = false;
+  int duration;
   ScrollController ingredientsScrollController = ScrollController();
   ScrollController stepsScrollController = ScrollController();
   FocusNode titleFocusNode = FocusNode();
-  FocusNode ingredientsFocusNode = FocusNode();
 
   TextEditingController titleController = TextEditingController();
-  GlobalKey<FormState> formTitleKey = GlobalKey();
-  GlobalKey<FormState> formIngredientsKey = GlobalKey();
-  GlobalKey<FormState> formStepsKey = GlobalKey();
   List<String> categoriesDisplay = [];
-  List<Map<String, Object>> focusIngredientsNode = [];
-  List<Map<String, Object>> focusStepsNode = [];
-  List<Map<String, Object>> controllerIngredients = [];
-  List<Map<String, Object>> controllerSteps = [];
-  List<Map<String, Object>> valueIngredients = [];
+
   List<Map<String, Object>> valueSteps = [];
   List<Map<String, Object>> valueIngredientsRemove = []; 
   List<Map<String, Object>> valueStepsRemove = [];
 
   List<Recipes> get getRecipes => [...data.recipes];
-  List<Map<String, Object>> initialIngredients = [];
-  List<Ingredients> ingredients = [];
-  List<Ingredients> get getIngredients => [...data.ingredients];
+  List<IngredientsGroup> ingredientsGroup = [];
+  List<IngredientsGroup> get getIngredientsGroup => [...data.ingredientsGroup];
   List<Steps> steps = [];
   List<Map<String, Object>> initialSteps = [];
   List<Steps> get getSteps => [...data.steps];
@@ -59,56 +51,59 @@ class RecipeEdit extends ChangeNotifier {
       notifyListeners();
     }
   }
-  void incrementsIngredients() {
+  void incrementIngredientsPerGroup() {
     Uuid uuid = Uuid();
-    String uuid4 = uuid.v4();
-    controllerIngredients.add({
-      "uuid": uuid4,
-      "item": TextEditingController(text: "")
-    });
-    focusIngredientsNode.add({
-      "uuid": uuid4,
-      "item": FocusNode()
-    });
-    ingredients.add(Ingredients(
-      uuid: uuid4
+    String uuidv4IngredientPerGroup = uuid.v4();
+    String uuidv4Ingredients = uuid.v4();
+    ingredientsGroup.add(IngredientsGroup(
+      uuid: uuidv4IngredientPerGroup,
+      focusNode: FocusNode(),
+      textEditingController: TextEditingController(text: ""),
+      ingredients: [
+        Ingredients(
+          uuid: uuidv4Ingredients,
+          focusNode: FocusNode(),
+          textEditingController: TextEditingController(text: "")
+        )
+      ]
     ));  
-    FocusNode nextNode = focusIngredientsNode[focusIngredientsNode.length-1]["item"];
+    FocusNode nextNode = ingredientsGroup[ingredientsGroup.length-1].focusNode;
     nextNode.requestFocus();
-    
-    Future.delayed(Duration(milliseconds: 300), () {
-      ingredientsScrollController.animateTo(
-        ingredientsScrollController.position.maxScrollExtent,
-        curve: Curves.easeOut,
-        duration: const Duration(milliseconds: 300),
-      );
-    });
+    notifyListeners();
+  }
+  void decrementIngredientsPerGroup(String uuid) {
+    ingredientsGroup.removeWhere((item) => item.uuid == uuid);
+    notifyListeners();
+  }
+  void incrementIngredients(int i) {
+    Uuid uuid = Uuid();
+    String uuidv4 = uuid.v4();
+    ingredientsGroup[i].ingredients.add(
+      Ingredients(
+        uuid: uuidv4,
+        focusNode: FocusNode(),
+        textEditingController: TextEditingController(text: "")
+      )
+    );
+    FocusNode nextNode = ingredientsGroup[i].ingredients[ingredientsGroup[i].ingredients.length-1].focusNode;
+    nextNode.requestFocus();
+    notifyListeners();
+  }
+  void decrementIngredients(int i, String uuid) {
+    ingredientsGroup[i].ingredients.removeWhere((item) => item.uuid == uuid);
     notifyListeners();
   }
   void incrementsSteps() {
     Uuid uuid = Uuid();
     String uuid4 = uuid.v4(); 
-    controllerSteps.add({
-      "uuid": uuid4,
-      "item": TextEditingController(text: "")
-    });
-    focusStepsNode.add({
-      "uuid": uuid4,
-      "item": FocusNode()
-    });
 
-    FocusNode nextNode = focusStepsNode[focusStepsNode.length-1]["item"];
+    FocusNode nextNode = steps[steps.length-1].focusNode;
     nextNode.requestFocus();
 
-    Future.delayed(Duration(milliseconds: 300), () {
-      stepsScrollController.animateTo(
-        stepsScrollController.position.maxScrollExtent,
-        curve: Curves.easeOut,
-        duration: const Duration(milliseconds: 300),
-      );
-    });
     steps.add(Steps(
       uuid: uuid4,
+      focusNode: FocusNode(),
+      textEditingController: TextEditingController(text: ""),
       images: [
         StepsImages(
           uuid: uuid.v4(),
@@ -144,40 +139,11 @@ class RecipeEdit extends ChangeNotifier {
     ));
     notifyListeners();
   }
-  void decrementIngredients(String i) {
-    valueIngredientsRemove.add({
-      "uuid": i
-    });    
-    int existingIngredientsFocusNode = focusIngredientsNode.indexWhere((element) => element['uuid'] == i);
-    int existingIngredients = ingredients.indexWhere((element) => element.uuid == i);
-    int existingListIngredients = controllerIngredients.indexWhere((element) => element["uuid"] == i);
-    if(existingIngredients >= 0) {
-      ingredients.removeAt(existingIngredients);
-    }
-    if(existingIngredientsFocusNode >= 0) {
-      focusIngredientsNode.removeAt(existingIngredientsFocusNode);
-    }
-    if(existingListIngredients >= 0) {
-      controllerIngredients.removeAt(existingListIngredients);
-    }
-    notifyListeners();
-  }
-  void decrementSteps(String i) {
+  void decrementSteps(String uuid) {
    valueStepsRemove.add({
-      "uuid": i
+      "uuid": uuid
     });
-    int existingStepsFocusNode = focusStepsNode.indexWhere((element) => element["uuid"] == i);  
-    int existingSteps = steps.indexWhere((element) => element.uuid == i);
-    int existingListSteps = controllerSteps.indexWhere((element) => element["uuid"] == i);
-    if(existingStepsFocusNode >= 0) {
-      focusStepsNode.removeAt(existingStepsFocusNode);
-    }
-    if(existingSteps >= 0) {
-      steps.removeAt(existingSteps);
-    }
-    if(existingListSteps >= 0) {
-      controllerSteps.removeAt(existingListSteps);
-    }
+    steps.removeWhere((element) => element.uuid == uuid);
     notifyListeners();
   }
 
@@ -197,39 +163,26 @@ class RecipeEdit extends ChangeNotifier {
       });
       categoryName = data.recipes.first.categoryName;
       categoriesDisplay = tempCategoriesDisplay;
+      duration = data.recipes.first.duration;
       titleController.text = data.recipes.first.title;
-      List<Map<String, Object>> initialFocusIngredientsNode = [];
-      List<Map<String, Object>> initialFocusStepsNode = [];
       List<Steps> initialSteps = [];
       List<Map<String, Object>> initialValueSteps = [];
-      List<Map<String, Object>> initialControllerSteps = [];
-      List<Ingredients> initialIngredients = [];
-      List<Map<String, Object>> initialValueIngredients = [];
-      List<Map<String, Object>> initialControllerIngredients = []; 
-      getIngredients.forEach((item) {
-        initialFocusIngredientsNode.add({
-          "uuid": item.uuid,
-          "item": FocusNode(canRequestFocus: true)
-        });
-        initialIngredients.add(Ingredients(
-          uuid: item.uuid
-        ));
-        initialValueIngredients.add({
-          "uuid": item.uuid,
-          "uuidclone": item.uuid,
-          "body": item.body 
-        });
-        initialControllerIngredients.add({
-          "uuid": item.uuid,
-          "item": TextEditingController(text: item.body)
-        });
-      });
-      getSteps.asMap().forEach((i, item) {   
+      List<IngredientsGroup> initialIngredientsGroup = [];
+      for(int i = 0; i < getIngredientsGroup.length; i++) {
+        initialIngredientsGroup.add(IngredientsGroup(
+          uuid: getIngredientsGroup[i].uuid,
+          body: getIngredientsGroup[i].body,
+          focusNode: FocusNode(),
+          textEditingController: TextEditingController(text: getIngredientsGroup[i].body),
+          ingredients: getIngredientsGroup[i].ingredients
+        )); 
+      }
+      for(int k = 0; k < getSteps.length; k++) {
         List<StepsImages> initialStepsImages = [];
         Uuid uuid = Uuid();
         for (int j = 0; j < 3; j++) {
-          final checkUuid = getSteps[i].images.asMap().containsKey(j) ? getSteps[i].images[j].uuid : uuid.v4();
-          final checkImage = getSteps[i].images.asMap().containsKey(j) ? '$imagesStepsUrl/${getSteps[i].images[j].body}' : '$imagesStepsUrl/default-image.png'; 
+          final checkUuid = getSteps[k].images.asMap().containsKey(j) ? getSteps[k].images[j].uuid : uuid.v4();
+          final checkImage = getSteps[k].images.asMap().containsKey(j) ? '$imagesStepsUrl/${getSteps[k].images[j].body}' : '$imagesStepsUrl/default-image.png'; 
           initialStepsImages.add(StepsImages(
             uuid: checkUuid,
             body: CachedNetworkImage(
@@ -242,42 +195,31 @@ class RecipeEdit extends ChangeNotifier {
           ));
         }
         initialSteps.add(Steps(
-          uuid: item.uuid,
-          body: item.body,
+          uuid: getSteps[k].uuid,
+          body: getSteps[k].body,
+          focusNode: FocusNode(),
+          textEditingController: TextEditingController(text: getSteps[k].body),
           images: initialStepsImages
         ));
         initialValueSteps.add({
-          "uuid": item.uuid,
-          "body": item.body
+          "uuid": getSteps[k].uuid,
+          "body": getSteps[k].body
         });
-        initialFocusStepsNode.add({
-          "uuid": item.uuid,
-          "item": FocusNode()
-        });
-        initialControllerSteps.add({
-          "uuid": item.uuid,
-          "item": TextEditingController(text: item.body)
-        });
-      });
-      focusIngredientsNode = initialFocusIngredientsNode;
-      focusStepsNode = initialFocusStepsNode;
-      ingredients = initialIngredients;
+      }
+      ingredientsGroup = initialIngredientsGroup;
       steps = initialSteps;
-      valueIngredients = initialValueIngredients;
       valueSteps = initialValueSteps;
-      controllerIngredients = initialControllerIngredients;
-      controllerSteps = initialControllerSteps;
       notifyListeners();
     } catch(error) {
       print(error);
     }
   }
-  Future update(String title, String recipeId, String ingredients, String stepsP, String removeIngredients, String removeSteps, String categoryName) async {
+  Future update(String title, String recipeId, String stepsP, String removeSteps, String categoryName) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
     String userId = extractedUserData["userId"];
     String url = 'http://$baseurl:$port/api/v1/recipes/update/$recipeId'; 
-    isLoadingEdited = true;
+    isLoading = true;
     notifyListeners();
     try {
       http.MultipartRequest request = http.MultipartRequest('PUT', Uri.parse(url));
@@ -300,15 +242,15 @@ class RecipeEdit extends ChangeNotifier {
         request.files.add(multipartFile);
       }
       request.fields["title"] = title;
-      request.fields["ingredients"] = ingredients;
+      // request.fields["ingredients"] = ingredients;
       request.fields["steps"] = stepsP;
-      request.fields["removeIngredients"] = removeIngredients;
+      // request.fields["removeIngredients"] = removeIngredients;
       request.fields["removeSteps"] = removeSteps;
       request.fields["categoryName"] = categoryName;
       request.fields["userId"] = userId; 
       http.StreamedResponse response = await request.send();
       if(response.statusCode == 200) {
-        isLoadingEdited = false;
+        isLoading = false;
         notifyListeners();
       }
       String responseData = await response.stream.bytesToString();

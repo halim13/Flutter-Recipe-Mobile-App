@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quartet/quartet.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../helpers/highlight.occurences.dart';
 import '../providers/recipe.show.dart';
 import '../constants/url.dart';
@@ -46,7 +47,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
   Widget build(BuildContext context) {
     final routeArgs = ModalRoute.of(context).settings.arguments as Map<String, String>;
     String categoryTitle = routeArgs['title'];
-    String mealId = routeArgs['uuid'];
+    String recipeId = routeArgs['uuid'];
     return Scaffold(
       appBar: AppBar(
         title: Text(titleCase(categoryTitle)),
@@ -60,7 +61,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
         ],
       ),
       body: FutureBuilder(
-        future: Provider.of<RecipeShow>(context, listen: false).show(mealId),
+        future: Provider.of<RecipeShow>(context, listen: false).show(recipeId),
         builder: (context, snapshot) {
           if(snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -78,7 +79,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
             ),
             builder: (context, value, ch) => value.showRecipeItem.length <= 0 ? ch :
             RefreshIndicator(
-              onRefresh: () => value.refreshRecipe(mealId),
+              onRefresh: () => value.refreshRecipe(recipeId),
               child: ListView.builder(
               controller: controller,
               itemCount: value.showRecipeItem.length,
@@ -102,10 +103,22 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
                                   topLeft: Radius.circular(15),
                                   topRight: Radius.circular(15),
                                 ),
-                                child: Image.network('$imagesRecipesUrl/${value.showRecipeItem[index].imageurl}',
-                                  height: 250,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
+                                child: CachedNetworkImage(
+                                  imageUrl: '$imagesRecipesUrl/${value.showRecipeItem[index].imageurl}',
+                                  imageBuilder: (context, imageProvider) => Container(
+                                    width: double.infinity,
+                                    height: 250.0,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    )
+                                  ),
+                                  placeholder: (context, url) => Center(
+                                    child: CircularProgressIndicator()
+                                  ),
+                                  errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
                                 ),
                               ),
                               Positioned(

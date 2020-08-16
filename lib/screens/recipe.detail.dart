@@ -84,25 +84,37 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                 Container(
                   height: 300,
                   width: double.infinity,
-                  child: Image.network('$imagesRecipesUrl/${provider.data.recipes.first.imageUrl}',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                buildSectionTitle(context, 'Ingredients'),
-                buildContainer(
-                  ListView.builder(
-                    itemCount: provider.data.ingredients.length,
-                    itemBuilder: (context, index) => Card(
-                      color: Theme.of(context).accentColor,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          vertical: 5,
-                          horizontal: 10,
+                  child: CachedNetworkImage(
+                    imageUrl: '$imagesRecipesUrl/${provider.data.recipes.first.imageUrl}',
+                    imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
                         ),
-                        child: Text(provider.data.ingredients[index].body)),
-                      ),
-                  ),
+                      )
+                    ),
+                    placeholder: (context, url) => Center(
+                      child: CircularProgressIndicator()
+                    ),
+                    errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+                  ) 
                 ),
+                // buildSectionTitle(context, 'Ingredients'),
+                // buildContainer(
+                //   ListView.builder(
+                //     itemCount: provider.data.ingredients.length,
+                //     itemBuilder: (context, index) => Card(
+                //       color: Theme.of(context).accentColor,
+                //       child: Padding(
+                //         padding: EdgeInsets.symmetric(
+                //           vertical: 5,
+                //           horizontal: 10,
+                //         ),
+                //         child: Text(provider.data.ingredients[index].body)),
+                //       ),
+                //   ),
+                // ),
                 buildSectionTitle(context, 'Steps'),
                 buildContainer(
                   ListView.builder(

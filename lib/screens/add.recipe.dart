@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -16,6 +17,8 @@ class AddRecipeScreen extends StatefulWidget {
 }
 
 class _AddRecipeState extends State<AddRecipeScreen> { 
+  Timer timer;
+
   void changeImageRecipe() async {
     ImageSource imageSource = await showDialog<ImageSource>(context: context, builder: (context) => 
       AlertDialog(
@@ -55,9 +58,10 @@ class _AddRecipeState extends State<AddRecipeScreen> {
   void save(BuildContext context) async {
     RecipeAdd recipeProvider = Provider.of<RecipeAdd>(context, listen: false);
     recipeProvider.titleFocusNode.unfocus();
-    try {
+    try {       
       if(recipeProvider.titleController.text == "") {
-        recipeProvider.titleFocusNode.requestFocus();
+        FocusNode node = recipeProvider.titleFocusNode;
+        node.requestFocus();
         throw new Exception('Hari ini mau masak apa ?');
       } 
       for (int i = 0; i < recipeProvider.ingredientsGroup.length; i++) {
@@ -65,14 +69,14 @@ class _AddRecipeState extends State<AddRecipeScreen> {
         if(ingredientsGroupController.text == "") {
           FocusNode node = recipeProvider.ingredientsGroup[i].focusNode;
           node.requestFocus();
-          throw new Exception('Oops! lupa diisi ya ?');
+          throw new Exception('Oops! untuk nama grup bahan jangan lupa diisi ya !');
         }
         for (int z = 0; z < recipeProvider.ingredientsGroup[i].ingredients.length; z++) {
           TextEditingController ingredientsController = recipeProvider.ingredientsGroup[i].ingredients[z].textEditingController;
           if(ingredientsController.text == "") {
             FocusNode node = recipeProvider.ingredientsGroup[i].ingredients[z].focusNode;
             node.requestFocus();
-            throw new Exception('Oops! lupa diisi ya ?');
+            throw new Exception('Jangan lupa diisi bahan yang dibutuhkan ya !');
           }
           recipeProvider.ingredientsGroupSendToHttp.add({
             "uuid": recipeProvider.ingredientsGroup[i].uuid,
@@ -90,7 +94,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
         if(stepsController.text == "") {
           FocusNode node = recipeProvider.steps[i].focusNode;
           node.requestFocus();
-          throw new Exception('Oops! lupa diisi ya ?');
+          throw new Exception('Bagaimana cara memasaknya ?');
         }
         recipeProvider.stepsSendToHttp.add({
           "uuid": recipeProvider.steps[i].uuid,
@@ -107,13 +111,33 @@ class _AddRecipeState extends State<AddRecipeScreen> {
       String ingredientsGroup = jsonEncode(uniqueIngredientsGroup);
       String ingredients = jsonEncode(uniqueIngredients);
       String steps = jsonEncode(uniqueSteps);
-      await recipeProvider.store(title, ingredientsGroup, ingredients, steps);
+      await recipeProvider.store(title, ingredientsGroup, ingredients, steps).then((value) {
+        if(value["status"] == 200) {
+          SnackBar snackbar = SnackBar(
+            backgroundColor: Colors.green[300],
+            content: Text('Berhasil Mengubah Resep.'),
+            action: SnackBarAction(
+              label: 'Tutup',
+              textColor: Colors.yellow[300],
+              onPressed: () {
+                Scaffold.of(context).hideCurrentSnackBar();
+              }
+            ),
+          );
+          Scaffold.of(context).showSnackBar(snackbar);
+          timer = Timer(const Duration(seconds: 3), () {
+            Navigator.of(context).popUntil((route) => route.isFirst);           
+          });
+        }
+      });
     } on Exception catch(error) {
       String errorSplit = error.toString();
       List<String> errorText = errorSplit.split(":");
       SnackBar snackbar = SnackBar(
+        backgroundColor: Colors.red[300],
         content: Text(errorText[1]),
         action: SnackBarAction(
+          textColor: Colors.white,
           label: 'Tutup',
           onPressed: () {
             Scaffold.of(context).hideCurrentSnackBar();
@@ -132,8 +156,11 @@ class _AddRecipeState extends State<AddRecipeScreen> {
       appBar: AppBar(
         title: Text('Buat Resep'),
       ),
-      body: ListView(
-        children: [
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
            Stack(
             overflow: Overflow.visible,
             alignment: Alignment.center,
@@ -177,25 +204,23 @@ class _AddRecipeState extends State<AddRecipeScreen> {
           ),
           Consumer<RecipeAdd>(
             builder: (context, value, child) { 
-              return Container(
-                child: Form(
-                  child: Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.only(left: 18.0, right: 18.0),
-                    child: TextFormField(
-                      focusNode: value.titleFocusNode,
-                      controller: value.titleController,
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ) 
-                      ),       
-                    )
-                  ),
+              return Form(
+                child: Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.only(left: 18.0, right: 18.0),
+                  child: TextFormField(
+                    focusNode: value.titleFocusNode,
+                    controller: value.titleController,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ) 
+                    ),       
+                  )
                 ),
               );
             }
@@ -244,7 +269,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
                 backgroundColor: Colors.grey[300],
                 mode: CupertinoTimerPickerMode.hm,
                   onTimerDurationChanged: (val) {
-                    value.duration = val;
+                    value.duration = val.inMinutes.toString();
                   },
                 );
               }
@@ -354,8 +379,9 @@ class _AddRecipeState extends State<AddRecipeScreen> {
               },
             ),
           )
-        ]
-      ),
+          ]
+        )
+      )
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -56,55 +57,46 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
   }
 
   void save(BuildContext context) async {
-    RecipeEdit recipe = Provider.of<RecipeEdit>(context, listen: false);
-    recipe.formTitleKey.currentState.save();
-    recipe.formIngredientsKey.currentState.save();
-    recipe.formStepsKey.currentState.save();
-    recipe.titleFocusNode.unfocus();
+    RecipeEdit recipeProvider = Provider.of<RecipeEdit>(context, listen: false);
+    recipeProvider.titleFocusNode.unfocus();
     try {
-      if(recipe.titleController.text == "") {
-        recipe.titleFocusNode.requestFocus();
+      if(recipeProvider.titleController.text == "") {
+        recipeProvider.titleFocusNode.requestFocus();
         throw new Exception('Hari ini mau masak apa ?');
       }
-      for (int i = 0; i < recipe.ingredients.length; i++) {
-        TextEditingController controller = recipe.controllerIngredients[i]["item"];
-        if(controller.text == "") {
-          FocusNode node = recipe.focusIngredientsNode[i]["item"];
+      for (int i = 0; i < recipeProvider.ingredientsGroup.length; i++) {
+        TextEditingController ingredientsGroupController = recipeProvider.ingredientsGroup[i].textEditingController;
+        if(ingredientsGroupController.text == "") {
+          FocusNode node = recipeProvider.ingredientsGroup[i].focusNode;
           node.requestFocus();
-          throw new Exception('Mau makan apa tanpa ada bahan ?');
+          throw new Exception('Oops! untuk nama kelompok bahan jangan lupa diisi ya !');
         }
-        recipe.initialIngredients.add({
-          "uuid": recipe.ingredients[i].uuid,
-          "item": controller.text
-        });
       }
-      for (int i = 0; i < recipe.steps.length; i++) {
-        TextEditingController controller = recipe.controllerSteps[i]["item"];
+      for (int i = 0; i < recipeProvider.steps.length; i++) {
+        TextEditingController controller = recipeProvider.steps[i].textEditingController;
         if(controller.text == "") {
-          FocusNode node = recipe.focusStepsNode[i]["item"];
+          FocusNode node = recipeProvider.steps[i].focusNode;
           node.requestFocus();
           throw new Exception('Bagaimana cara memasaknya ?');
         }
-        recipe.initialSteps.add({
-          "uuid": recipe.steps[i].uuid,
+        recipeProvider.initialSteps.add({
+          "uuid": recipeProvider.steps[i].uuid,
           "item": controller.text
         });
       }
-      String categoryName = recipe.categoryName;
-      Set<dynamic> seenRemoveIngredients = Set();
+      String categoryName = recipeProvider.categoryName;
+      // Set<dynamic> seenRemoveIngredients = Set();
       Set<dynamic> seenRemoveSteps = Set();
-      Set<dynamic> seenIngredients = Set();
+      // Set<dynamic> seenIngredients = Set();
       Set<dynamic> seenSteps = Set();
-      List<Map<String, Object>> uniqueRemoveIngredients = recipe.valueIngredientsRemove.where((item) => seenRemoveIngredients.add(item["uuid"])).toList();
-      List<Map<String, Object>> uniqueRemoveSteps = recipe.valueStepsRemove.where((item) => seenRemoveSteps.add(item["uuid"])).toList();
-      List<Map<String, Object>> uniqueIngredients = recipe.initialIngredients.where((item) => seenIngredients.add(item["uuid"])).toList();
-      List<Map<String, Object>> uniqueSteps = recipe.initialSteps.where((item) => seenSteps.add(item["uuid"])).toList();
-      String removeIngredients = jsonEncode(uniqueRemoveIngredients);
+      // List<Map<String, Object>> uniqueRemoveIngredients = recipeProvider.valueIngredientsRemove.where((item) => seenRemoveIngredients.add(item["uuid"])).toList();
+      List<Map<String, Object>> uniqueRemoveSteps = recipeProvider.valueStepsRemove.where((item) => seenRemoveSteps.add(item["uuid"])).toList();
+      // List<Map<String, Object>> uniqueIngredients = recipeProvider.initialIngredients.where((item) => seenIngredients.add(item["uuid"])).toList();
+      List<Map<String, Object>> uniqueSteps = recipeProvider.initialSteps.where((item) => seenSteps.add(item["uuid"])).toList();
       String removeSteps = jsonEncode(uniqueRemoveSteps);
-      String ingredients = jsonEncode(uniqueIngredients);
       String steps = jsonEncode(uniqueSteps);
       Object recipeId = ModalRoute.of(context).settings.arguments;
-      await Provider.of<RecipeEdit>(context, listen: false).update(recipe.titleController.text, recipeId, ingredients, steps, removeIngredients, removeSteps, categoryName).then((value) {
+      await Provider.of<RecipeEdit>(context, listen: false).update(recipeProvider.titleController.text, recipeId, steps, removeSteps, categoryName).then((value) {
         if(value["status"] == 200) {
           SnackBar snackbar = SnackBar(
             backgroundColor: Colors.green[300],
@@ -121,7 +113,6 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
           timer = Timer(const Duration(seconds: 3), () {
             Navigator.of(context).popUntil((route) => route.isFirst);
             RecipeEdit provider = Provider.of<RecipeEdit>(context, listen: false);
-            provider.initialIngredients = [];
             provider.initialSteps = [];
           });
         } 
@@ -130,8 +121,10 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
       String errorSplit = error.toString();
       List<String> errorText = errorSplit.split(":");
       SnackBar snackbar = SnackBar(
+        backgroundColor: Colors.red[300],
         content: Text(errorText[1]),
         action: SnackBarAction(
+          textColor: Colors.white,
           label: 'Tutup',
           onPressed: () {
             Scaffold.of(context).hideCurrentSnackBar();
@@ -186,8 +179,11 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                 child: Text("Oops! Something went wrong! Please try again.")
               );
             }
-            return ListView(
-              children: [
+            return SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                 Stack(
                   overflow: Overflow.visible,
                   alignment: Alignment.center,
@@ -210,7 +206,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                           placeholder: (context, url) => Center(
                             child: CircularProgressIndicator()
                           ),
-                          errorWidget: (context, url, error) => const Icon(Icons.error),
+                          errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
                           ) : Image.file(
                             value.fileImageRecipe,
                             fit: BoxFit.cover,
@@ -241,7 +237,6 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                 Consumer<RecipeEdit>(
                   builder: (context, value, child) {
                     return Form(
-                      key: value.formTitleKey,
                       child: Container(
                         width: double.infinity,
                         margin: EdgeInsets.only(left: 18.0, right: 18.0),
@@ -294,6 +289,30 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                   )
                 ),
                 Container(
+                  margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0, bottom: 10.0),
+                child: Text(
+                  'Berapa lama memasak ini ?',
+                  style: TextStyle(
+                    fontSize: 15.0
+                  ),
+                ),
+              ),
+              Container(
+                height: 220.0,
+                child: Consumer<RecipeEdit>(
+                  builder: (context, value, child) {
+                  return CupertinoTimerPicker(
+                    initialTimerDuration: Duration(minutes: value.duration),
+                    backgroundColor: Colors.grey[300],
+                    mode: CupertinoTimerPickerMode.hm,
+                      onTimerDurationChanged: (val) {
+                        value.duration = val.inMinutes;
+                      },
+                    );
+                  }
+                )
+              ),
+                Container(
                   margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
                   child: Text(
                     'Apa saja bahan - bahan nya ?',
@@ -310,29 +329,28 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                   ),
                   margin: EdgeInsets.all(18.0),
                   padding: EdgeInsets.all(18.0),
-                  height: 150.0,
                   width: double.infinity,
                   child: textFormIngredientsEdit(context)
                 ),
                 Container(
-                  margin: EdgeInsets.all(10.0),
+                  margin: EdgeInsets.only(left: 10.0, right: 10.0),
                   padding: EdgeInsets.all(10.0),
                   width: double.infinity,
                   child: Consumer<RecipeEdit>(
-                    builder: (context, recipe, child) {
+                    builder: (context, value, child) {
                       return RaisedButton(
                         elevation: 0.0,
                         color: Colors.brown[300],
                         child: Text(
-                          'Tambah bahan',
+                          'Tambah grup',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 14.0
-                          ),  
+                          ),
                         ),
-                        onPressed: () => recipe.incrementsIngredients()
+                        onPressed: () => value.incrementIngredientsPerGroup()
                       );
-                    }
+                    },
                   ),
                 ),
                 Container(
@@ -379,7 +397,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                       Consumer<RecipeEdit>(
                         builder: (context, value, child) {
                         return RaisedButton(
-                          child: value.isLoadingEdited ? Center(
+                          child: value.isLoading ? Center(
                             child: SizedBox(
                               child: CircularProgressIndicator(),
                               height: 20.0,
@@ -404,7 +422,8 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                     ),
                   )
                 )
-              ],
+                ],
+              )
             );
           },
         ),

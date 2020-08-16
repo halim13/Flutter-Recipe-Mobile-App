@@ -23,18 +23,18 @@ class RecipeModel {
 
 class Data {
   List<Recipes> recipes;
-  List<Ingredients> ingredients;
+  List<IngredientsGroup> ingredientsGroup;
   List<Steps> steps;
 
   Data({
     this.recipes,
-    this.ingredients,
+    this.ingredientsGroup,
     this.steps,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
     recipes: json["recipes"] == null ? null : List<Recipes>.from(json["recipes"].map((x) => Recipes.fromJson(x))),
-    ingredients: json["ingredients"] == null ? null : List<Ingredients>.from(json["ingredients"].map((x) => Ingredients.fromJson(x))),
+    ingredientsGroup: json["ingredientsGroup"] == null ? null : List<IngredientsGroup>.from(json["ingredientsGroup"].map((x) => IngredientsGroup.fromJson(x))),
     steps: json["steps"] == null ? null : List<Steps>.from(json["steps"].map((x) => Steps.fromJson(x))),
   );
 }
@@ -43,6 +43,7 @@ class Recipes {
   int id;
   String uuid;
   String title;
+  int duration;
   String imageUrl;
   String categoryName;
   List<CategoryList> categoryList;
@@ -51,6 +52,7 @@ class Recipes {
     this.id,
     this.uuid,
     this.title,
+    this.duration,
     this.imageUrl,
     this.categoryName,
     this.categoryList,
@@ -60,6 +62,7 @@ class Recipes {
     id: json["id"] == null ? null : json["id"],
     uuid: json["uuid"] == null ? null : json["uuid"],
     title: json["title"] == null ? null : json["title"],
+    duration: json["duration"] == null ? null : int.parse(json["duration"]),
     imageUrl: json["imageUrl"] == null ? null : json["imageUrl"],
     categoryName: json["category_name"] == null ? null : json["category_name"],
     categoryList: List<CategoryList>.from(json["category_list"].map((x) => CategoryList.fromJson(x))),
@@ -134,6 +137,8 @@ class Ingredients {
     id: json["id"] == null ? null : json["id"],
     uuid: json["uuid"] == null ? null : json["uuid"],
     body: json["body"] == null ? null : json["body"],
+    focusNode: FocusNode(),
+    textEditingController: json["body"] == null ? TextEditingController(text: "")  : TextEditingController(text: json["body"])
   );
 }
 

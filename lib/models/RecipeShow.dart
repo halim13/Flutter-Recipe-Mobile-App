@@ -25,7 +25,7 @@ class RecipeShowData with ChangeNotifier {
   int id;
   String uuid;
   String title;
-  int duration;
+  String duration;
   String imageurl;
   String affordabilities;
   String complexities;

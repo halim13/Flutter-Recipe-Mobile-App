@@ -23,7 +23,7 @@ class RecipeAdd with ChangeNotifier {
   String filenameImageRecipe;
   String categoryName = "";
   List categoriesDisplay = [""];
-  Duration duration = Duration(hours: 0, minutes: 0);
+  String duration;
   FocusNode titleFocusNode = FocusNode();
   TextEditingController titleController = TextEditingController();
   List<IngredientsGroup> ingredientsGroup = [];
@@ -239,6 +239,8 @@ class RecipeAdd with ChangeNotifier {
     Map<String, Object> extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
     String userId = extractedUserData["userId"];
     String url = 'http://$baseurl:$port/api/v1/recipes/store'; 
+    isLoading = true;
+    notifyListeners();
     try {
       http.MultipartRequest request = http.MultipartRequest('POST', Uri.parse(url));
       if(fileImageRecipe != null) {
@@ -255,6 +257,10 @@ class RecipeAdd with ChangeNotifier {
       request.fields["categoryName"] = categoryName;
       request.fields["userId"] = userId; 
       http.StreamedResponse response = await request.send();
+      if(response.statusCode == 200) {
+        isLoading = false;
+        notifyListeners();
+      }
       String responseData = await response.stream.bytesToString();
       final responseDecoded = json.decode(responseData);   
       notifyListeners();
