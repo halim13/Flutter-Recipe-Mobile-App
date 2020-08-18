@@ -43,7 +43,7 @@ class Recipes {
   int id;
   String uuid;
   String title;
-  int duration;
+  String duration;
   String imageUrl;
   String categoryName;
   List<CategoryList> categoryList;
@@ -62,7 +62,7 @@ class Recipes {
     id: json["id"] == null ? null : json["id"],
     uuid: json["uuid"] == null ? null : json["uuid"],
     title: json["title"] == null ? null : json["title"],
-    duration: json["duration"] == null ? null : int.parse(json["duration"]),
+    duration: json["duration"] == null ? null : json["duration"],
     imageUrl: json["imageUrl"] == null ? null : json["imageUrl"],
     categoryName: json["category_name"] == null ? null : json["category_name"],
     categoryList: List<CategoryList>.from(json["category_list"].map((x) => CategoryList.fromJson(x))),

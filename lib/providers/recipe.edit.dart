@@ -18,7 +18,7 @@ class RecipeEdit extends ChangeNotifier {
   String getFileImageRecipe;
   String filenameImageRecipe;
   bool isLoading = false;
-  int duration;
+  String duration;
   ScrollController ingredientsScrollController = ScrollController();
   ScrollController stepsScrollController = ScrollController();
   FocusNode titleFocusNode = FocusNode();
@@ -26,15 +26,20 @@ class RecipeEdit extends ChangeNotifier {
   TextEditingController titleController = TextEditingController();
   List<String> categoriesDisplay = [];
 
-  List<Map<String, Object>> valueSteps = [];
-  List<Map<String, Object>> valueIngredientsRemove = []; 
-  List<Map<String, Object>> valueStepsRemove = [];
+  List<Map<String, Object>> indexStepsImage = [];
+
+  List<Map<String, Object>> ingredientsGroupSendToHttp = [];
+  List<Map<String, Object>> removeIngredientsGroupSendToHttp = [];
+  List<Map<String, Object>> ingredientsSendToHttp = [];
+  List<Map<String, Object>> removeIngredientsSendToHttp = [];
+  List<Map<String, Object>> stepsSendToHttp = [];
+  List<Map<String, Object>> removeStepsSendToHttp = [];
+  
+  List<IngredientsGroup> ingredientsGroup = [];
+  List<Steps> steps = [];
 
   List<Recipes> get getRecipes => [...data.recipes];
-  List<IngredientsGroup> ingredientsGroup = [];
   List<IngredientsGroup> get getIngredientsGroup => [...data.ingredientsGroup];
-  List<Steps> steps = [];
-  List<Map<String, Object>> initialSteps = [];
   List<Steps> get getSteps => [...data.steps];
 
   void changeImageRecipe(PickedFile pickedFile) {
@@ -46,6 +51,7 @@ class RecipeEdit extends ChangeNotifier {
   }
   void stepsImage(int i, int z, PickedFile pickedFile) {  
     if(pickedFile != null) {
+      print(z);
       steps[i].images[z].body = Image.file(File(pickedFile.path));
       steps[i].images[z].filename = pickedFile.path;
       notifyListeners();
@@ -72,6 +78,9 @@ class RecipeEdit extends ChangeNotifier {
     notifyListeners();
   }
   void decrementIngredientsPerGroup(String uuid) {
+    removeIngredientsGroupSendToHttp.add({
+      "uuid": uuid
+    });
     ingredientsGroup.removeWhere((item) => item.uuid == uuid);
     notifyListeners();
   }
@@ -90,6 +99,9 @@ class RecipeEdit extends ChangeNotifier {
     notifyListeners();
   }
   void decrementIngredients(int i, String uuid) {
+    removeIngredientsSendToHttp.add({
+      "uuid": uuid
+    });
     ingredientsGroup[i].ingredients.removeWhere((item) => item.uuid == uuid);
     notifyListeners();
   }
@@ -140,7 +152,7 @@ class RecipeEdit extends ChangeNotifier {
     notifyListeners();
   }
   void decrementSteps(String uuid) {
-   valueStepsRemove.add({
+    removeStepsSendToHttp.add({
       "uuid": uuid
     });
     steps.removeWhere((element) => element.uuid == uuid);
@@ -166,7 +178,6 @@ class RecipeEdit extends ChangeNotifier {
       duration = data.recipes.first.duration;
       titleController.text = data.recipes.first.title;
       List<Steps> initialSteps = [];
-      List<Map<String, Object>> initialValueSteps = [];
       List<IngredientsGroup> initialIngredientsGroup = [];
       for(int i = 0; i < getIngredientsGroup.length; i++) {
         initialIngredientsGroup.add(IngredientsGroup(
@@ -182,16 +193,15 @@ class RecipeEdit extends ChangeNotifier {
         Uuid uuid = Uuid();
         for (int j = 0; j < 3; j++) {
           final checkUuid = getSteps[k].images.asMap().containsKey(j) ? getSteps[k].images[j].uuid : uuid.v4();
-          final checkImage = getSteps[k].images.asMap().containsKey(j) ? '$imagesStepsUrl/${getSteps[k].images[j].body}' : '$imagesStepsUrl/default-image.png'; 
           initialStepsImages.add(StepsImages(
             uuid: checkUuid,
-            body: CachedNetworkImage(
-              width: 100.0,
-              height: 100.0,
-              imageUrl: checkImage,
+            body: getSteps[k].images.asMap().containsKey(j) ? CachedNetworkImage(
+              imageUrl: '$imagesStepsUrl/${getSteps[k].images[j].body}',
               placeholder: (context, url) => const CircularProgressIndicator(),
               errorWidget: (context, url, error) => const Icon(Icons.error),
-            )
+            ) : Container(
+                child: Image.asset('assets/default-thumbnail.jpg')
+              )
           ));
         }
         initialSteps.add(Steps(
@@ -201,20 +211,15 @@ class RecipeEdit extends ChangeNotifier {
           textEditingController: TextEditingController(text: getSteps[k].body),
           images: initialStepsImages
         ));
-        initialValueSteps.add({
-          "uuid": getSteps[k].uuid,
-          "body": getSteps[k].body
-        });
       }
       ingredientsGroup = initialIngredientsGroup;
       steps = initialSteps;
-      valueSteps = initialValueSteps;
       notifyListeners();
     } catch(error) {
       print(error);
     }
   }
-  Future update(String title, String recipeId, String stepsP, String removeSteps, String categoryName) async {
+  Future update(String title, String recipeId, String ingredientsGroup, String removeIngredientsGroup, String ingredients, String removeIngredients, String stepsInParameter, String removeSteps, String categoryName) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
     String userId = extractedUserData["userId"];
@@ -237,14 +242,17 @@ class RecipeEdit extends ChangeNotifier {
       }
       if(filenameImageRecipe != null) {
         http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
-          'imagerecipe', filenameImageRecipe
+          'imageurl', filenameImageRecipe
         );
         request.files.add(multipartFile);
       }
       request.fields["title"] = title;
-      // request.fields["ingredients"] = ingredients;
-      request.fields["steps"] = stepsP;
-      // request.fields["removeIngredients"] = removeIngredients;
+      request.fields["ingredients"] = ingredients;
+      request.fields["removeIngredients"] = removeIngredients;
+      request.fields["ingredientsGroup"] = ingredientsGroup;
+      request.fields["removeIngredientsGroup"] = removeIngredientsGroup;
+      request.fields["duration"] = duration;
+      request.fields["steps"] = stepsInParameter;
       request.fields["removeSteps"] = removeSteps;
       request.fields["categoryName"] = categoryName;
       request.fields["userId"] = userId; 

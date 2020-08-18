@@ -42,7 +42,6 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       ),
       margin: EdgeInsets.all(10),
       padding: EdgeInsets.all(10),
-      height: 150.0,
       width: double.infinity,
       child: child,
     );
@@ -50,8 +49,8 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final routeArgs = ModalRoute.of(context).settings.arguments as Map<String, String>;
-    final provider = Provider.of<RecipeDetail>(context, listen: false);
+    Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments as Map<String, String>;
+    RecipeDetail recipeProvider = Provider.of<RecipeDetail>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text(titleCase(routeArgs['title'])),
@@ -85,7 +84,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   height: 300,
                   width: double.infinity,
                   child: CachedNetworkImage(
-                    imageUrl: '$imagesRecipesUrl/${provider.data.recipes.first.imageUrl}',
+                    imageUrl: '$imagesRecipesUrl/${recipeProvider.data.recipes.first.imageUrl}',
                     imageBuilder: (context, imageProvider) => Container(
                       decoration: BoxDecoration(
                         image: DecorationImage(
@@ -118,7 +117,9 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                 buildSectionTitle(context, 'Steps'),
                 buildContainer(
                   ListView.builder(
-                    itemCount: provider.data.steps.length,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: recipeProvider.data.steps.length,
                     itemBuilder: (context, i) => Column(
                       children: [
                         ListTile(
@@ -131,23 +132,23 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                             ),
                           ),
                           title: Text(
-                            provider.data.steps[i].body,
+                            recipeProvider.data.steps[i].body,
                           ),
                         ),
                         Row(
-                          children: List.generate(provider.data.steps[i].stepsImages.length, (z) => 
+                          children: List.generate(recipeProvider.data.steps[i].stepsImages.length, (z) => 
                             Expanded(
                               child: GestureDetector(
                                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) {
-                                  return PreviewImageScreen(body: provider.data.steps[i].stepsImages[z].body);
+                                  return PreviewImageScreen(body: recipeProvider.data.steps[i].stepsImages[z].body);
                                 })),
                                 child: Container(
                                   child: CachedNetworkImage(
                                     width: 100.0,
                                     height: 100.0,
-                                    imageUrl: '$imagesStepsUrl/${provider.data.steps[i].stepsImages[z].body}',
+                                    imageUrl: '$imagesStepsUrl/${recipeProvider.data.steps[i].stepsImages[z].body}',
                                     placeholder: (context, url) => const CircularProgressIndicator(),
-                                    errorWidget: (context, url, error) => const Icon(Icons.error),
+                                    errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
                                   )
                                 ),
                               ),
@@ -165,12 +166,12 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
         }
       ),
       floatingActionButton: Consumer<RecipeDetail>(
-        builder: (context, value, ch) {
+        builder: (context, recipeProvider, ch) {
           return FloatingActionButton(
             backgroundColor: Colors.yellow.shade700,
             foregroundColor: Colors.black,
-            child: Icon(value.isRecipeFavorite(routeArgs['uuid'], value.favourite) ? Icons.star : Icons.star_border),
-            onPressed: () => value.toggleFavourite(routeArgs['uuid'], value.favourite)
+            child: Icon(recipeProvider.isRecipeFavorite(routeArgs['uuid'], recipeProvider.favourite) ? Icons.star : Icons.star_border),
+            onPressed: () => recipeProvider.toggleFavourite(routeArgs['uuid'], recipeProvider.favourite)
           );
         },
       )

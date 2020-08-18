@@ -71,6 +71,23 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
           node.requestFocus();
           throw new Exception('Oops! untuk nama kelompok bahan jangan lupa diisi ya !');
         }
+        for(int z = 0; z < recipeProvider.ingredientsGroup[i].ingredients.length; z++) {
+          TextEditingController ingredientsController = recipeProvider.ingredientsGroup[i].ingredients[z].textEditingController;
+          if(ingredientsController.text == "") {
+            FocusNode node = recipeProvider.ingredientsGroup[i].ingredients[z].focusNode;
+            node.requestFocus();
+            throw new Exception('Jangan lupa diisi bahan yang dibutuhkan ya !');
+          }
+          recipeProvider.ingredientsGroupSendToHttp.add({
+            "uuid": recipeProvider.ingredientsGroup[i].uuid,
+            "item": ingredientsGroupController.text,
+          });
+          recipeProvider.ingredientsSendToHttp.add({
+            "uuid": recipeProvider.ingredientsGroup[i].ingredients[z].uuid,
+            "ingredient_group_id": recipeProvider.ingredientsGroup[i].uuid,
+            "item": ingredientsController.text
+          });
+        }
       }
       for (int i = 0; i < recipeProvider.steps.length; i++) {
         TextEditingController controller = recipeProvider.steps[i].textEditingController;
@@ -79,31 +96,40 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
           node.requestFocus();
           throw new Exception('Bagaimana cara memasaknya ?');
         }
-        recipeProvider.initialSteps.add({
+        recipeProvider.stepsSendToHttp.add({
           "uuid": recipeProvider.steps[i].uuid,
           "item": controller.text
         });
       }
       String categoryName = recipeProvider.categoryName;
-      // Set<dynamic> seenRemoveIngredients = Set();
-      Set<dynamic> seenRemoveSteps = Set();
-      // Set<dynamic> seenIngredients = Set();
+      Set<dynamic> seenIngredientsGroup = Set();
+      Set<dynamic> seenRemoveIngredientsGroup = Set();
+      Set<dynamic> seenIngredients = Set();
+      Set<dynamic> seenRemoveIngredients = Set();
       Set<dynamic> seenSteps = Set();
-      // List<Map<String, Object>> uniqueRemoveIngredients = recipeProvider.valueIngredientsRemove.where((item) => seenRemoveIngredients.add(item["uuid"])).toList();
-      List<Map<String, Object>> uniqueRemoveSteps = recipeProvider.valueStepsRemove.where((item) => seenRemoveSteps.add(item["uuid"])).toList();
-      // List<Map<String, Object>> uniqueIngredients = recipeProvider.initialIngredients.where((item) => seenIngredients.add(item["uuid"])).toList();
-      List<Map<String, Object>> uniqueSteps = recipeProvider.initialSteps.where((item) => seenSteps.add(item["uuid"])).toList();
-      String removeSteps = jsonEncode(uniqueRemoveSteps);
+      Set<dynamic> seenRemoveSteps = Set();
+      List<Map<String, Object>> uniqueIngredientsGroup = recipeProvider.ingredientsGroupSendToHttp.where((item) => seenIngredientsGroup.add(item["uuid"])).toList();
+      List<Map<String, Object>> uniqueRemoveIngredientsGroup = recipeProvider.removeIngredientsGroupSendToHttp.where((item) => seenRemoveIngredientsGroup.add(item["uuid"])).toList();
+      List<Map<String, Object>> uniqueIngredients = recipeProvider.ingredientsSendToHttp.where((item) => seenIngredients.add(item["uuid"])).toList();
+      List<Map<String, Object>> uniqueRemoveIngredients = recipeProvider.removeIngredientsSendToHttp.where((item) => seenRemoveIngredients.add(item["uuid"])).toList();
+      List<Map<String, Object>> uniqueSteps = recipeProvider.stepsSendToHttp.where((item) => seenSteps.add(item["uuid"])).toList();
+      List<Map<String, Object>> uniqueRemoveSteps = recipeProvider.removeStepsSendToHttp.where((item) => seenRemoveSteps.add(item["uuid"])).toList();
+      String title = recipeProvider.titleController.text;
+      String ingredientsGroup = jsonEncode(uniqueIngredientsGroup);
+      String removeIngredientsGroup = jsonEncode(uniqueRemoveIngredientsGroup);
+      String ingredients = jsonEncode(uniqueIngredients);
+      String removeIngredients = jsonEncode(uniqueRemoveIngredients);
       String steps = jsonEncode(uniqueSteps);
+      String removeSteps = jsonEncode(uniqueRemoveSteps);
       Object recipeId = ModalRoute.of(context).settings.arguments;
-      await Provider.of<RecipeEdit>(context, listen: false).update(recipeProvider.titleController.text, recipeId, steps, removeSteps, categoryName).then((value) {
+      await Provider.of<RecipeEdit>(context, listen: false).update(title, recipeId, ingredientsGroup, removeIngredientsGroup, ingredients, removeIngredients, steps, removeSteps, categoryName).then((value) {
         if(value["status"] == 200) {
           SnackBar snackbar = SnackBar(
             backgroundColor: Colors.green[300],
             content: Text('Berhasil Mengubah Resep.'),
             action: SnackBarAction(
               label: 'Tutup',
-              textColor: Colors.yellow[300],
+              textColor: Colors.white,
               onPressed: () {
                 Scaffold.of(context).hideCurrentSnackBar();
               }
@@ -112,8 +138,6 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
           Scaffold.of(context).showSnackBar(snackbar);
           timer = Timer(const Duration(seconds: 3), () {
             Navigator.of(context).popUntil((route) => route.isFirst);
-            RecipeEdit provider = Provider.of<RecipeEdit>(context, listen: false);
-            provider.initialSteps = [];
           });
         } 
       });
@@ -302,11 +326,11 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                 child: Consumer<RecipeEdit>(
                   builder: (context, value, child) {
                   return CupertinoTimerPicker(
-                    initialTimerDuration: Duration(minutes: value.duration),
+                    initialTimerDuration: Duration(minutes: int.parse(value.duration)),
                     backgroundColor: Colors.grey[300],
                     mode: CupertinoTimerPickerMode.hm,
                       onTimerDurationChanged: (val) {
-                        value.duration = val.inMinutes;
+                        value.duration = val.inMinutes.toString();
                       },
                     );
                   }

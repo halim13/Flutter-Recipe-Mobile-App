@@ -118,7 +118,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
             content: Text('Berhasil Menambah Resep.'),
             action: SnackBarAction(
               label: 'Tutup',
-              textColor: Colors.yellow[300],
+              textColor: Colors.white,
               onPressed: () {
                 Scaffold.of(context).hideCurrentSnackBar();
               }

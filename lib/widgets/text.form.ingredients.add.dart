@@ -4,13 +4,13 @@ import '../providers/recipe.add.dart';
 
 Widget textFormIngredientsAdd() {
   return Consumer<RecipeAdd>(
-    builder: (context, value, child) {
+    builder: (context, recipeProvider, child) {
       return SingleChildScrollView(
-        controller: value.ingredientsScrollController,
+        controller: recipeProvider.ingredientsScrollController,
         child: Form(
           child: ListView.builder(
             shrinkWrap: true,
-            itemCount: value.ingredientsGroup.length,
+            itemCount: recipeProvider.ingredientsGroup.length,
             itemBuilder: (context, i) {
               return Container(
                 child: Column(
@@ -29,8 +29,8 @@ Widget textFormIngredientsAdd() {
                             style: TextStyle(
                               fontSize: 15.0
                             ),
-                            focusNode: value.ingredientsGroup[i].focusNode,
-                            controller: value.ingredientsGroup[i].textEditingController,
+                            focusNode: recipeProvider.ingredientsGroup[i].focusNode,
+                            controller: recipeProvider.ingredientsGroup[i].textEditingController,
                             decoration: InputDecoration(
                               border: InputBorder.none,   
                               hintStyle: TextStyle(
@@ -46,7 +46,7 @@ Widget textFormIngredientsAdd() {
                             Icons.add_circle_outline,
                           ),
                           onPressed: () {
-                            value.incrementIngredients(i);
+                            recipeProvider.incrementIngredients(i);
                           },
                         ),
                         IconButton(
@@ -54,14 +54,14 @@ Widget textFormIngredientsAdd() {
                             Icons.delete_outline,
                             color: i > 0 ? Colors.grey : Colors.transparent,
                           ),
-                          onPressed: () => i > 0 ? value.decrementIngredientPerGroup(value.ingredientsGroup[i].uuid) : null
+                          onPressed: () => i > 0 ? recipeProvider.decrementIngredientPerGroup(recipeProvider.ingredientsGroup[i].uuid) : null
                         ),
                       ],
                     ),
                     ListView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
-                      itemCount: value.ingredientsGroup[i].ingredients.length,
+                      itemCount: recipeProvider.ingredientsGroup[i].ingredients.length,
                       itemBuilder: (context, z) {
                         return Row(
                           children: [
@@ -73,8 +73,8 @@ Widget textFormIngredientsAdd() {
                             SizedBox(width: 15.0),
                             Flexible(
                               child: TextFormField(         
-                                focusNode: value.ingredientsGroup[i].ingredients[z].focusNode,
-                                controller: value.ingredientsGroup[i].ingredients[z].textEditingController,
+                                focusNode: recipeProvider.ingredientsGroup[i].ingredients[z].focusNode,
+                                controller: recipeProvider.ingredientsGroup[i].ingredients[z].textEditingController,
                                 decoration: InputDecoration(
                                   hintText: 'Mis: 1 kg sapi',
                                 ),
@@ -85,7 +85,7 @@ Widget textFormIngredientsAdd() {
                                 Icons.delete_outline,
                                 color: z > 0 ? Colors.grey : Colors.transparent
                               ),
-                              onPressed: () => z > 0 ? value.decrementIngredients(i, value.ingredientsGroup[i].ingredients[z].uuid) : null
+                              onPressed: () => z > 0 ? recipeProvider.decrementIngredients(i, recipeProvider.ingredientsGroup[i].ingredients[z].uuid) : null
                             )
                           ],
                         );
