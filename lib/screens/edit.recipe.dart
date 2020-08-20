@@ -419,22 +419,31 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                   child: Builder(
                     builder: (context) => 
                       Consumer<RecipeEdit>(
-                        builder: (context, value, child) {
-                        return RaisedButton(
-                          child: value.isLoading ? Center(
+                        builder: (context, recipeProvider, child) {
+                        return recipeProvider.isLoading ? RaisedButton(
+                          child: Center(
                             child: SizedBox(
                               child: CircularProgressIndicator(),
                               height: 20.0,
                               width: 20.0,
-                            ) 
-                          ) : Text(
-                            'Simpan Perubahan',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14.0
-                            ),
+                            )
                           ),
                           shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                            side: BorderSide(color: Colors.white)
+                          ),
+                          elevation: 0.0,
+                          color: Colors.blue[300],
+                          onPressed: null,
+                        ) : RaisedButton(
+                            child: Text(
+                              'Simpan Perubahan',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14.0
+                              ),
+                            ) ,
+                            shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                             side: BorderSide(color: Colors.white)
                           ),

@@ -25,9 +25,7 @@ class RecipeEdit extends ChangeNotifier {
 
   TextEditingController titleController = TextEditingController();
   List<String> categoriesDisplay = [];
-
-  List<Map<String, Object>> indexStepsImage = [];
-
+   
   List<Map<String, Object>> ingredientsGroupSendToHttp = [];
   List<Map<String, Object>> removeIngredientsGroupSendToHttp = [];
   List<Map<String, Object>> ingredientsSendToHttp = [];
@@ -51,7 +49,6 @@ class RecipeEdit extends ChangeNotifier {
   }
   void stepsImage(int i, int z, PickedFile pickedFile) {  
     if(pickedFile != null) {
-      print(z);
       steps[i].images[z].body = Image.file(File(pickedFile.path));
       steps[i].images[z].filename = pickedFile.path;
       notifyListeners();
@@ -108,10 +105,6 @@ class RecipeEdit extends ChangeNotifier {
   void incrementsSteps() {
     Uuid uuid = Uuid();
     String uuid4 = uuid.v4(); 
-
-    FocusNode nextNode = steps[steps.length-1].focusNode;
-    nextNode.requestFocus();
-
     steps.add(Steps(
       uuid: uuid4,
       focusNode: FocusNode(),
@@ -122,7 +115,7 @@ class RecipeEdit extends ChangeNotifier {
           body: CachedNetworkImage(
             width: 100.0,
             height: 100.0,
-            imageUrl: '$imagesStepsUrl/default-image.png',
+            imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
             placeholder: (context, url) => const CircularProgressIndicator(),
             errorWidget: (context, url, error) => const Icon(Icons.error),
           )
@@ -132,7 +125,7 @@ class RecipeEdit extends ChangeNotifier {
           body: CachedNetworkImage(
             width: 100.0,
             height: 100.0,
-            imageUrl: '$imagesStepsUrl/default-image.png',
+            imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
             placeholder: (context, url) => const CircularProgressIndicator(),
             errorWidget: (context, url, error) => const Icon(Icons.error),
           )
@@ -142,13 +135,15 @@ class RecipeEdit extends ChangeNotifier {
           body: CachedNetworkImage(
             width: 100.0,
             height: 100.0,
-            imageUrl: '$imagesStepsUrl/default-image.png',
+            imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
             placeholder: (context, url) => const CircularProgressIndicator(),
             errorWidget: (context, url, error) => const Icon(Icons.error),
           )
         )
       ]
     ));
+    FocusNode nextNode = steps[steps.length-1].focusNode;
+    nextNode.requestFocus();
     notifyListeners();
   }
   void decrementSteps(String uuid) {
@@ -199,9 +194,11 @@ class RecipeEdit extends ChangeNotifier {
               imageUrl: '$imagesStepsUrl/${getSteps[k].images[j].body}',
               placeholder: (context, url) => const CircularProgressIndicator(),
               errorWidget: (context, url, error) => const Icon(Icons.error),
-            ) : Container(
-                child: Image.asset('assets/default-thumbnail.jpg')
-              )
+            ) : CachedNetworkImage(
+              imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
+              placeholder: (context, url) => const CircularProgressIndicator(),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+            )
           ));
         }
         initialSteps.add(Steps(
@@ -259,8 +256,14 @@ class RecipeEdit extends ChangeNotifier {
       http.StreamedResponse response = await request.send();
       if(response.statusCode == 200) {
         isLoading = false;
+        ingredientsGroupSendToHttp = [];
+        removeIngredientsGroupSendToHttp = [];
+        ingredientsSendToHttp = [];
+        removeIngredientsSendToHttp = [];
+        stepsSendToHttp = [];
+        removeStepsSendToHttp = [];
         notifyListeners();
-      }
+      } 
       String responseData = await response.stream.bytesToString();
       final responseDecoded = jsonDecode(responseData);
       edit(recipeId);
