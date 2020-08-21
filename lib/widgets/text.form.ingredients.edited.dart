@@ -42,7 +42,7 @@ Widget textFormIngredientsEdit(BuildContext context) {
                             ),
                           ),
                           IconButton(
-                            color: Colors.brown[300],
+                            color: Colors.brown.shade700,
                             icon: Icon(
                               Icons.add_circle_outline,
                             ),

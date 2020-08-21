@@ -62,7 +62,7 @@ class RecipeAdd with ChangeNotifier {
           body: CachedNetworkImage(
             width: 100.0,
             height: 100.0,
-            imageUrl: '$imagesStepsUrl/default-image.png',
+            imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
             placeholder: (context, url) => const CircularProgressIndicator(),
             errorWidget: (context, url, error) => const Icon(Icons.error),
           )
@@ -72,7 +72,7 @@ class RecipeAdd with ChangeNotifier {
           body: CachedNetworkImage(
             width: 100.0,
             height: 100.0,
-            imageUrl: '$imagesStepsUrl/default-image.png',
+            imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
             placeholder: (context, url) => const CircularProgressIndicator(),
             errorWidget: (context, url, error) => const Icon(Icons.error),
           )
@@ -82,7 +82,7 @@ class RecipeAdd with ChangeNotifier {
           body: CachedNetworkImage(
             width: 100.0,
             height: 100.0,
-            imageUrl: '$imagesStepsUrl/default-image.png',
+            imageUrl: '$imagesStepsUrl/default-image.jpg',
             placeholder: (context, url) => const CircularProgressIndicator(),
             errorWidget: (context, url, error) => const Icon(Icons.error),
           )

@@ -31,6 +31,7 @@ dev_dependencies:
   dropdown_search: ^0.4.4
   http: ^0.12.2
   quartet: ^0.1.1
+  awesome_dialog: ^1.2.0
   flutter_cache_manager: ^1.4.1
   cached_network_image: ^2.2.0+1
   http_parser: ^3.1.4
