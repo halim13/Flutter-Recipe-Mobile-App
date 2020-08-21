@@ -63,6 +63,7 @@ Widget textFormStepsAdd(BuildContext context) {
                           border: InputBorder.none,
                           hintStyle: TextStyle(
                             fontSize: 16.0,
+                            fontStyle: FontStyle.italic
                           ),
                           hintText: "Bagaimana langkah membuatnya?",
                           prefixIcon: Column( 

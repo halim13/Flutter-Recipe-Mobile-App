@@ -65,14 +65,14 @@ class MainDrawer extends StatelessWidget {
             },
           ),
           Consumer<Auth>(
-            builder: (context, auth, child) {
-              if(auth.isAuth) {
+            builder: (context, authProvider, child) {
+              if(authProvider.isAuth) {
                 return buildListTile('Buat Resep', Icons.restaurant_menu, () {
                   Navigator.of(context).pushNamed(AddRecipeScreen.routeName);
                 });
               } else {
                 return FutureBuilder(
-                  future: auth.tryAutoLogin(),
+                  future: authProvider.tryAutoLogin(),
                   builder: (ctx, snapshot) =>
                   Container()
                 );

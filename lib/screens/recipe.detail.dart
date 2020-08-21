@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../screens/preview.image.dart';
 import '../constants/url.dart';
+import '../providers/auth.dart';
 import '../providers/recipe.detail.dart';
 import './edit.recipe.dart';
 
@@ -59,12 +60,17 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       appBar: AppBar(
         title: Text(titleCase(routeArgs['title'])),
         actions: [
-          IconButton(
-            icon: Icon(
-              Icons.edit,
-              color: Colors.blue.shade700,
-            ), 
-            onPressed: edit
+          Consumer<Auth>(
+            builder: (context, authProvider, child) => authProvider.isAuth ? IconButton(
+              icon: Icon(
+                Icons.edit,
+                color: Colors.blue.shade700,
+              ), 
+              onPressed: edit
+            ) : FutureBuilder(
+              future: authProvider.tryAutoLogin(),
+              builder: (ctx, snapshot) => Container()
+            )
           )
         ],
       ),
@@ -187,9 +193,10 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                                     width: 100.0,
                                     height: 100.0,
                                     imageUrl: '$imagesStepsUrl/${recipeProvider.data.steps[i].stepsImages[z].body}',
-                                    progressIndicatorBuilder: (context, url, progress) => CircularProgressIndicator(value: progress.progress),
                                     placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
                                     errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+                                    fadeOutDuration: Duration(seconds: 1),
+                                    fadeInDuration: Duration(seconds: 3),
                                   )
                                 ),
                               ),

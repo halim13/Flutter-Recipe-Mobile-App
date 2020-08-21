@@ -56,7 +56,6 @@ class CategoriesScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15.0),
                   child: Container(
                     child: CachedNetworkImage(
-                      progressIndicatorBuilder: (context, url, progress) => CircularProgressIndicator(value: progress.progress),
                       imageUrl: '${categoryProvider.items[i].cover}',
                       imageBuilder: (context, imageProvider) => Container(
                       child: Text(
@@ -72,8 +71,26 @@ class CategoriesScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(15.0),
                         ),
                       ),
-                      placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
-                      errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+                      placeholder: (context, url) => Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/default-thumbnail.jpg'), 
+                            fit: BoxFit.cover
+                          ),
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/default-thumbnail.jpg'), 
+                            fit: BoxFit.cover
+                          ),
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                      ),
+                      fadeOutDuration: Duration(seconds: 1),
+                      fadeInDuration: Duration(seconds: 3),
                     ),
                   )
                   // child: Container(

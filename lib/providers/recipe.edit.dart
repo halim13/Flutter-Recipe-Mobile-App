@@ -116,8 +116,10 @@ class RecipeEdit extends ChangeNotifier {
             width: 100.0,
             height: 100.0,
             imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
-            placeholder: (context, url) => const CircularProgressIndicator(),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
+            placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+            errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+            fadeOutDuration: Duration(seconds: 1),
+            fadeInDuration: Duration(seconds: 3),
           )
         ),
         StepsImages(
@@ -126,8 +128,10 @@ class RecipeEdit extends ChangeNotifier {
             width: 100.0,
             height: 100.0,
             imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
-            placeholder: (context, url) => const CircularProgressIndicator(),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
+            placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+            errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+            fadeOutDuration: Duration(seconds: 1),
+            fadeInDuration: Duration(seconds: 3),
           )
         ),
         StepsImages(
@@ -136,8 +140,10 @@ class RecipeEdit extends ChangeNotifier {
             width: 100.0,
             height: 100.0,
             imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
-            placeholder: (context, url) => const CircularProgressIndicator(),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
+            placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+            errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+            fadeOutDuration: Duration(seconds: 1),
+            fadeInDuration: Duration(seconds: 3),
           )
         )
       ]

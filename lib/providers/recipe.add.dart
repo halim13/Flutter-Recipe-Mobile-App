@@ -181,9 +181,11 @@ class RecipeAdd with ChangeNotifier {
           body: CachedNetworkImage(
             width: 100.0,
             height: 100.0,
-            imageUrl: '$imagesStepsUrl/default-image.png',
-            placeholder: (context, url) => const CircularProgressIndicator(),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
+            imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
+            placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+            errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+            fadeOutDuration: Duration(seconds: 1),
+            fadeInDuration: Duration(seconds: 3),
           )
         ),
         StepsImages(
@@ -191,9 +193,11 @@ class RecipeAdd with ChangeNotifier {
           body: CachedNetworkImage(
             width: 100.0,
             height: 100.0,
-            imageUrl: '$imagesStepsUrl/default-image.png',
-            placeholder: (context, url) => const CircularProgressIndicator(),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
+            imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
+            placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+            errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+            fadeOutDuration: Duration(seconds: 1),
+            fadeInDuration: Duration(seconds: 3),
           )
         ),
         StepsImages(
@@ -201,9 +205,11 @@ class RecipeAdd with ChangeNotifier {
           body: CachedNetworkImage(
             width: 100.0,
             height: 100.0,
-            imageUrl: '$imagesStepsUrl/default-image.png',
-            placeholder: (context, url) => const CircularProgressIndicator(),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
+            imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
+            placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+            errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+            fadeOutDuration: Duration(seconds: 1),
+            fadeInDuration: Duration(seconds: 3),
           )
         )
       ]
