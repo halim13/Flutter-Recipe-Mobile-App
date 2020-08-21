@@ -121,7 +121,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
             headerAnimationLoop: false,
             dismissOnTouchOutside: false,
             title: 'Berhasil !',
-            desc: 'Perubahan tersimpan !',
+            desc: 'Data ditambahkan !',
             btnOkOnPress: () => Navigator.of(context).popUntil((route) => route.isFirst),
             btnOkIcon: Icons.check,
             btnOkColor: Colors.blue.shade700

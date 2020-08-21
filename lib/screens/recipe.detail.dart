@@ -28,7 +28,11 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
       child: Text(text,
-        style: Theme.of(context).textTheme.headline6,
+        style: TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+          fontSize: 18.0
+        )
       ),
     );
   }
@@ -38,10 +42,10 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(10.0),
       ),
-      margin: EdgeInsets.all(10),
-      padding: EdgeInsets.all(10),
+      margin: EdgeInsets.all(10.0),
+      padding: EdgeInsets.all(10.0),
       width: double.infinity,
       child: child,
     );
@@ -58,7 +62,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
           IconButton(
             icon: Icon(
               Icons.edit,
-              color: Colors.blue,
+              color: Colors.blue.shade700,
             ), 
             onPressed: edit
           )
@@ -93,41 +97,70 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                         ),
                       )
                     ),
-                    placeholder: (context, url) => Center(
-                      child: CircularProgressIndicator()
-                    ),
+                    placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
                     errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
                   ) 
                 ),
-                // buildSectionTitle(context, 'Ingredients'),
-                // buildContainer(
-                //   ListView.builder(
-                //     itemCount: provider.data.ingredients.length,
-                //     itemBuilder: (context, index) => Card(
-                //       color: Theme.of(context).accentColor,
-                //       child: Padding(
-                //         padding: EdgeInsets.symmetric(
-                //           vertical: 5,
-                //           horizontal: 10,
-                //         ),
-                //         child: Text(provider.data.ingredients[index].body)),
-                //       ),
-                //   ),
-                // ),
-                buildSectionTitle(context, 'Steps'),
+                buildSectionTitle(context, 'Bahan - bahan'),
                 buildContainer(
-                  ListView.builder(
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: recipeProvider.data.ingredientsGroup.length,
+                    separatorBuilder: (context, index) {
+                      return Divider();
+                    },
+                    itemBuilder: (context, i) => Container(
+                      margin: EdgeInsets.only(bottom: 20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('- ${recipeProvider.data.ingredientsGroup[i].body}', 
+                            style: TextStyle(
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.bold
+                            )
+                          ),
+                          SizedBox(height: 4.0),
+                          ListView(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            children: List.generate(recipeProvider.data.ingredientsGroup[i].ingredients.length, (z) => Container(
+                                child: Container(
+                                  margin: EdgeInsets.only(left: 10.0),
+                                  child: Text('- ${recipeProvider.data.ingredientsGroup[i].ingredients[z].body}',
+                                    style: TextStyle(
+                                      fontSize: 15.0,
+                                      height: 1.75
+                                    ) 
+                                  )
+                                )
+                              )
+                            )
+                          ),
+                        ],
+                      )
+                    )
+                  ),
+                ),
+                buildSectionTitle(context, 'Langkah Memasak'),
+                buildContainer(
+                  ListView.separated(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: recipeProvider.data.steps.length,
+                    separatorBuilder: (context, index) {
+                      return Divider();
+                    },
                     itemBuilder: (context, i) => Column(
                       children: [
                         ListTile(
                           leading: CircleAvatar(
+                            backgroundColor: Colors.red.shade700,
                             child: Text('${i + 1}',
                               style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 19.0,
+                                color: Colors.white,
+                                fontSize: 15.0,
                               )
                             ),
                           ),
@@ -155,7 +188,6 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                             )
                           ) 
                         ),
-                        Divider()
                       ],
                     ),
                   ),

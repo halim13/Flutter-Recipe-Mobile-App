@@ -115,9 +115,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
                                       ),
                                     )
                                   ),
-                                  placeholder: (context, url) => Center(
-                                    child: CircularProgressIndicator()
-                                  ),
+                                  placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
                                   errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
                                 ),
                               ),

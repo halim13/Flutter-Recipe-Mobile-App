@@ -33,31 +33,36 @@ class FavoritesScreen extends StatelessWidget {
                   child: Column( 
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Text('You have no favorites yet.')
+                    children: [
+                      Text(
+                        'Belum ada resep kesukaan kamu.', 
+                        style: TextStyle(
+                          fontSize: 15.0
+                        ),
+                      )
                     ]
                   ),
                 ),
               ],
             ),
           ),
-          builder: (context, value, ch) {
-            if(value.displayRecipeFavourite.length <= 0) {
-              return ch;
+          builder: (context, recipeProvider, child) {
+            if(recipeProvider.displayRecipeFavourite.length <= 0) {
+              return child;
             }
             return RefreshIndicator(
-              onRefresh: () => value.refreshRecipeFavourite(),
+              onRefresh: () => recipeProvider.refreshRecipeFavourite(),
               child: ListView.builder(
-              itemCount: value.displayRecipeFavourite.length,
+              itemCount: recipeProvider.displayRecipeFavourite.length,
                 itemBuilder: (context, index) {
                   return RecipeItem(
-                    id: value.displayRecipeFavourite[index].id,
-                    uuid: value.displayRecipeFavourite[index].uuid,
-                    title: value.displayRecipeFavourite[index].title,
-                    imageUrl: value.displayRecipeFavourite[index].imageUrl,
-                    duration: value.displayRecipeFavourite[index].duration.toString(),
-                    affordability: value.displayRecipeFavourite[index].affordability,
-                    complexity: value.displayRecipeFavourite[index].complexity,
+                    id: recipeProvider.displayRecipeFavourite[index].id,
+                    uuid: recipeProvider.displayRecipeFavourite[index].uuid,
+                    title: recipeProvider.displayRecipeFavourite[index].title,
+                    imageUrl: recipeProvider.displayRecipeFavourite[index].imageUrl,
+                    duration: recipeProvider.displayRecipeFavourite[index].duration.toString(),
+                    affordability: recipeProvider.displayRecipeFavourite[index].affordability,
+                    complexity: recipeProvider.displayRecipeFavourite[index].complexity,
                   );
                 }
               ),

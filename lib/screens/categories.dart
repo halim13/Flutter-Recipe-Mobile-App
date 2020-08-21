@@ -32,39 +32,36 @@ class CategoriesScreen extends StatelessWidget {
         }
         return Consumer<Categories>(
           child: Center(
-            child: const Text('You have no categories yet, start adding some!'),
+            child: Text('Kamu belum memiliki kategori.'),
           ),
-          builder: (context, value, ch) => 
-          value.items.length <= 0
-          ? ch
+          builder: (context, categoryProvider, child) => 
+          categoryProvider.items.length <= 0
+          ? child
           : RefreshIndicator(
-              onRefresh: () => value.refreshProducts(),
+              onRefresh: () => categoryProvider.refreshProducts(),
               child: GridView.builder(
-              itemCount: value.items.length,
-              padding: EdgeInsets.all(25.0),
-              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 200.0,
-                childAspectRatio: 3.0 / 2.0,
-                crossAxisSpacing: 20.0,
-                mainAxisSpacing: 20.0,
-              ), 
-              itemBuilder: (context, index) {
+                itemCount: categoryProvider.items.length,
+                padding: EdgeInsets.all(25.0),
+                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 200.0,
+                  childAspectRatio: 3.0 / 2.0,
+                  crossAxisSpacing: 20.0,
+                  mainAxisSpacing: 20.0,
+                ), 
+              itemBuilder: (context, i) {
                 return InkWell(
-                  onTap: () => selectCategory(context, value.items[index].uuid, value.items[index].title),
+                  onTap: () => selectCategory(context, categoryProvider.items[i].uuid, categoryProvider.items[i].title),
                   splashColor: Theme.of(context).primaryColor,
                   borderRadius: BorderRadius.circular(15.0),
                   child: Container(
                     padding: EdgeInsets.all(15.0),
-                    child: Container(
-                      padding: EdgeInsets.all(5.0),
-                      child: Text(
-                        value.items[index].title,
-                        style: Theme.of(context).textTheme.headline6,
-                      ),
+                    child: Text(
+                      categoryProvider.items[i].title,
+                      style: Theme.of(context).textTheme.headline6,
                     ),
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: value.items[index].cover != null ? value.items[index].cover != "" ? NetworkImage(value.items[index].cover) : AssetImage('assets/default-thumbnail.jpg') : AssetImage('assets/default-thumbnail.jpg'),
+                        image: categoryProvider.items[i].cover != null ? categoryProvider.items[i].cover != "" ? NetworkImage(categoryProvider.items[i].cover) : AssetImage('assets/default-thumbnail.jpg') : AssetImage('assets/default-thumbnail.jpg'),
                         fit: BoxFit.cover
                       ),
                       borderRadius: BorderRadius.circular(15.0),

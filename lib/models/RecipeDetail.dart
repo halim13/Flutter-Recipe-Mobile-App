@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-
-class RecipeDetailModel with ChangeNotifier {
+class RecipeDetailModel {
   int status;
   bool error;
   String message;
@@ -21,25 +19,25 @@ class RecipeDetailModel with ChangeNotifier {
   );
 }
 
-class Data with ChangeNotifier {
+class Data {
   List<RecipeDetailData> recipes;
-  List<IngredientDetailData> ingredients;
+  List<IngredientsGroup> ingredientsGroup;
   List<StepDetailData> steps;
 
   Data({
     this.recipes,
-    this.ingredients,
+    this.ingredientsGroup,
     this.steps,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
     recipes: json["recipes"] == null ? null : List<RecipeDetailData>.from(json["recipes"].map((x) => RecipeDetailData.fromJson(x))),
-    ingredients: json["ingredients"] == null ? null : List<IngredientDetailData>.from(json["ingredients"].map((x) => IngredientDetailData.fromJson(x))),
+    ingredientsGroup: json["ingredientsGroup"] == null ? null : List<IngredientsGroup>.from(json["ingredientsGroup"].map((x) => IngredientsGroup.fromJson(x))),
     steps: json["steps"] == null ? null : List<StepDetailData>.from(json["steps"].map((x) => StepDetailData.fromJson(x))),
   );
 }
 
-class RecipeDetailData with ChangeNotifier {
+class RecipeDetailData {
   int id;
   String uuid;
   String title;
@@ -63,22 +61,40 @@ class RecipeDetailData with ChangeNotifier {
   );
 }
 
-class IngredientDetailData with ChangeNotifier {
+class IngredientsGroup {
+  String uuid;
+  String body;
+  List<Ingredients> ingredients;
+
+  IngredientsGroup({
+    this.uuid,
+    this.body,
+    this.ingredients
+  });
+
+  factory IngredientsGroup.fromJson(Map<String, dynamic> json) => IngredientsGroup(
+    uuid: json["uuid"] == null ? null : json["uuid"],
+    body: json["body"] == null ? null : json["body"],
+    ingredients: List<Ingredients>.from(json["ingredients"].map((x) => Ingredients.fromJson(x))),
+  );
+}
+
+class Ingredients {
   String uuid;
   String body;
 
-  IngredientDetailData({
+  Ingredients({
     this.uuid,
     this.body,
   });
 
-  factory IngredientDetailData.fromJson(Map<String, dynamic> json) => IngredientDetailData(
+  factory Ingredients.fromJson(Map<String, dynamic> json) => Ingredients(
     uuid: json["uuid"] == null ? null : json["uuid"],
     body: json["body"] == null ? null : json["body"],
   );
 }
 
-class StepDetailData with ChangeNotifier {
+class StepDetailData {
   String uuid;
   String body;
   List<StepsDetailImages> stepsImages;
