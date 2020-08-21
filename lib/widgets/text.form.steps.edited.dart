@@ -55,7 +55,8 @@ Widget textFormStepsEdited(BuildContext context) {
                   TextFormField(
                     maxLines: 3,
                     style: TextStyle(
-                      fontSize: 15.0
+                      fontSize: 16.0,
+                      height: 1.75
                     ),
                     focusNode: recipeProvider.steps[i].focusNode,
                     controller: recipeProvider.steps[i].textEditingController,
@@ -63,7 +64,8 @@ Widget textFormStepsEdited(BuildContext context) {
                       contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                       border: InputBorder.none,
                       hintStyle: TextStyle(
-                        fontSize: 15.0
+                        fontSize: 16.0,
+                        fontStyle: FontStyle.italic
                       ),
                       hintText: "Bagaimana langkah membuatnya?",
                       prefixIcon: Column( 
@@ -72,7 +74,7 @@ Widget textFormStepsEdited(BuildContext context) {
                             '${i + 1}.', 
                             style: TextStyle(
                               color: Colors.black,
-                              fontSize: 18.0,
+                              fontSize: 16.0,
                             )
                           )
                         ]

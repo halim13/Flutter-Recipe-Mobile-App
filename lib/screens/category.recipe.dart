@@ -77,34 +77,34 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
             child: Center(
               child: const Text('Belum ada Resep Nih, Coba Buat Resep!'),
             ),
-            builder: (context, value, ch) => value.showRecipeItem.length <= 0 ? ch :
+            builder: (context, recipeProvider, child) => recipeProvider.showRecipeItem.length <= 0 ? child :
             RefreshIndicator(
-              onRefresh: () => value.refreshRecipe(recipeId),
+              onRefresh: () => recipeProvider.refreshRecipe(recipeId),
               child: ListView.builder(
               controller: controller,
-              itemCount: value.showRecipeItem.length,
+              itemCount: recipeProvider.showRecipeItem.length,
               itemBuilder: (context, index) {
-                if(index == value.showRecipeItem.length) 
+                if(index == recipeProvider.showRecipeItem.length) 
                   return CircularProgressIndicator();
                   return InkWell(
-                    onTap: () => selectMeal(context, value.showRecipeItem[index].title.toString(), value.showRecipeItem[index].uuid),
+                    onTap: () => selectMeal(context, recipeProvider.showRecipeItem[index].title.toString(), recipeProvider.showRecipeItem[index].uuid),
                     child: Card(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15)
+                        borderRadius: BorderRadius.circular(15.0)
                       ),
                       elevation: 4,
-                      margin: EdgeInsets.all(10),
+                      margin: EdgeInsets.all(10.0),
                       child: Column(
-                        children: <Widget>[
+                        children: [
                           Stack(
-                            children: <Widget>[
+                            children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(15),
-                                  topRight: Radius.circular(15),
+                                  topLeft: Radius.circular(15.0),
+                                  topRight: Radius.circular(15.0),
                                 ),
                                 child: CachedNetworkImage(
-                                  imageUrl: '$imagesRecipesUrl/${value.showRecipeItem[index].imageurl}',
+                                  imageUrl: '$imagesRecipesUrl/${recipeProvider.showRecipeItem[index].imageurl}',
                                   imageBuilder: (context, imageProvider) => Container(
                                     width: double.infinity,
                                     height: 250.0,
@@ -120,18 +120,19 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
                                 ),
                               ),
                               Positioned(
-                                bottom: 20,
-                                right: 10,
+                                bottom: 20.0,
+                                right: 10.0,
                                 child: Container(
-                                  width: 300,
+                                  width: 300.0,
                                   color: Colors.black54,
                                   padding: EdgeInsets.symmetric(
-                                    vertical: 5,
-                                    horizontal: 20,
+                                    vertical: 5.0,
+                                    horizontal: 20.0,
                                   ),
-                                  child: Text(value.showRecipeItem[index].title.toString(),
+                                  child: Text(
+                                    titleCase(recipeProvider.showRecipeItem[index].title),
                                     style: TextStyle(
-                                      fontSize: 26,
+                                      fontSize: 26.0,
                                       color: Colors.white,
                                     ),
                                     softWrap: true,
@@ -142,29 +143,33 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
                             ],
                           ),
                           Padding(
-                            padding: EdgeInsets.all(20),
+                            padding: EdgeInsets.all(20.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: <Widget>[
+                              children: [
                                 Row(
-                                  children: <Widget>[
+                                  children: [
                                     Icon(Icons.schedule),
                                     SizedBox(width: 6),
-                                    Text('${value.showRecipeItem[index].duration.toString()} min'),
+                                    Text('${recipeProvider.showRecipeItem[index].duration.toString()} min'),
                                   ],
                                 ),
                                 Row(
-                                  children: <Widget>[
+                                  children: [
                                     Icon(Icons.work),
                                     SizedBox(width: 6),
-                                    Text(value.showRecipeItem[index].complexities.toString()),
+                                    Text(recipeProvider.showRecipeItem[index].complexities.toString()),
                                   ],
                                 ),
                                 Row(
-                                  children: <Widget>[
-                                    Icon(Icons.attach_money),
-                                    SizedBox(width: 6),
-                                    Text(value.showRecipeItem[index].affordabilities.toString()),
+                                  children: [
+                                    Icon(
+                                      Icons.attach_money
+                                    ),
+                                    SizedBox(
+                                      width: 6.0
+                                      ),
+                                    Text(recipeProvider.showRecipeItem[index].affordabilities.toString()),
                                   ],
                                 ),
                               ],
@@ -196,7 +201,7 @@ class DataSearch extends SearchDelegate<String> {
       textTheme: theme.textTheme.copyWith(
         headline6: TextStyle(
           color: Colors.black,
-          fontSize: 20,
+          fontSize: 20.0,
           fontWeight: FontWeight.w400
         ),
       ),
@@ -232,7 +237,6 @@ class DataSearch extends SearchDelegate<String> {
   Widget buildResults(BuildContext context) {
     final provider = Provider.of<RecipeShow>(context);
     final results = provider.showRecipeItem.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
-
     return ListView.builder(
       itemCount: results.length,
       itemBuilder: (context, index) {
@@ -245,38 +249,38 @@ class DataSearch extends SearchDelegate<String> {
           },
           child: Card(
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15)
+              borderRadius: BorderRadius.circular(15.0)
             ),
             elevation: 4,
-            margin: EdgeInsets.all(10),
+            margin: EdgeInsets.all(10.0),
             child: Column(
-              children: <Widget>[
+              children: [
                 Stack(
-                  children: <Widget>[
+                  children: [
                     ClipRRect(
                       borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(15),
-                        topRight: Radius.circular(15),
+                        topLeft: Radius.circular(15.0),
+                        topRight: Radius.circular(15.0),
                       ),
                       child: Image.network(results[index].imageurl,
-                        height: 250,
+                        height: 250.0,
                         width: double.infinity,
                         fit: BoxFit.cover,
                       ),
                     ),
                     Positioned(
-                      bottom: 20,
-                      right: 10,
+                      bottom: 20.0,
+                      right: 10.0,
                       child: Container(
-                        width: 300,
+                        width: 300.0,
                         color: Colors.black54,
                         padding: EdgeInsets.symmetric(
-                          vertical: 5,
-                          horizontal: 20,
+                          vertical: 5.0,
+                          horizontal: 20.0,
                         ),
                         child: Text(results[index].title,
                           style: TextStyle(
-                            fontSize: 26,
+                            fontSize: 26.0,
                             color: Colors.white,
                           ),
                           softWrap: true,
@@ -287,28 +291,28 @@ class DataSearch extends SearchDelegate<String> {
                   ],
                 ),
                 Padding(
-                  padding: EdgeInsets.all(20),
+                  padding: EdgeInsets.all(20.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
                       Row(
                         children: <Widget>[
                           Icon(Icons.schedule),
-                          SizedBox(width: 6),
+                          SizedBox(width: 6.0),
                           Text('${results[index].duration} min'),
                         ],
                       ),
                       Row(
-                        children: <Widget>[
+                        children: [
                           Icon(Icons.work),
-                          SizedBox(width: 6),
+                          SizedBox(width: 6.0),
                           Text(results[index].complexities),
                         ],
                       ),
                       Row(
-                        children: <Widget>[
+                        children: [
                           Icon(Icons.attach_money),
-                          SizedBox(width: 6),
+                          SizedBox(width: 6.0),
                           Text(results[index].affordabilities),
                         ],
                       ),
@@ -324,29 +328,29 @@ class DataSearch extends SearchDelegate<String> {
   }
   @override
   Widget buildSuggestions(BuildContext context) {
-    final provider = Provider.of<RecipeShow>(context);
+    final recipeProvider = Provider.of<RecipeShow>(context);
     if(query.isEmpty) {
       return ListView.builder(
-        itemCount: provider.searchSuggestionsItem.length,
-        itemBuilder: (context, index) => Card(
+        itemCount: recipeProvider.searchSuggestionsItem.length,
+        itemBuilder: (context, i) => Card(
           child: ListTile(
             onTap: () {
               Navigator.of(context).pushNamed(
                 RecipeDetailScreen.routeName,
-                arguments: provider.searchSuggestionsItem[index].uuid
+                arguments: recipeProvider.searchSuggestionsItem[i].uuid
               );
-              provider.popularViews(provider.searchSuggestionsItem[index].uuid);
+              recipeProvider.popularViews(recipeProvider.searchSuggestionsItem[i].uuid);
             },
             leading: Image.network(
-              provider.searchSuggestionsItem[index].imageUrl,
-              height: 50,
-              width: 50,
+              recipeProvider.searchSuggestionsItem[i].imageUrl,
+              height: 50.0,
+              width: 50.0,
               alignment: Alignment.center,
               fit: BoxFit.cover,
             ),
             title: RichText(
               text: TextSpan(
-                children: highlightOccurrences(provider.searchSuggestionsItem[index].title, query),
+                children: highlightOccurrences(recipeProvider.searchSuggestionsItem[i].title, query),
                 style: TextStyle(
                   color: Colors.grey,
                   fontWeight: FontWeight.bold
@@ -357,7 +361,7 @@ class DataSearch extends SearchDelegate<String> {
         ),
       );
     }
-    final suggestionsList = provider.showRecipe.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
+    final suggestionsList = recipeProvider.showRecipe.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
     return ListView.builder(
       itemCount: suggestionsList.length,
       itemBuilder: (context, index) => Card(
@@ -367,12 +371,12 @@ class DataSearch extends SearchDelegate<String> {
               RecipeDetailScreen.routeName,
               arguments: suggestionsList[index].uuid
             );
-            provider.popularViews(suggestionsList[index].uuid);
+            recipeProvider.popularViews(suggestionsList[index].uuid);
           },
           leading: Image.network(
             suggestionsList[index].imageurl,
-            height: 50,
-            width: 50,
+            height: 50.0,
+            width: 50.0,
             alignment: Alignment.center,
             fit: BoxFit.cover,
           ),

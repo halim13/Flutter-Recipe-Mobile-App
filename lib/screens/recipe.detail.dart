@@ -31,7 +31,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
         style: TextStyle(
           color: Colors.black,
           fontWeight: FontWeight.bold,
-          fontSize: 18.0
+          fontSize: 17.0
         )
       ),
     );
@@ -97,6 +97,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                         ),
                       )
                     ),
+                    progressIndicatorBuilder: (context, url, progress) => CircularProgressIndicator(value: progress.progress),
                     placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
                     errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
                   ) 
@@ -117,7 +118,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                         children: [
                           Text('- ${recipeProvider.data.ingredientsGroup[i].body}', 
                             style: TextStyle(
-                              fontSize: 15.0,
+                              fontSize: 16.0,
                               fontWeight: FontWeight.bold
                             )
                           ),
@@ -130,7 +131,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                                   margin: EdgeInsets.only(left: 10.0),
                                   child: Text('- ${recipeProvider.data.ingredientsGroup[i].ingredients[z].body}',
                                     style: TextStyle(
-                                      fontSize: 15.0,
+                                      fontSize: 16.0,
                                       height: 1.75
                                     ) 
                                   )
@@ -160,12 +161,16 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                             child: Text('${i + 1}',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 15.0,
+                                fontSize: 16.0,
                               )
                             ),
                           ),
                           title: Text(
                             recipeProvider.data.steps[i].body,
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              height: 1.75
+                            ),
                           ),
                         ),
                         Row(
@@ -173,14 +178,17 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                             Expanded(
                               child: GestureDetector(
                                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) {
-                                  return PreviewImageScreen(body: recipeProvider.data.steps[i].stepsImages[z].body);
+                                  return PreviewImageScreen(
+                                    body: recipeProvider.data.steps[i].stepsImages[z].body
+                                  );
                                 })),
                                 child: Container(
                                   child: CachedNetworkImage(
                                     width: 100.0,
                                     height: 100.0,
                                     imageUrl: '$imagesStepsUrl/${recipeProvider.data.steps[i].stepsImages[z].body}',
-                                    placeholder: (context, url) => const CircularProgressIndicator(),
+                                    progressIndicatorBuilder: (context, url, progress) => CircularProgressIndicator(value: progress.progress),
+                                    placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
                                     errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
                                   )
                                 ),

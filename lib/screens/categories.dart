@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../providers/categories.dart';
 import 'category.recipe.dart';
 
@@ -54,19 +55,41 @@ class CategoriesScreen extends StatelessWidget {
                   splashColor: Theme.of(context).primaryColor,
                   borderRadius: BorderRadius.circular(15.0),
                   child: Container(
-                    padding: EdgeInsets.all(15.0),
-                    child: Text(
-                      categoryProvider.items[i].title,
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: categoryProvider.items[i].cover != null ? categoryProvider.items[i].cover != "" ? NetworkImage(categoryProvider.items[i].cover) : AssetImage('assets/default-thumbnail.jpg') : AssetImage('assets/default-thumbnail.jpg'),
-                        fit: BoxFit.cover
+                    child: CachedNetworkImage(
+                      progressIndicatorBuilder: (context, url, progress) => CircularProgressIndicator(value: progress.progress),
+                      imageUrl: '${categoryProvider.items[i].cover}',
+                      imageBuilder: (context, imageProvider) => Container(
+                      child: Text(
+                        categoryProvider.items[i].title,
+                        style: Theme.of(context).textTheme.headline6,
                       ),
-                      borderRadius: BorderRadius.circular(15.0),
+                      padding: EdgeInsets.all(15.0),
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: imageProvider, 
+                            fit: BoxFit.cover
+                          ),
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                      ),
+                      placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+                      errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
                     ),
-                  ),
+                  )
+                  // child: Container(
+                  //   padding: EdgeInsets.all(15.0),
+                  //   child: Text(
+                  //     categoryProvider.items[i].title,
+                  //     style: Theme.of(context).textTheme.headline6,
+                  //   ),
+                  //   decoration: BoxDecoration(
+                  //     image: DecorationImage(
+                  //       image: categoryProvider.items[i].cover != null ? categoryProvider.items[i].cover != "" ? NetworkImage(categoryProvider.items[i].cover) : AssetImage('assets/default-thumbnail.jpg') : AssetImage('assets/default-thumbnail.jpg'),
+                  //       fit: BoxFit.cover
+                  //     ),
+                  //     borderRadius: BorderRadius.circular(15.0),
+                  //   ),
+                  // ),
                 );
               }
             ),

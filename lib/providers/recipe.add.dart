@@ -142,10 +142,7 @@ class RecipeAdd with ChangeNotifier {
   }
 
   void decrementIngredientPerGroup(String uuid) {
-    int existingIngredientPerGroup = ingredientsGroup.indexWhere((item) => item.uuid == uuid);
-    if(existingIngredientPerGroup >= 0) {
-      ingredientsGroup.removeAt(existingIngredientPerGroup);
-    }
+    ingredientsGroup.removeWhere((item) => item.uuid == uuid);
     notifyListeners();
   }
 

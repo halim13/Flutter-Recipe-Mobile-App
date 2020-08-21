@@ -160,7 +160,8 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
   }
   
   Future<bool> onWillPop() async {
-    await showDialog(
+    return await showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) => AlertDialog(
         title: Text('Batal Ubah?', style: TextStyle(color: Colors.black)),
@@ -177,7 +178,6 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
         ],
       ),
     );
-    return Future.value(true);
   }
 
   Widget build(BuildContext context) {
@@ -252,7 +252,8 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                   child: Text(
                     'Kamu ingin buat masakan apa ?',
                     style: TextStyle(
-                      fontSize: 15.0
+                      fontSize: 16.0,
+                      fontStyle: FontStyle.italic
                     ),
                   ),
                 ),
@@ -287,7 +288,8 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                   child: Text(
                     'Kategori apa ?',
                     style: TextStyle(
-                      fontSize: 15.0
+                      fontSize: 16.0,
+                      fontStyle: FontStyle.italic
                     ),
                   ),
                 ),
@@ -315,7 +317,8 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                 child: Text(
                   'Berapa lama memasak ini ?',
                   style: TextStyle(
-                    fontSize: 15.0
+                    fontSize: 16.0,
+                    fontStyle: FontStyle.italic
                   ),
                 ),
               ),
@@ -339,7 +342,8 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                 child: Text(
                   'Apa saja bahan - bahan nya ?',
                   style: TextStyle(
-                    fontSize: 15.0
+                    fontSize: 16.0,
+                    fontStyle: FontStyle.italic
                   ),
                 ),
               ),
@@ -365,7 +369,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                         'Tambah grup',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 15.0
+                          fontSize: 16.0
                         ),
                       ),
                       shape: RoundedRectangleBorder(
@@ -380,11 +384,12 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
+                margin: EdgeInsets.only(left: 18.0, top: 18.0, right: 18.0),
                 child: Text(
                   'Bagaimana Memasak nya ?',
                   style: TextStyle(
-                    fontSize: 15.0
+                    fontSize: 16.0,
+                    fontStyle: FontStyle.italic
                   ),
                 ),
               ),
@@ -404,7 +409,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                       child: Text('Tambah langkah', 
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 15.0
+                          fontSize: 16.0
                         ),  
                       ),
                       shape: RoundedRectangleBorder(
@@ -444,7 +449,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                                 'Simpan Perubahan',
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 15.0
+                                  fontSize: 16.0
                                 ),
                               ) ,
                               shape: RoundedRectangleBorder(

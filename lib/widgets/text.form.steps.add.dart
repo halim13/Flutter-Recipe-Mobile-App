@@ -56,13 +56,13 @@ Widget textFormStepsAdd(BuildContext context) {
                         focusNode: recipeProvider.steps[i].focusNode,
                         controller: recipeProvider.steps[i].textEditingController,
                         style: TextStyle(
-                          fontSize: 15.0
+                          fontSize: 16.0
                         ),
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                           border: InputBorder.none,
                           hintStyle: TextStyle(
-                            fontSize: 15.0
+                            fontSize: 16.0,
                           ),
                           hintText: "Bagaimana langkah membuatnya?",
                           prefixIcon: Column( 
@@ -71,7 +71,7 @@ Widget textFormStepsAdd(BuildContext context) {
                                 '${i + 1}.', 
                                 style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 18.0,
+                                  fontSize: 16.0,
                                 )
                               )
                             ]

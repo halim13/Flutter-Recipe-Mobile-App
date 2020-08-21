@@ -53,14 +53,14 @@ class _MyAppState extends State<MyApp> {
         ),
       ],
       child: MaterialApp(
-        title: 'ResepMama',
+        title: 'Flutter Recipe',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           appBarTheme: AppBarTheme(elevation: 0.0),
           primaryColor: primaryGrey.shade50,
           accentColor: primaryRed.shade700,
           canvasColor: const Color.fromARGB(255, 255, 255, 255),
-          fontFamily: 'Raleway',
+          // fontFamily: 'Raleway',
           textTheme: ThemeData.light().textTheme.copyWith(
             bodyText1: TextStyle(
               color: Color.fromRGBO(20, 51, 51, 1),

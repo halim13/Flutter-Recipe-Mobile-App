@@ -27,17 +27,16 @@ Widget textFormIngredientsEdit(BuildContext context) {
                         Flexible(
                           child: TextFormField(
                             style: TextStyle(
-                              fontSize: 15.0
+                              fontSize: 16.0
                             ),
                               focusNode: recipeProvider.ingredientsGroup[i].focusNode,
                               controller: recipeProvider.ingredientsGroup[i].textEditingController,
                               decoration: InputDecoration(
                                 border: InputBorder.none,
-                                
                                 hintStyle: TextStyle(
-                                  fontSize: 15.0
+                                  fontSize: 16.0
                                 ),
-                                hintText: "Mis: 1 kg sapi",
+                                hintText: "Mis: Bahan Utama",
                               ),
                             ),
                           ),
@@ -68,7 +67,7 @@ Widget textFormIngredientsEdit(BuildContext context) {
                             children: [
                               SizedBox(width: 20.0),
                               Text('${z + 1}.', style: TextStyle(
-                                fontSize: 18.0
+                                fontSize: 16.0
                                 )
                               ),
                               SizedBox(width: 15.0),

@@ -27,7 +27,7 @@ Widget textFormIngredientsAdd() {
                         Flexible(
                           child: TextFormField(
                             style: TextStyle(
-                              fontSize: 15.0
+                              fontSize: 16.0,
                             ),
                             focusNode: recipeProvider.ingredientsGroup[i].focusNode,
                             controller: recipeProvider.ingredientsGroup[i].textEditingController,

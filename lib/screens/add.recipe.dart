@@ -196,7 +196,8 @@ class _AddRecipeState extends State<AddRecipeScreen> {
               child: Text(
                 'Kamu ingin buat masakan apa ?',
                 style: TextStyle(
-                  fontSize: 15.0
+                  fontSize: 16.0,
+                  fontStyle: FontStyle.italic
                 ),
               ),
             ),
@@ -228,7 +229,8 @@ class _AddRecipeState extends State<AddRecipeScreen> {
               child: Text(
                 'Kategori apa ?',
                 style: TextStyle(
-                  fontSize: 15.0
+                  fontSize: 16.0,
+                  fontStyle: FontStyle.italic
                 ),
               ),
             ),
@@ -255,7 +257,8 @@ class _AddRecipeState extends State<AddRecipeScreen> {
               child: Text(
                 'Berapa lama memasak ini ?',
                 style: TextStyle(
-                  fontSize: 15.0
+                  fontSize: 16.0,
+                  fontStyle: FontStyle.italic
                 ),
               ),
             ),
@@ -278,7 +281,8 @@ class _AddRecipeState extends State<AddRecipeScreen> {
               child: Text(
                 'Apa saja bahan - bahan nya ?',
                 style: TextStyle(
-                  fontSize: 15.0
+                  fontSize: 16.0,
+                  fontStyle: FontStyle.italic
                 ),
               ),
             ),
@@ -304,7 +308,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
                       'Tambah grup',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 15.0
+                        fontSize: 16.0
                       ),
                     ),
                     elevation: 0.0,
@@ -315,11 +319,12 @@ class _AddRecipeState extends State<AddRecipeScreen> {
               ),
             ),
             Container(
-              margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
+              margin: EdgeInsets.only(left: 18.0, top: 18.0, right: 18.0),
               child: Text(
                 'Bagaimana Memasak nya ?',
                 style: TextStyle(
-                  fontSize: 15.0
+                  fontSize: 16.0,
+                  fontStyle: FontStyle.italic
                 ),
               ),
             ),
@@ -339,7 +344,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
                     child: Text('Tambah langkah', 
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 15.0
+                        fontSize: 16.0
                       ),  
                     ),
                     shape: RoundedRectangleBorder(
@@ -380,7 +385,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
                     child: Text('Simpan perubahan', 
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 15.0
+                          fontSize: 16.0
                         ),
                       ),
                       shape: RoundedRectangleBorder(
