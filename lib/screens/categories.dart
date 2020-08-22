@@ -90,7 +90,7 @@ class CategoriesScreen extends StatelessWidget {
                         ),
                       ),
                       fadeOutDuration: Duration(seconds: 1),
-                      fadeInDuration: Duration(seconds: 3),
+                      fadeInDuration: Duration(seconds: 1),
                     ),
                   )
                   // child: Container(

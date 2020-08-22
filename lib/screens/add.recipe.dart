@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import '../widgets/text.form.ingredients.add.dart';
 import '../widgets/text.form.steps.add.dart';
@@ -57,6 +58,12 @@ class _AddRecipeState extends State<AddRecipeScreen> {
   }
 
   void save(BuildContext context) async {
+    ProgressDialog pr = ProgressDialog(
+      context, 
+      type: ProgressDialogType.Normal, 
+      isDismissible: false, 
+      showLogs: false
+    );
     RecipeAdd recipeProvider = Provider.of<RecipeAdd>(context, listen: false);
     recipeProvider.titleFocusNode.unfocus();
     try {       
@@ -112,8 +119,10 @@ class _AddRecipeState extends State<AddRecipeScreen> {
       String ingredientsGroup = jsonEncode(uniqueIngredientsGroup);
       String ingredients = jsonEncode(uniqueIngredients);
       String steps = jsonEncode(uniqueSteps);
-      await recipeProvider.store(title, ingredientsGroup, ingredients, steps).then((value) {
+      await pr.show();
+      await recipeProvider.store(title, ingredientsGroup, ingredients, steps).then((value) async {
         if(value["status"] == 200) {
+          await pr.hide();
           AwesomeDialog(
             context: context,
             dialogType: DialogType.SUCCES,

@@ -47,7 +47,7 @@ class RecipeEdit extends ChangeNotifier {
       notifyListeners();
     }
   }
-  void stepsImage(int i, int z, PickedFile pickedFile) {  
+  void stepsImage(int i, int z, PickedFile pickedFile) async {  
     if(pickedFile != null) {
       steps[i].images[z].body = Image.file(File(pickedFile.path));
       steps[i].images[z].filename = pickedFile.path;
@@ -119,7 +119,7 @@ class RecipeEdit extends ChangeNotifier {
             placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
             errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
             fadeOutDuration: Duration(seconds: 1),
-            fadeInDuration: Duration(seconds: 3),
+            fadeInDuration: Duration(seconds: 1),
           )
         ),
         StepsImages(
@@ -131,7 +131,7 @@ class RecipeEdit extends ChangeNotifier {
             placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
             errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
             fadeOutDuration: Duration(seconds: 1),
-            fadeInDuration: Duration(seconds: 3),
+            fadeInDuration: Duration(seconds: 1),
           )
         ),
         StepsImages(
@@ -143,7 +143,7 @@ class RecipeEdit extends ChangeNotifier {
             placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
             errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
             fadeOutDuration: Duration(seconds: 1),
-            fadeInDuration: Duration(seconds: 3),
+            fadeInDuration: Duration(seconds: 1),
           )
         )
       ]
@@ -161,6 +161,7 @@ class RecipeEdit extends ChangeNotifier {
   }
 
   Future edit(String recipeId) async {
+    // DefaultCacheManager().emptyCache();
     String url = 'http://$baseurl:$port/api/v1/recipes/edit/$recipeId'; 
     try {
       http.Response response = await http.get(url);
@@ -194,16 +195,23 @@ class RecipeEdit extends ChangeNotifier {
         Uuid uuid = Uuid();
         for (int j = 0; j < 3; j++) {
           final checkUuid = getSteps[k].images.asMap().containsKey(j) ? getSteps[k].images[j].uuid : uuid.v4();
+          if(getSteps[k].images.asMap().containsKey(j)) { 
+            await DefaultCacheManager().removeFile('$imagesStepsUrl/${getSteps[k].images[j].body}');
+          }
           initialStepsImages.add(StepsImages(
             uuid: checkUuid,
             body: getSteps[k].images.asMap().containsKey(j) ? CachedNetworkImage(
               imageUrl: '$imagesStepsUrl/${getSteps[k].images[j].body}',
-              placeholder: (context, url) => const CircularProgressIndicator(),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
+              placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+              errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+              fadeOutDuration: Duration(seconds: 1),
+              fadeInDuration: Duration(seconds: 1),
             ) : CachedNetworkImage(
               imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
-              placeholder: (context, url) => const CircularProgressIndicator(),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
+              placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+              errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+              fadeOutDuration: Duration(seconds: 1),
+              fadeInDuration: Duration(seconds: 1),
             )
           ));
         }
@@ -273,7 +281,6 @@ class RecipeEdit extends ChangeNotifier {
       String responseData = await response.stream.bytesToString();
       final responseDecoded = jsonDecode(responseData);
       edit(recipeId);
-      DefaultCacheManager().emptyCache();
       notifyListeners();    
       return responseDecoded;
     } catch(error) {

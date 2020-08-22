@@ -63,8 +63,10 @@ class RecipeAdd with ChangeNotifier {
             width: 100.0,
             height: 100.0,
             imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
-            placeholder: (context, url) => const CircularProgressIndicator(),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
+            placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+            errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+            fadeOutDuration: Duration(seconds: 1),
+            fadeInDuration: Duration(seconds: 1),
           )
         ),
         StepsImages(
@@ -73,8 +75,10 @@ class RecipeAdd with ChangeNotifier {
             width: 100.0,
             height: 100.0,
             imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
-            placeholder: (context, url) => const CircularProgressIndicator(),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
+            placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+            errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+            fadeOutDuration: Duration(seconds: 1),
+            fadeInDuration: Duration(seconds: 1),
           )
         ),
         StepsImages(
@@ -83,8 +87,10 @@ class RecipeAdd with ChangeNotifier {
             width: 100.0,
             height: 100.0,
             imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
-            placeholder: (context, url) => const CircularProgressIndicator(),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
+            placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+            errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+            fadeOutDuration: Duration(seconds: 1),
+            fadeInDuration: Duration(seconds: 1),
           )
         ),
       ]
@@ -185,7 +191,7 @@ class RecipeAdd with ChangeNotifier {
             placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
             errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
             fadeOutDuration: Duration(seconds: 1),
-            fadeInDuration: Duration(seconds: 3),
+            fadeInDuration: Duration(seconds: 1),
           )
         ),
         StepsImages(
@@ -197,7 +203,7 @@ class RecipeAdd with ChangeNotifier {
             placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
             errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
             fadeOutDuration: Duration(seconds: 1),
-            fadeInDuration: Duration(seconds: 3),
+            fadeInDuration: Duration(seconds: 1),
           )
         ),
         StepsImages(
@@ -209,7 +215,7 @@ class RecipeAdd with ChangeNotifier {
             placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
             errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
             fadeOutDuration: Duration(seconds: 1),
-            fadeInDuration: Duration(seconds: 3),
+            fadeInDuration: Duration(seconds: 1),
           )
         )
       ]
@@ -221,19 +227,14 @@ class RecipeAdd with ChangeNotifier {
 
   void stepsImage(int i, int z, PickedFile pickedFile) {  
     if(pickedFile != null) {
-      steps[i].images[z].body = Image.file(
-        File(pickedFile.path)
-      );
+      steps[i].images[z].body = Image.file(File(pickedFile.path));
       steps[i].images[z].filename = pickedFile.path;
       notifyListeners();
     }
   }
 
   void decrementSteps(String uuid) {
-    int existingSteps = steps.indexWhere((item) => item.uuid == uuid);
-    if(existingSteps >= 0) {
-      steps.removeAt(existingSteps);
-    } 
+    steps.removeWhere((item) => item.uuid == uuid);
     notifyListeners();
   }
   
@@ -261,6 +262,9 @@ class RecipeAdd with ChangeNotifier {
       request.fields["userId"] = userId; 
       http.StreamedResponse response = await request.send();
       if(response.statusCode == 200) {
+        ingredientsGroupSendToHttp = [];
+        ingredientsSendToHttp = [];
+        stepsSendToHttp = [];
         isLoading = false;
         notifyListeners();
       }

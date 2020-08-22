@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
@@ -19,7 +20,6 @@ class EditRecipeScreen extends StatefulWidget {
 }
 
 class _EditRecipeScreenState extends State<EditRecipeScreen> {
-  Timer timer;
 
   void changeImageRecipe() async {
     ImageSource imageSource = await showDialog<ImageSource>(context: context, builder: (context) => 
@@ -58,6 +58,12 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
   }
 
   void save(BuildContext context) async {
+    ProgressDialog pr = ProgressDialog(
+      context, 
+      type: ProgressDialogType.Normal, 
+      isDismissible: false, 
+      showLogs: false
+    );
     RecipeEdit recipeProvider = Provider.of<RecipeEdit>(context, listen: false);
     recipeProvider.titleFocusNode.unfocus();
     try {
@@ -123,18 +129,20 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
       String steps = jsonEncode(uniqueSteps);
       String removeSteps = jsonEncode(uniqueRemoveSteps);
       Object recipeId = ModalRoute.of(context).settings.arguments;
-      await Provider.of<RecipeEdit>(context, listen: false).update(title, recipeId, ingredientsGroup, removeIngredientsGroup, ingredients, removeIngredients, steps, removeSteps, categoryName).then((value) {
+      await pr.show();
+      await Provider.of<RecipeEdit>(context, listen: false).update(title, recipeId, ingredientsGroup, removeIngredientsGroup, ingredients, removeIngredients, steps, removeSteps, categoryName).then((value) async {
         if(value["status"] == 200) {
+          await pr.hide();
           AwesomeDialog(
             context: context,
             dialogType: DialogType.SUCCES,
-            animType: AnimType.RIGHSLIDE,
+            animType: AnimType.BOTTOMSLIDE,
             headerAnimationLoop: false,
             dismissOnTouchOutside: false,
             title: 'Berhasil !',
             desc: 'Perubahan tersimpan !',
             btnOkOnPress: () => Navigator.of(context).popUntil((route) => route.isFirst),
-            btnOkIcon: Icons.check,
+            btnOkIcon: null, // Icons.check
             btnOkColor: Colors.blue.shade700
           )..show();
         } 
@@ -180,7 +188,13 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
     );
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   Widget build(BuildContext context) {
+    // ProgressDialog pr = ProgressDialog(context);
     Object recipeId = ModalRoute.of(context).settings.arguments;
     return Scaffold(
     appBar: AppBar(
