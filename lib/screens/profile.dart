@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import '../screens/preview.image.dart';
 import '../providers/auth.dart';
 import '../providers/user.dart';
 import './login.dart';
@@ -247,9 +248,9 @@ class ProfileScreenState extends State<ProfileScreen> {
               onRefresh: () => user.refreshProfile(),
               child: ListView.builder(
               itemCount: user.items.length,
-              itemBuilder: (context, index) {
-              usernameController.text = user.items[index].name;
-              bioController.text = user.items[index].bio;
+              itemBuilder: (context, i) {
+              usernameController.text = user.items[i].name;
+              bioController.text = user.items[i].bio;
                   return Column(
                     children: [
                       Stack(
@@ -271,19 +272,31 @@ class ProfileScreenState extends State<ProfileScreen> {
                                   overflow: Overflow.visible,
                                   alignment: Alignment.center,
                                   children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(80.0),
-                                      child: user.file == null 
-                                      ? currentAvatar(user, index)
-                                      : previewAvatar(user)
+                                    Container(
+                                      width: 120.0,
+                                      height: 120.0,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: GestureDetector(
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(150.0),
+                                          child: CachedNetworkImage(
+                                            fit: BoxFit.cover,
+                                            placeholder: (context, url) => CircularProgressIndicator(),                                          
+                                            imageUrl: '$imagesAvatarUrl/${user.items[i].avatar}',
+                                          ),
+                                        ),
+                                        onTap: () {
+                                          Navigator.push(context, MaterialPageRoute(builder: (_) {
+                                            return PreviewImageScreen(
+                                              url: imagesAvatarUrl,
+                                              body: user.items[i].avatar
+                                            );
+                                          }));
+                                        },
+                                      ),
                                     ),
-                                   Positioned(     
-                                    child: IconButton(
-                                      color: Colors.white,
-                                      icon: Icon(Icons.camera_alt),
-                                      onPressed: () => pickImage()
-                                    )
-                                    )
                                   ]
                                 ),
                               ],
@@ -297,33 +310,16 @@ class ProfileScreenState extends State<ProfileScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text('Name'),
-                              Consumer<User>(
-                                builder: (context, user, child) {
-                                return IconButton(
-                                  icon: Icon(Icons.edit),
-                                  onPressed: () => user.toggleFormEditUsername()
-                                );
-                                }
-                              )  
                             ],
                           )
                         ),
-                        subtitle: 
-                          Consumer<User>(
-                            builder: (context, user, child) {
-                              return user.isToggleFormEditUsername()
-                              ?
-                                Form(
-                                  key: formUsernameKey,
-                                  child: TextFormField(
-                                    controller: usernameController,
-                                  ),
-                                )
-                              : Text(
-                                  user.items[index].name.toString()
-                                );
-                            }
-                          )
+                        subtitle: Consumer<User>(
+                          builder: (context, user, child) {
+                            return Text(
+                              user.items[i].name.toString()
+                            );
+                          }
+                        )
                       ),
                       ListTile(
                         title: Row(
@@ -332,29 +328,16 @@ class ProfileScreenState extends State<ProfileScreen> {
                             Text('E-mail Address'),
                           ],
                         ),
-                        subtitle:  Text(user.items[index].email.toString())
+                        subtitle: Text(user.items[i].email.toString())
                       ),
                       ListTile(
                         title: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text('Bio'),
-                            IconButton(
-                              icon: Icon(Icons.edit),
-                              onPressed: () => user.toggleFormEditBio(),
-                            )   
                           ],
                         ),
-                        subtitle: 
-                        user.isToggleFormEditBio()
-                        ? Form(
-                            child: TextFormField(
-                              controller: bioController,
-                              maxLines: null,
-                              keyboardType: TextInputType.multiline
-                            ),
-                          )
-                        : Text(user.items[index].bio.toString())
+                        subtitle: Text(user.items[i].bio.toString())
                       ),
                       if(user.isToggleSavedChanges()) 
                         Row(
@@ -400,7 +383,7 @@ class ProfileScreenState extends State<ProfileScreen> {
         CircularProgressIndicator(
           value: progress.progress,
         ),
-        imageUrl: '$imagesAvatarUrl/${user.items[i].avatar}?${user.uniqueAvatar}',
+        imageUrl: '$imagesAvatarUrl/${user.items[i].avatar}',
       ),
     );
   }

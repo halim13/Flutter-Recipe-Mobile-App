@@ -67,7 +67,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        'Belum ada resep kamu di daftar favorit.', 
+                        'Belum ada favorit.', 
                         style: TextStyle(
                           fontSize: 15.0
                         ),

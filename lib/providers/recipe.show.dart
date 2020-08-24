@@ -44,7 +44,7 @@ class RecipeShow with ChangeNotifier {
     limit = limit + 5;
     String url = 'http://$baseurl:$port/api/v1/recipes/show/$recipeId?limit=$limit'; 
     try {
-      http.Response response = await http.get(url).timeout(Duration(seconds: 4));
+      http.Response response = await http.get(url).timeout(Duration(seconds: 5));
       RecipeShowModel model = RecipeShowModel.fromJson(json.decode(response.body));
       List<RecipeShowData> loadedRecipe = model.data;
       showRecipe = loadedRecipe;

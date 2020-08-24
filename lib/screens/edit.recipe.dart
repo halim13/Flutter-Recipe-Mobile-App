@@ -457,7 +457,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                           ),
                           elevation: 0.0,
                           color: Colors.blue.shade700,
-                          onPressed: null,
+                          onPressed: () {},
                         ) : RaisedButton(
                             child: Text(
                               'Simpan Perubahan',

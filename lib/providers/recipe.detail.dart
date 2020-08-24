@@ -30,10 +30,7 @@ class RecipeDetail with ChangeNotifier {
       notifyListeners();
     } else {
       updateToFavourite(recipeId, 0);
-      int existingIndex = displayRecipeFavourite.indexWhere((el) => el.uuid == recipeId);
-      if(existingIndex >= 0) {
-        displayRecipeFavourite.removeAt(existingIndex);
-      }
+      displayRecipeFavourite.removeWhere((el) => el.uuid == recipeId);
       favourite = 0;
       Fluttertoast.showToast(
         msg: 'Berhasil hapus dari daftar favorit.',
@@ -50,7 +47,7 @@ class RecipeDetail with ChangeNotifier {
   Future<void> getRecipeFavourite() async {
     String url = 'http://$baseurl:$port/api/v1/recipes/favourite'; 
     try {
-      http.Response response = await http.get(url).timeout(Duration(seconds: 4));
+      http.Response response = await http.get(url).timeout(Duration(seconds: 5));
       RecipeFavouriteModel model = RecipeFavouriteModel.fromJson(json.decode(response.body));
       List<RecipeFavouriteData> tempDisplayRecipeFavourite = [];
       model.data.forEach((item) {
@@ -82,7 +79,7 @@ class RecipeDetail with ChangeNotifier {
       });
       notifyListeners();
     } catch(error) {
-      print(error); // in-development
+      print(error);
       throw error;
     }
   }
@@ -95,7 +92,7 @@ class RecipeDetail with ChangeNotifier {
       favourite = model.data.recipes.first.isfavourite;
       notifyListeners();
     } catch(error) {
-      print(error); // in-development
+      print(error);
       throw error;
     }
   }

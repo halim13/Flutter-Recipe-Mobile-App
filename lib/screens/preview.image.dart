@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_complete_guide/constants/url.dart';
 
 class PreviewImageScreen extends StatefulWidget {
-  PreviewImageScreen({this.body});
+  PreviewImageScreen({
+    this.url,
+    this.body
+  });
+  final String url;
   final String body;
-
 
   @override
   _PreviewImageScreenState createState() => _PreviewImageScreenState();
@@ -18,7 +20,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     SystemChrome.setEnabledSystemUIOverlays([]);
     super.initState();
   }
-   @override
+  @override
   void dispose() {
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     super.dispose();
@@ -34,7 +36,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
           child: Hero(
             tag: 'imageHero',
             child: CachedNetworkImage(
-              imageUrl: '$imagesStepsUrl/${widget.body}',
+              imageUrl: '${widget.url}/${widget.body}',
               placeholder: (context, url) => const CircularProgressIndicator(),
               errorWidget: (context, url, error) => const Icon(Icons.error),
             ),

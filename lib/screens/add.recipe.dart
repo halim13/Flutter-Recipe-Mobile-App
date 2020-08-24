@@ -391,7 +391,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
                       onPressed: null,
                     )
                     : RaisedButton(
-                    child: Text('Simpan perubahan', 
+                      child: Text('Simpan perubahan', 
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16.0
@@ -399,7 +399,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
                       ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
-                        side: BorderSide(color: Colors.white)
+                        side: BorderSide(color: Colors.transparent)
                       ),
                       elevation: 0.0,
                       color: Colors.blue.shade700,

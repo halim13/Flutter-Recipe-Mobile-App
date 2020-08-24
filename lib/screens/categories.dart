@@ -68,7 +68,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         }
         return Consumer<Categories>(
           child: Center(
-            child: Text('Belum ada kategori yang dibuat.')
+            child: Text('Belum ada kategori.')
           ),
           builder: (context, categoryProvider, child) => 
           categoryProvider.items.length <= 0

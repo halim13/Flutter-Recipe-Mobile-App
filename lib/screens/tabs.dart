@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../providers/auth.dart';
-import '../providers/custom/bottom_navy_bar.dart';
 import 'package:provider/provider.dart';
 import '../widgets/main.drawer.dart';
+import '../providers/auth.dart';
+import '../providers/custom/bottom_navy_bar.dart';
+import '../providers/user.dart';
 import './profile.dart';
 import './edit.profile.dart';
 import './favorites.recipe.dart';
@@ -57,19 +58,19 @@ class TabsScreenState extends State<TabsScreen> {
                 color: Colors.blue.shade700,
               ), 
               onPressed: () {
-                IconButton(
-                  icon: Icon(
-                    Icons.edit,
-                    color: Colors.blue.shade700,
-                  ), 
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => EditProfileScreen()),
+                User userProvider = Provider.of<User>(context, listen: false);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return EditProfileScreen(
+                      avatar: userProvider.profile.first.avatar,
+                      name: userProvider.profile.first.name,
+                      bio: userProvider.profile.first.bio,
+                      email: userProvider.profile.first.email,
                     );
-                  }
+                  })
                 );
-              }
+              },
             ) : FutureBuilder(
               future: authProvider.tryAutoLogin(),
               builder: (ctx, snapshot) => Container()

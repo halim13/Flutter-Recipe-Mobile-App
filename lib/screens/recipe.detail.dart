@@ -183,8 +183,11 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                           children: List.generate(recipeProvider.data.steps[i].stepsImages.length, (z) => 
                             Expanded(
                               child: GestureDetector(
-                                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) {
+                                onTap: () => Navigator.push(
+                                  context, 
+                                  MaterialPageRoute(builder: (context) {
                                   return PreviewImageScreen(
+                                    url: imagesStepsUrl,
                                     body: recipeProvider.data.steps[i].stepsImages[z].body
                                   );
                                 })),

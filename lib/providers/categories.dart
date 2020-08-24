@@ -17,7 +17,7 @@ class Categories with ChangeNotifier {
   Future<void> getCategories() async {
     String url = 'http://$baseurl:$port/api/v1/categories';
     try {
-      http.Response response = await http.get(url).timeout(Duration(seconds: 4));
+      http.Response response = await http.get(url).timeout(Duration(seconds: 5));
       CategoryModel model = CategoryModel.fromJson(json.decode(response.body));
       List<CategoryData> loadedCategories = model.data; 
       categories = loadedCategories;
