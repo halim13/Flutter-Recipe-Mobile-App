@@ -76,6 +76,9 @@ Widget textFormIngredientsEdit(BuildContext context) {
                                   focusNode: recipeProvider.ingredientsGroup[i].ingredients[z].focusNode,
                                   controller: recipeProvider.ingredientsGroup[i].ingredients[z].textEditingController,
                                   decoration: InputDecoration(
+                                    hintStyle: TextStyle(
+                                      fontSize: 16.0
+                                    ),
                                     hintText: 'Mis: 1 kg sapi',
                                   ),
                                 )

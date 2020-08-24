@@ -28,8 +28,6 @@ class RecipeFavouriteData with ChangeNotifier {
   String title;
   String duration;
   int isfavourite;
-  String affordability;
-  String complexity;
   String imageUrl;
 
   RecipeFavouriteData({
@@ -38,8 +36,6 @@ class RecipeFavouriteData with ChangeNotifier {
     this.title,
     this.duration,
     this.isfavourite,
-    this.affordability,
-    this.complexity,
     this.imageUrl,
   });
 
@@ -49,8 +45,6 @@ class RecipeFavouriteData with ChangeNotifier {
     title: json["title"] == null ? null : json["title"],
     duration: json["duration"] == null ? null : json["duration"],
     isfavourite: json["isfavourite"] == null ? null : json["isfavourite"],
-    affordability: json["affordability"] == null ? "" : json["affordability"],
-    complexity: json["complexity"] == null ? "" : json["complexity"],
     imageUrl: json["imageUrl"] == null ? null : json["imageUrl"],
   );
 }

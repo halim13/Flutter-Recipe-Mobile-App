@@ -24,8 +24,10 @@ class RecipeAdd with ChangeNotifier {
   String categoryName = "";
   List categoriesDisplay = [""];
   String duration;
-  FocusNode titleFocusNode = FocusNode();
   TextEditingController titleController = TextEditingController();
+  TextEditingController portionController = TextEditingController();
+  FocusNode titleFocusNode = FocusNode();
+  FocusNode portionFocusNode = FocusNode();
   List<IngredientsGroup> ingredientsGroup = [];
   List<Steps> steps = [];
   List<Map<String, Object>> ingredientsGroupSendToHttp = [];
@@ -238,7 +240,7 @@ class RecipeAdd with ChangeNotifier {
     notifyListeners();
   }
   
-  Future store(String title, String ingredientsGroup, String ingredients, String steps) async {
+  Future store(String title, String ingredientsGroup, String ingredients, String steps, String portion) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, Object> extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
     String userId = extractedUserData["userId"];
@@ -257,6 +259,7 @@ class RecipeAdd with ChangeNotifier {
       request.fields["title"] = title;
       request.fields["ingredientsGroup"] = ingredientsGroup;
       request.fields["ingredients"] = ingredients;
+      request.fields["portion"] = portion; 
       request.fields["steps"] = steps;
       request.fields["categoryName"] = categoryName;
       request.fields["userId"] = userId; 

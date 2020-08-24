@@ -57,8 +57,6 @@ class RecipeDetail with ChangeNotifier {
             uuid: item.uuid,
             title: item.title,
             imageUrl: item.imageUrl,
-            affordability: item.affordability,
-            complexity: item.complexity,
             duration: item.duration,
             isfavourite: item.isfavourite
           )

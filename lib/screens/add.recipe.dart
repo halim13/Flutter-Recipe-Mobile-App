@@ -70,21 +70,26 @@ class _AddRecipeState extends State<AddRecipeScreen> {
       if(recipeProvider.titleController.text == "") {
         FocusNode node = recipeProvider.titleFocusNode;
         node.requestFocus();
-        throw new Exception('Hari ini mau masak apa ?');
+        throw new Exception('Judul Makanan tidak boleh kosong.');
+      } 
+      if(recipeProvider.portionController.text == "") {
+        FocusNode node = recipeProvider.portionFocusNode;
+        node.requestFocus();
+        throw new Exception('Untuk berapa porsi ?');
       } 
       for (int i = 0; i < recipeProvider.ingredientsGroup.length; i++) {
         TextEditingController ingredientsGroupController = recipeProvider.ingredientsGroup[i].textEditingController;
         if(ingredientsGroupController.text == "") {
           FocusNode node = recipeProvider.ingredientsGroup[i].focusNode;
           node.requestFocus();
-          throw new Exception('Oops! untuk nama grup bahan jangan lupa diisi ya !');
+          throw new Exception('Judul Bahan Makanan tidak boleh kosong.');
         }
         for (int z = 0; z < recipeProvider.ingredientsGroup[i].ingredients.length; z++) {
           TextEditingController ingredientsController = recipeProvider.ingredientsGroup[i].ingredients[z].textEditingController;
           if(ingredientsController.text == "") {
             FocusNode node = recipeProvider.ingredientsGroup[i].ingredients[z].focusNode;
             node.requestFocus();
-            throw new Exception('Jangan lupa diisi bahan yang dibutuhkan ya !');
+            throw new Exception('Bahan Makanan tidak boleh kosong.');
           }
           recipeProvider.ingredientsGroupSendToHttp.add({
             "uuid": recipeProvider.ingredientsGroup[i].uuid,
@@ -116,11 +121,12 @@ class _AddRecipeState extends State<AddRecipeScreen> {
       List<Map<String, dynamic>> uniqueIngredients = recipeProvider.ingredientsSendToHttp.where((item) => seenIngredients.add(item["uuid"])).toList();
       List<Map<String, dynamic>> uniqueSteps = recipeProvider.stepsSendToHttp.where((item) => seenSteps.add(item["uuid"])).toList();
       String title = recipeProvider.titleController.text;
+      String portion = recipeProvider.portionController.text;
       String ingredientsGroup = jsonEncode(uniqueIngredientsGroup);
       String ingredients = jsonEncode(uniqueIngredients);
       String steps = jsonEncode(uniqueSteps);
       await pr.show();
-      await recipeProvider.store(title, ingredientsGroup, ingredients, steps).then((value) async {
+      await recipeProvider.store(title, ingredientsGroup, ingredients, steps, portion).then((value) async {
         if(value["status"] == 200) {
           await pr.hide();
           AwesomeDialog(
@@ -176,7 +182,6 @@ class _AddRecipeState extends State<AddRecipeScreen> {
                   builder: (context, value, child) {
                   return SizedBox(
                       width: double.infinity,
-                      height: 300.0,
                       child: value.fileImageRecipe == null ? Column(
                         children: [ 
                           Image.asset('assets/default-thumbnail.jpg')
@@ -260,6 +265,42 @@ class _AddRecipeState extends State<AddRecipeScreen> {
                   )
                 ]
               )
+            ),
+                      Container(
+                margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
+                child: Text(
+                  'Untuk berapa porsi ?',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontStyle: FontStyle.italic
+                  ),
+                ),
+              ),
+              Consumer<RecipeAdd>(
+                builder: (context, recipeProvider, child) {
+                  return Form(
+                    child: Container(
+                      width: double.infinity,
+                      margin: EdgeInsets.only(left: 18.0, right: 18.0),
+                      child: TextFormField(
+                        focusNode: recipeProvider.portionFocusNode,
+                        controller: recipeProvider.portionController,
+                        keyboardType: TextInputType.text,
+                        decoration: InputDecoration(
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ) 
+                        ),
+                        onSaved: (val) {
+                          recipeProvider.portionController.text = val;
+                        },
+                      ),
+                    ),
+                  );
+                }
             ),
             Container(
               margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0, bottom: 10.0),
@@ -388,7 +429,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
                       ),
                       elevation: 0.0,
                       color: Colors.blue.shade700,
-                      onPressed: null,
+                      onPressed: () {},
                     )
                     : RaisedButton(
                       child: Text('Simpan perubahan', 

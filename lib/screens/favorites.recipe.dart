@@ -93,8 +93,6 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     title: recipeProvider.displayRecipeFavourite[index].title,
                     imageUrl: recipeProvider.displayRecipeFavourite[index].imageUrl,
                     duration: recipeProvider.displayRecipeFavourite[index].duration.toString(),
-                    affordability: recipeProvider.displayRecipeFavourite[index].affordability,
-                    complexity: recipeProvider.displayRecipeFavourite[index].complexity,
                   );
                 }
               ),

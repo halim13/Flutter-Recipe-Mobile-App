@@ -45,6 +45,7 @@ class Recipes {
   String title;
   String duration;
   String imageUrl;
+  String portion;
   String categoryName;
   List<CategoryList> categoryList;
 
@@ -54,6 +55,7 @@ class Recipes {
     this.title,
     this.duration,
     this.imageUrl,
+    this.portion,
     this.categoryName,
     this.categoryList,
   });
@@ -64,6 +66,7 @@ class Recipes {
     title: json["title"] == null ? null : json["title"],
     duration: json["duration"] == null ? null : json["duration"],
     imageUrl: json["imageUrl"] == null ? null : json["imageUrl"],
+    portion: json["portion"] == null ? null : json["portion"],
     categoryName: json["category_name"] == null ? null : json["category_name"],
     categoryList: List<CategoryList>.from(json["category_list"].map((x) => CategoryList.fromJson(x))),
   );

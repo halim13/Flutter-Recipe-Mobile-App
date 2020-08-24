@@ -95,7 +95,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ubah Profil')
+        title: Text('Ubah Profil'),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back
+          ),
+          onPressed:() => Navigator.pop(context, true),
+        )
       ),
       body: ListView(
         children: [

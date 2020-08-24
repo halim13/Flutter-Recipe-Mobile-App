@@ -22,8 +22,10 @@ class RecipeEdit extends ChangeNotifier {
   ScrollController ingredientsScrollController = ScrollController();
   ScrollController stepsScrollController = ScrollController();
   FocusNode titleFocusNode = FocusNode();
+  FocusNode portionFocusNode = FocusNode();
 
   TextEditingController titleController = TextEditingController();
+  TextEditingController portionController = TextEditingController();
   List<String> categoriesDisplay = [];
    
   List<Map<String, Object>> ingredientsGroupSendToHttp = [];
@@ -161,7 +163,6 @@ class RecipeEdit extends ChangeNotifier {
   }
 
   Future edit(String recipeId) async {
-    // DefaultCacheManager().emptyCache();
     String url = 'http://$baseurl:$port/api/v1/recipes/edit/$recipeId'; 
     try {
       http.Response response = await http.get(url);
@@ -179,6 +180,7 @@ class RecipeEdit extends ChangeNotifier {
       categoriesDisplay = tempCategoriesDisplay;
       duration = data.recipes.first.duration;
       titleController.text = data.recipes.first.title;
+      portionController.text = data.recipes.first.portion;
       List<Steps> initialSteps = [];
       List<IngredientsGroup> initialIngredientsGroup = [];
       for(int i = 0; i < getIngredientsGroup.length; i++) {
@@ -230,7 +232,7 @@ class RecipeEdit extends ChangeNotifier {
       print(error);
     }
   }
-  Future update(String title, String recipeId, String ingredientsGroup, String removeIngredientsGroup, String ingredients, String removeIngredients, String stepsInParameter, String removeSteps, String categoryName) async {
+  Future update(String title, String recipeId, String ingredientsGroup, String removeIngredientsGroup, String ingredients, String removeIngredients, String stepsInParameter, String removeSteps, String portion, String categoryName) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
     String userId = extractedUserData["userId"];
@@ -265,6 +267,7 @@ class RecipeEdit extends ChangeNotifier {
       request.fields["duration"] = duration;
       request.fields["steps"] = stepsInParameter;
       request.fields["removeSteps"] = removeSteps;
+      request.fields["portion"] = portion;
       request.fields["categoryName"] = categoryName;
       request.fields["userId"] = userId; 
       http.StreamedResponse response = await request.send();

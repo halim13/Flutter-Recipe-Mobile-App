@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quartet/quartet.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../models/RecipeShow.dart';
 import '../helpers/highlight.occurences.dart';
 import '../providers/recipe.show.dart';
 import '../constants/url.dart';
@@ -104,7 +105,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
           }
           return Consumer<RecipeShow>(
             child: Center(
-              child: Text('Belum ada resep nih, coba buat resep!'),
+              child: Text('Belum ada resep.'),
             ),
             builder: (context, recipeProvider, child) => recipeProvider.showRecipeItem.length <= 0 ? child :
             RefreshIndicator(
@@ -187,20 +188,16 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
                                 ),
                                 Row(
                                   children: [
-                                    Icon(Icons.work),
+                                    Icon(Icons.fastfood),
                                     SizedBox(width: 6),
-                                    Text(recipeProvider.showRecipeItem[index].complexities.toString()),
+                                    Text('${recipeProvider.showRecipeItem[index].portion}'),
                                   ],
                                 ),
                                 Row(
                                   children: [
-                                    Icon(
-                                      Icons.attach_money
-                                    ),
-                                    SizedBox(
-                                      width: 6.0
-                                      ),
-                                    Text(recipeProvider.showRecipeItem[index].affordabilities.toString()),
+                                    Icon(Icons.people),
+                                    SizedBox(width: 6),
+                                    Text('Dibuat oleh ${recipeProvider.showRecipeItem[index].name}'),
                                   ],
                                 ),
                               ],
@@ -266,8 +263,8 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    final provider = Provider.of<RecipeShow>(context);
-    final results = provider.showRecipeItem.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
+    RecipeShow provider = Provider.of<RecipeShow>(context);
+    List<RecipeShowData> results = provider.showRecipeItem.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
     return ListView.builder(
       itemCount: results.length,
       itemBuilder: (context, index) {
@@ -325,9 +322,9 @@ class DataSearch extends SearchDelegate<String> {
                   padding: EdgeInsets.all(20.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
+                    children: [
                       Row(
-                        children: <Widget>[
+                        children: [
                           Icon(Icons.schedule),
                           SizedBox(width: 6.0),
                           Text('${results[index].duration} min'),
@@ -335,16 +332,9 @@ class DataSearch extends SearchDelegate<String> {
                       ),
                       Row(
                         children: [
-                          Icon(Icons.work),
-                          SizedBox(width: 6.0),
-                          Text(results[index].complexities),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Icon(Icons.attach_money),
-                          SizedBox(width: 6.0),
-                          Text(results[index].affordabilities),
+                          Icon(Icons.people),
+                          SizedBox(width: 6),
+                          Text('Dibuat oleh ${results[index].name}'),
                         ],
                       ),
                     ],
