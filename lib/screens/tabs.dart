@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import '../providers/auth.dart';
 import '../providers/custom/bottom_navy_bar.dart';
+import 'package:provider/provider.dart';
 import '../widgets/main.drawer.dart';
-import 'profile.dart';
-import 'favorites.recipe.dart';
-import 'categories.dart';
+import './profile.dart';
+import './edit.profile.dart';
+import './favorites.recipe.dart';
+import './categories.dart';
 
 class TabsScreen extends StatefulWidget {
 
@@ -28,7 +31,7 @@ class TabsScreenState extends State<TabsScreen> {
       },
       {
         'page': ProfileScreen(),
-        'title': 'Profile',
+        'title': 'Profil',
       },
     ];
     super.initState();
@@ -45,9 +48,37 @@ class TabsScreenState extends State<TabsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(pages[selectedPageIndex]['title']),
+        actions: [
+          if(selectedPageIndex == 2)
+          Consumer<Auth>(
+            builder: (context, authProvider, child) => authProvider.isAuth ? IconButton(
+              icon: Icon(
+                Icons.edit,
+                color: Colors.blue.shade700,
+              ), 
+              onPressed: () {
+                IconButton(
+                  icon: Icon(
+                    Icons.edit,
+                    color: Colors.blue.shade700,
+                  ), 
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => EditProfileScreen()),
+                    );
+                  }
+                );
+              }
+            ) : FutureBuilder(
+              future: authProvider.tryAutoLogin(),
+              builder: (ctx, snapshot) => Container()
+            )
+          )
+        ],
       ),
       body: pages[selectedPageIndex]['page'],
-      drawer: MainDrawer(),
+      drawer: onlyCategoriesDrawer(selectedPageIndex),
       bottomNavigationBar: BottomNavyBar( 
         selectedIndex: selectedPageIndex,
         showElevation: false, 
@@ -73,6 +104,13 @@ class TabsScreenState extends State<TabsScreen> {
         ],
       ),
     );
+  }
+
+  Widget onlyCategoriesDrawer(int index) {
+    if(index == 0) {
+      return MainDrawer();
+    }
+    return null;
   }
 }
 

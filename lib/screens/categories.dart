@@ -4,8 +4,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../providers/categories.dart';
 import 'category.recipe.dart';
 
-class CategoriesScreen extends StatelessWidget {
+class CategoriesScreen extends StatefulWidget {
   static const routeName = '/categories';
+
+  @override
+  _CategoriesScreenState createState() => _CategoriesScreenState();
+}
+
+class _CategoriesScreenState extends State<CategoriesScreen> {
   void selectCategory(BuildContext context, String uuid, String title) {
     Navigator.of(context).pushNamed(
       CategoryMealsScreen.routeName,
@@ -27,13 +33,42 @@ class CategoriesScreen extends StatelessWidget {
           );
         }
         if(snapshot.hasError) {
-          return Center(
-            child: Text('Oops! Something went wrong! Please Try Again.'),
+          return Consumer<Categories>(
+            builder: (context, categoryProvider, child) =>
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 150.0,
+                    child: Image.asset('assets/no-network.png')
+                  ),
+                  SizedBox(height: 15.0),
+                  Text('Koneksi jaringan Anda buruk.',
+                    style: TextStyle(
+                      fontSize: 16.0
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
+                  GestureDetector(
+                    child: Text('Coba Ulangi',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        decoration: TextDecoration.underline
+                      ),
+                    ),
+                    onTap: () {
+                      setState((){});
+                    },
+                  ),
+                ],
+              ),
+            ),
           );
         }
         return Consumer<Categories>(
           child: Center(
-            child: Text('Kamu belum memiliki kategori.'),
+            child: Text('Belum ada kategori yang dibuat.')
           ),
           builder: (context, categoryProvider, child) => 
           categoryProvider.items.length <= 0

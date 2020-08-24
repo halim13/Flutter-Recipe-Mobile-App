@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,21 +10,21 @@ class Categories with ChangeNotifier {
   List<CategoryData> categories = [];
   List<CategoryData> get items => [...categories];
   
-  onChangeDropdownCategoriesItem() {
-
-  }
   Future<void> refreshProducts() async {
     await getCategories();
+    notifyListeners();
   }
   Future<void> getCategories() async {
     String url = 'http://$baseurl:$port/api/v1/categories';
     try {
-      http.Response response = await http.get(url);
+      http.Response response = await http.get(url).timeout(Duration(seconds: 4));
       CategoryModel model = CategoryModel.fromJson(json.decode(response.body));
       List<CategoryData> loadedCategories = model.data; 
       categories = loadedCategories;
       notifyListeners();
-    } catch(error) {
+    } 
+    catch(error) {
+      print(error);
       throw error;
     }
   }

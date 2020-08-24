@@ -3,8 +3,13 @@ import 'package:provider/provider.dart';
 import '../providers/recipe.detail.dart';
 import '../widgets/recipe.item.dart';
 
-class FavoritesScreen extends StatelessWidget {
+class FavoritesScreen extends StatefulWidget {
 
+  @override
+  _FavoritesScreenState createState() => _FavoritesScreenState();
+}
+
+class _FavoritesScreenState extends State<FavoritesScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<RecipeDetail>(context, listen: false);
@@ -17,10 +22,37 @@ class FavoritesScreen extends StatelessWidget {
           );
         }
         if(snapshot.hasError) {
-          return Center(
-            child: Center(
-              child: Text('Oops! Something went wrong! Please try again.'),
-            )
+          return Consumer<RecipeDetail>(
+            builder: (context, recipeDetailProvider, child) =>
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 150.0,
+                    child: Image.asset('assets/no-network.png')
+                  ),
+                  SizedBox(height: 15.0),
+                  Text('Koneksi jaringan Anda buruk.',
+                    style: TextStyle(
+                      fontSize: 16.0
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
+                  GestureDetector(
+                    child: Text('Coba Ulangi',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        decoration: TextDecoration.underline
+                      ),
+                    ),
+                    onTap: () {
+                      setState((){});
+                    },
+                  ),
+                ],
+              ),
+            ),
           );
         }
         return Consumer<RecipeDetail>(
@@ -35,7 +67,7 @@ class FavoritesScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        'Belum ada resep kesukaan kamu.', 
+                        'Belum ada resep kamu di daftar favorit.', 
                         style: TextStyle(
                           fontSize: 15.0
                         ),

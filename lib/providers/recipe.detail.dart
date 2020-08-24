@@ -22,7 +22,7 @@ class RecipeDetail with ChangeNotifier {
       updateToFavourite(recipeId, 1);
       favourite = 1;
       Fluttertoast.showToast(
-        msg: 'Added to favourite.',
+        msg: 'Berhasil menambahkan ke daftar favorit.',
         toastLength: Toast.LENGTH_SHORT,
         backgroundColor: Colors.yellow.shade700,
         textColor: Colors.white
@@ -36,7 +36,7 @@ class RecipeDetail with ChangeNotifier {
       }
       favourite = 0;
       Fluttertoast.showToast(
-        msg: 'Removed to favourite.',
+        msg: 'Berhasil hapus dari daftar favorit.',
         toastLength: Toast.LENGTH_SHORT,
         backgroundColor: Colors.yellow.shade700,
         textColor: Colors.white
@@ -50,7 +50,7 @@ class RecipeDetail with ChangeNotifier {
   Future<void> getRecipeFavourite() async {
     String url = 'http://$baseurl:$port/api/v1/recipes/favourite'; 
     try {
-      http.Response response = await http.get(url);
+      http.Response response = await http.get(url).timeout(Duration(seconds: 4));
       RecipeFavouriteModel model = RecipeFavouriteModel.fromJson(json.decode(response.body));
       List<RecipeFavouriteData> tempDisplayRecipeFavourite = [];
       model.data.forEach((item) {
@@ -70,7 +70,7 @@ class RecipeDetail with ChangeNotifier {
       displayRecipeFavourite = tempDisplayRecipeFavourite;
       notifyListeners();
     } catch(error) {
-      print(error); // in-development
+      print(error); 
       throw error;
     }
   }

@@ -2,7 +2,7 @@
     package="com.example.app">
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="ResepMama"
+        android:label="Flutter Recipe"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"

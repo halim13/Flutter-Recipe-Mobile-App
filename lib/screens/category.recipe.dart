@@ -69,13 +69,42 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
             );
           }
           if(snapshot.hasError) {
-            return Center(
-              child: Text('Oops! Something went wrong! Please Try Again.')
+            return Consumer<RecipeShow>(
+              builder: (context, recipeShowProvider, child) =>
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 150.0,
+                      child: Image.asset('assets/no-network.png')
+                    ),
+                    SizedBox(height: 15.0),
+                    Text('Koneksi jaringan Anda buruk.',
+                      style: TextStyle(
+                        fontSize: 16.0
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
+                    GestureDetector(
+                      child: Text('Coba Ulangi',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          decoration: TextDecoration.underline
+                        ),
+                      ),
+                      onTap: () {
+                        setState((){});
+                      },
+                    ),
+                  ],
+                ),
+              ),
             );
           }
           return Consumer<RecipeShow>(
             child: Center(
-              child: const Text('Belum ada Resep Nih, Coba Buat Resep!'),
+              child: Text('Belum ada resep nih, coba buat resep!'),
             ),
             builder: (context, recipeProvider, child) => recipeProvider.showRecipeItem.length <= 0 ? child :
             RefreshIndicator(

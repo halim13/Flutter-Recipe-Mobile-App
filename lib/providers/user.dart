@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -7,7 +8,8 @@ import '../constants/connection.dart';
 import '../models/User.dart';
 
 class User extends ChangeNotifier {
-  String file;
+  String filename;
+  File file;
   bool formEditUsername = false;
   bool formEditBio = false;
   bool isSaveChanges = false;
@@ -59,14 +61,16 @@ class User extends ChangeNotifier {
     file = null;
     notifyListeners();
   }
-
-  Future<void> getCurrentProfile() async {
-    final prefs = await SharedPreferences.getInstance();
-    final extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
+  Future<void> refreshProfile() async {
+    await getCurrentProfile();
+  }
+   Future<void> getCurrentProfile() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, Object> extractedUserData = json.decode(prefs.getString('userData'));
     String userId = extractedUserData["userId"];
     String url = 'http://$baseurl:$port/api/v1/accounts/users/profile/$userId'; 
     try {
-      http.Response response = await http.get(url);
+      http.Response response = await http.get(url).timeout(Duration(seconds: 2));
       UserModel model = UserModel.fromJson(json.decode(response.body));
       List<UserData> loadedProfile = model.data; 
       profile = loadedProfile;
@@ -75,52 +79,36 @@ class User extends ChangeNotifier {
       throw error;
     }
   }
-  Future<void> refreshProfile() async {
-    await getCurrentProfile();
-  }
   Future update(String username, String bio) async {
     Map<String, String> fields = {
       "username": username,
       "bio": bio
     };
-    Map<String, String> headers = { "Content-Type": "application/json"};
-    final prefs = await SharedPreferences.getInstance();
-    final extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
+    Map<String, String> headers = {"Content-Type": "application/json"};
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, Object> extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
     String userId = extractedUserData["userId"];
     String url = 'http://$baseurl:$port/api/v1/accounts/users/profile/update/$userId'; 
     try {
       http.MultipartRequest request = http.MultipartRequest('PUT', Uri.parse(url));
       if(file != null) {
         http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
-          'avatar', file
+          'avatar', filename
         );
         request.files.add(multipartFile);
       }
       request.headers.addAll(headers);
       request.fields.addAll(fields);
-      http.StreamedResponse response = await request.send();
+      http.StreamedResponse response = await request.send().timeout(Duration(seconds: 4));
       String responseData = await response.stream.bytesToString();
       final responseDataDecoded = json.decode(responseData);
       if(responseDataDecoded["status"] == 200) {
         if(file != null) {
-          // await DefaultCacheManager().removeFile('$pathAvatar/${profile[0].avatar}'); Gunakan jika menggunakan CacheNetworkImage
           uniqueAvatar = DateTime.now();
           file = null;
         }
         refreshProfile();
       }
-      // Alternative aja
-      // response.stream.transform(utf8.decoder).listen((value) async {
-      //   final responseData = json.decode(value);
-      //   if(responseData["status"] == 200) {
-      //     if(file != null) {
-      //       await DefaultCacheManager().removeFile('$pathAvatar/${profile[0].avatar}');
-      //       await DefaultCacheManager().emptyCache();
-      //       file = null;
-      //     }
-      //     refreshProfile();
-      //   }
-      // });
       formEditUsername = false;
       formEditBio = false;
       isSaveChanges = false;

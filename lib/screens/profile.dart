@@ -1,5 +1,7 @@
 // import 'package:path/path.dart' as path; // gunakan as path agar tidak terjadi bentrok
 // import 'package:transparent_image/transparent_image.dart';
+import 'dart:io';
+
 import 'package:flutter_complete_guide/constants/url.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -56,7 +58,7 @@ class ProfileScreenState extends State<ProfileScreen> {
   }
 
   void pickImage() async { 
-    final imageSource = await showDialog<ImageSource>(context: context, builder: (context) => 
+    ImageSource imageSource = await showDialog<ImageSource>(context: context, builder: (context) => 
       AlertDialog(
         title: Text(
           "Pilih sumber gambar",
@@ -83,13 +85,13 @@ class ProfileScreenState extends State<ProfileScreen> {
       ],
     ));
     if (imageSource != null) {
-      PickedFile file = await ImagePicker().getImage(source: imageSource);
-      if (file != null) {
-        final user = Provider.of<User>(context, listen: false);
-        // setState(() => _file = file); cara penulisan singkat setState
-        user.file = file.path;
-        final cropped = await ImageCropper.cropImage(
-          sourcePath: user.file,
+      File _file = File(await ImagePicker().getImage(source: imageSource).then((pickedFile) => pickedFile.path));
+      if (_file != null) {
+        User userProvider = Provider.of<User>(context, listen: false);
+        userProvider.file = _file;
+        userProvider.filename = _file.path;
+        File cropped = await ImageCropper.cropImage(
+          sourcePath: userProvider.filename,
           androidUiSettings: AndroidUiSettings(
           toolbarTitle: 'Crop It',
           toolbarColor: Colors.blueGrey[900],
@@ -100,8 +102,12 @@ class ProfileScreenState extends State<ProfileScreen> {
             minimumAspectRatio: 1.0,
           )
         );
-        user.file = cropped ?? user.file;
-        user.toggleSaveChanges();
+        if(cropped != null) {
+          _file = cropped;
+          userProvider.file = cropped;
+        }
+        userProvider.toggleSaveChanges();
+        // userProvider.file = cropped ?? userProvider.file;
         // setState(() =>  _file = cropped ?? _file);
       }
     }
@@ -201,6 +207,40 @@ class ProfileScreenState extends State<ProfileScreen> {
             child: CircularProgressIndicator()
           );
         }
+        if(snapshot.hasError) {
+          return Consumer<User>(
+            builder: (context, userProvider, child) =>
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 150.0,
+                    child: Image.asset('assets/no-network.png')
+                  ),
+                  SizedBox(height: 15.0),
+                  Text('Koneksi jaringan Anda buruk.',
+                    style: TextStyle(
+                      fontSize: 16.0
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
+                  GestureDetector(
+                    child: Text('Coba Ulangi',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        decoration: TextDecoration.underline
+                      ),
+                    ),
+                    onTap: () {
+                      setState((){});
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
         return Consumer<User>(
           builder: (context, user, child) {
             return RefreshIndicator(
@@ -220,12 +260,11 @@ class ProfileScreenState extends State<ProfileScreen> {
                             height: MediaQuery.of(context).size.height / 4,
                             fit: BoxFit.cover,
                             image: AssetImage('assets/default-thumbnail-profile.jpg')
-                            // image: NetworkImage('https://img.freepik.com/free-vector/vegetables-banner-collection_1268-12420.jpg?size=626&ext=jpg'),
                           ),
                           Container(
                             margin: EdgeInsets.only(top: 80.0),
-                            width: 120,
-                            height: 120,
+                            width: 120.0,
+                            height: 120.0,
                             child: Column(
                               children: [
                                 Stack(
@@ -233,7 +272,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                                   alignment: Alignment.center,
                                   children: [
                                     ClipRRect(
-                                      borderRadius: BorderRadius.circular(80),
+                                      borderRadius: BorderRadius.circular(80.0),
                                       child: user.file == null 
                                       ? currentAvatar(user, index)
                                       : previewAvatar(user)
@@ -353,29 +392,22 @@ class ProfileScreenState extends State<ProfileScreen> {
       }
     );
   }
-  Widget currentAvatar(user, index) {
-    // return FadeInImage.memoryNetwork(
-    //   width: 120,
-    //   height: 120,
-    //   fit: BoxFit.cover,
-    //   image: 'http://192.168.43.85:5000/images/avatar/${user.items[index].avatar}?${user.uniqueAvatar}',
-    //   placeholder: kTransparentImage
-    // );
+  Widget currentAvatar(User user, int i) {
     return Container(
-      width: 120,
-      height: 120,
+      width: 120.0,
+      height: 120.0,
       child: CachedNetworkImage(progressIndicatorBuilder: (context, url, progress) =>
-          CircularProgressIndicator(
-            value: progress.progress,
-          ),
-        imageUrl: '$imagesAvatarUrl/${user.items[index].avatar}?${user.uniqueAvatar}',
+        CircularProgressIndicator(
+          value: progress.progress,
+        ),
+        imageUrl: '$imagesAvatarUrl/${user.items[i].avatar}?${user.uniqueAvatar}',
       ),
     );
   }
-  Widget previewAvatar(user) {
+  Widget previewAvatar(User user) {
     return FadeInImage(
-      width: 120,
-      height: 120,
+      width: 120.0,
+      height: 120.0,
       fit: BoxFit.cover,
       image: FileImage(user.file),
       placeholder: AssetImage("assets/default-avatar.png")
