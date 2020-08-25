@@ -40,7 +40,7 @@ class RecipeAdd with ChangeNotifier {
     String ingredientUuidv4 = uuid.v4();
     String ingredientPerGroupUuidv4 = uuid.v4();
     String stepUuidv4 = uuid.v4();
-    ingredientsGroup.add(
+    ingredientsGroup = [
       IngredientsGroup(
         uuid: ingredientPerGroupUuidv4,
         focusNode: FocusNode(),
@@ -53,50 +53,52 @@ class RecipeAdd with ChangeNotifier {
           ),
         ]
       )
-    );
-    steps.add(Steps(
-      uuid: stepUuidv4,
-      focusNode: FocusNode(),
-      textEditingController: TextEditingController(text: ""),
-      images: [
-        StepsImages(
-          uuid: uuid.v4(),
-          body: CachedNetworkImage(
-            width: 100.0,
-            height: 100.0,
-            imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
-            placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
-            errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
-            fadeOutDuration: Duration(seconds: 1),
-            fadeInDuration: Duration(seconds: 1),
-          )
-        ),
-        StepsImages(
-          uuid: uuid.v4(),
-          body: CachedNetworkImage(
-            width: 100.0,
-            height: 100.0,
-            imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
-            placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
-            errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
-            fadeOutDuration: Duration(seconds: 1),
-            fadeInDuration: Duration(seconds: 1),
-          )
-        ),
-        StepsImages(
-          uuid: uuid.v4(),
-          body: CachedNetworkImage(
-            width: 100.0,
-            height: 100.0,
-            imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
-            placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
-            errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
-            fadeOutDuration: Duration(seconds: 1),
-            fadeInDuration: Duration(seconds: 1),
-          )
-        ),
-      ]
-    ));
+    ];
+    steps = [ 
+      Steps(
+        uuid: stepUuidv4,
+        focusNode: FocusNode(),
+        textEditingController: TextEditingController(text: ""),
+        images: [
+          StepsImages(
+            uuid: uuid.v4(),
+            body: CachedNetworkImage(
+              width: 100.0,
+              height: 100.0,
+              imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
+              placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+              errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+              fadeOutDuration: Duration(seconds: 1),
+              fadeInDuration: Duration(seconds: 1),
+            )
+          ),
+          StepsImages(
+            uuid: uuid.v4(),
+            body: CachedNetworkImage(
+              width: 100.0,
+              height: 100.0,
+              imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
+              placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+              errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+              fadeOutDuration: Duration(seconds: 1),
+              fadeInDuration: Duration(seconds: 1),
+            )
+          ),
+          StepsImages(
+            uuid: uuid.v4(),
+            body: CachedNetworkImage(
+              width: 100.0,
+              height: 100.0,
+              imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
+              placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+              errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+              fadeOutDuration: Duration(seconds: 1),
+              fadeInDuration: Duration(seconds: 1),
+            )
+          ),
+        ]
+      )
+    ];
   }
 
   void changeImageRecipe(PickedFile pickedFile) {
@@ -240,7 +242,7 @@ class RecipeAdd with ChangeNotifier {
     notifyListeners();
   }
   
-  Future store(String title, String ingredientsGroup, String ingredients, String steps, String portion) async {
+  Future store(String title, String ingredientsGroupParam, String ingredients, String stepsParam, String portion) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, Object> extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
     String userId = extractedUserData["userId"];
@@ -257,10 +259,10 @@ class RecipeAdd with ChangeNotifier {
       }
       request.fields["duration"] = duration.toString();
       request.fields["title"] = title;
-      request.fields["ingredientsGroup"] = ingredientsGroup;
+      request.fields["ingredientsGroup"] = ingredientsGroupParam;
       request.fields["ingredients"] = ingredients;
       request.fields["portion"] = portion; 
-      request.fields["steps"] = steps;
+      request.fields["steps"] = stepsParam;
       request.fields["categoryName"] = categoryName;
       request.fields["userId"] = userId; 
       http.StreamedResponse response = await request.send();
@@ -269,6 +271,7 @@ class RecipeAdd with ChangeNotifier {
         ingredientsSendToHttp = [];
         stepsSendToHttp = [];
         isLoading = false;
+        initState();
         notifyListeners();
       }
       String responseData = await response.stream.bytesToString();
