@@ -67,7 +67,7 @@ Widget textFormIngredientsAdd() {
                           children: [
                             SizedBox(width: 20.0),
                             Text('${z + 1}.', style: TextStyle(
-                              fontSize: 18.0
+                              fontSize: 16.0
                               )
                             ),
                             SizedBox(width: 15.0),

@@ -197,9 +197,6 @@ class RecipeEdit extends ChangeNotifier {
         Uuid uuid = Uuid();
         for (int j = 0; j < 3; j++) {
           final checkUuid = getSteps[k].images.asMap().containsKey(j) ? getSteps[k].images[j].uuid : uuid.v4();
-          if(getSteps[k].images.asMap().containsKey(j)) { 
-            await DefaultCacheManager().removeFile('$imagesStepsUrl/${getSteps[k].images[j].body}');
-          }
           initialStepsImages.add(StepsImages(
             uuid: checkUuid,
             body: getSteps[k].images.asMap().containsKey(j) ? CachedNetworkImage(
@@ -242,7 +239,6 @@ class RecipeEdit extends ChangeNotifier {
     try {
       http.MultipartRequest request = http.MultipartRequest('PUT', Uri.parse(url));
       for (int i = 0; i < steps.length; i++) {
-        request.fields["stepsId$i"] = steps[i].uuid;
         for(int z = 0; z < steps[i].images.length; z++) {
           if(steps[i].images[z].filename != null) {
             request.fields["stepsImagesId-$i-$z"] = steps[i].images[z].uuid;

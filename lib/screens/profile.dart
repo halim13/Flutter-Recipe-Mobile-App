@@ -1,14 +1,8 @@
 // import 'package:path/path.dart' as path; // gunakan as path agar tidak terjadi bentrok
-// import 'package:transparent_image/transparent_image.dart';
-import 'dart:io';
 
 import 'package:flutter_complete_guide/constants/url.dart';
-
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../screens/preview.image.dart';
 import '../providers/auth.dart';
@@ -24,95 +18,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class ProfileScreenState extends State<ProfileScreen> {
-  final GlobalKey<FormState> formUsernameKey = GlobalKey();
-  final GlobalKey<FormState> formBioKey = GlobalKey();
-  final usernameController = TextEditingController();
-  final bioController = TextEditingController();
-  Future save() async {
-    try {
-      if (usernameController.text.isEmpty || usernameController.text.length < 3) {
-        throw ErrorDescription("Username is too short. Minimum 3 characters.");
-      }
-      await Provider.of<User>(context, listen: false).update(
-        usernameController.text, 
-        bioController.text
-      );
-      Scaffold.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Succesfully updated data.'),
-          duration: Duration(seconds: 2)
-        ),
-      );
-    } on ErrorDescription catch(error) {
-      Fluttertoast.showToast(
-        msg: error.toString(),
-        toastLength: Toast.LENGTH_SHORT,
-        backgroundColor: Colors.red.shade700,
-        textColor: Colors.white
-      );
-    }
-  }
-
-  void dispose() {
-    usernameController.dispose();
-    super.dispose();
-  }
-
-  void pickImage() async { 
-    ImageSource imageSource = await showDialog<ImageSource>(context: context, builder: (context) => 
-      AlertDialog(
-        title: Text(
-          "Pilih sumber gambar",
-        style: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.bold, 
-        ),
-      ),
-      actions: <Widget>[
-        MaterialButton(
-          child: Text(
-            "Camera",
-            style: TextStyle(color: Colors.blueAccent),
-          ),
-          onPressed: () => Navigator.pop(context, ImageSource.camera),
-        ),
-        MaterialButton(
-          child: Text(
-            "Gallery",
-            style: TextStyle(color: Colors.blueAccent),
-          ),
-          onPressed: () => Navigator.pop(context, ImageSource.gallery),
-        )
-      ],
-    ));
-    if (imageSource != null) {
-      File _file = File(await ImagePicker().getImage(source: imageSource).then((pickedFile) => pickedFile.path));
-      if (_file != null) {
-        User userProvider = Provider.of<User>(context, listen: false);
-        userProvider.file = _file;
-        userProvider.filename = _file.path;
-        File cropped = await ImageCropper.cropImage(
-          sourcePath: userProvider.filename,
-          androidUiSettings: AndroidUiSettings(
-          toolbarTitle: 'Crop It',
-          toolbarColor: Colors.blueGrey[900],
-          toolbarWidgetColor: Colors.white,
-          initAspectRatio: CropAspectRatioPreset.original,
-          lockAspectRatio: false),
-          iosUiSettings: IOSUiSettings(
-            minimumAspectRatio: 1.0,
-          )
-        );
-        if(cropped != null) {
-          _file = cropped;
-          userProvider.file = cropped;
-        }
-        userProvider.toggleSaveChanges();
-        // userProvider.file = cropped ?? userProvider.file;
-        // setState(() =>  _file = cropped ?? _file);
-      }
-    }
-  }
+ 
   
   @override
   Widget build(BuildContext context) {
@@ -249,8 +155,6 @@ class ProfileScreenState extends State<ProfileScreen> {
               child: ListView.builder(
               itemCount: user.items.length,
               itemBuilder: (context, i) {
-              usernameController.text = user.items[i].name;
-              bioController.text = user.items[i].bio;
                   return Column(
                     children: [
                       Stack(
@@ -280,10 +184,11 @@ class ProfileScreenState extends State<ProfileScreen> {
                                       ),
                                       child: GestureDetector(
                                         child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(150.0),
+                                          borderRadius: BorderRadius.circular(120.0),
                                           child: CachedNetworkImage(
                                             fit: BoxFit.cover,
-                                            placeholder: (context, url) => CircularProgressIndicator(),                                          
+                                            placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+                                            errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),                                          
                                             imageUrl: '$imagesAvatarUrl/${user.items[i].avatar}',
                                           ),
                                         ),
@@ -328,7 +233,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                             Text('E-mail Address'),
                           ],
                         ),
-                        subtitle: Text(user.items[i].email.toString())
+                        subtitle: Text(user.items[i].email)
                       ),
                       ListTile(
                         title: Row(
@@ -337,35 +242,9 @@ class ProfileScreenState extends State<ProfileScreen> {
                             Text('Bio'),
                           ],
                         ),
-                        subtitle: Text(user.items[i].bio.toString())
-                      ),
-                      if(user.isToggleSavedChanges()) 
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            RaisedButton(
-                              padding: EdgeInsets.all(15.0),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0),
-                              ),
-                              textColor: Colors.white,
-                              color: Color(0xFF478DE0),
-                              child: Text('Cancel'),
-                              onPressed: () => user.isCancelEditUser(),
-                            ),
-                            RaisedButton(
-                              padding: EdgeInsets.all(15.0),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0),
-                              ),
-                              textColor: Colors.white,
-                              color: Color(0xFF478DE0),
-                              child: Text('Save Changes'),
-                              onPressed: save
-                            ),
-                          ],
-                        )
-                      ],
+                        subtitle: Text(user.items[i].bio)
+                      ),                        
+                    ],
                   );
                 },
               ),
@@ -387,14 +266,14 @@ class ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-  Widget previewAvatar(User user) {
-    return FadeInImage(
-      width: 120.0,
-      height: 120.0,
-      fit: BoxFit.cover,
-      image: FileImage(user.file),
-      placeholder: AssetImage("assets/default-avatar.png")
-    );
-  }
+  // Widget previewAvatar(User user) {
+  //   return FadeInImage(
+  //     width: 120.0,
+  //     height: 120.0,
+  //     fit: BoxFit.cover,
+  //     image: FileImage(user.file),
+  //     placeholder: AssetImage("assets/default-avatar.png")
+  //   );
+  // }
 }
 

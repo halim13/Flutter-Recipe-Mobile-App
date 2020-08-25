@@ -172,10 +172,7 @@ class RecipeAdd with ChangeNotifier {
   }
 
   void decrementIngredients(int i, String uuid) {
-    int existingIngredientInGroup = ingredientsGroup[i].ingredients.indexWhere((item) => item.uuid == uuid);
-    if(existingIngredientInGroup >= 0) {
-      ingredientsGroup[i].ingredients.removeAt(existingIngredientInGroup);
-    }
+    ingredientsGroup[i].ingredients.removeWhere((item) => item.uuid == uuid);
     notifyListeners();
   }
 
@@ -251,6 +248,17 @@ class RecipeAdd with ChangeNotifier {
     notifyListeners();
     try {
       http.MultipartRequest request = http.MultipartRequest('POST', Uri.parse(url));
+       for (int i = 0; i < steps.length; i++) {
+        for(int z = 0; z < steps[i].images.length; z++) {
+          if(steps[i].images[z].filename != null) {
+            request.fields["stepsImagesId-$i-$z"] = steps[i].images[z].uuid;
+            http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
+              'imageurl-$i-$z', steps[i].images[z].filename
+            );
+            request.files.add(multipartFile);
+          }
+        }
+      }
       if(fileImageRecipe != null) {
         http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
           'imageurl', filenameImageRecipe

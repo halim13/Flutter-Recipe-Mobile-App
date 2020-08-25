@@ -129,18 +129,18 @@ class _AddRecipeState extends State<AddRecipeScreen> {
       await recipeProvider.store(title, ingredientsGroup, ingredients, steps, portion).then((value) async {
         if(value["status"] == 200) {
           await pr.hide();
-          // AwesomeDialog(
-          //   context: context,
-          //   dialogType: DialogType.SUCCES,
-          //   animType: AnimType.BOTTOMSLIDE,
-          //   headerAnimationLoop: false,
-          //   dismissOnTouchOutside: false,
-          //   title: 'Berhasil !',
-          //   desc: 'Data ditambahkan !',
-          //   btnOkOnPress: () => Navigator.of(context).popUntil((route) => route.isFirst),
-          //   btnOkIcon: Icons.check,
-          //   btnOkColor: Colors.blue.shade700
-          // )..show();
+          AwesomeDialog(
+            context: context,
+            dialogType: DialogType.SUCCES,
+            animType: AnimType.BOTTOMSLIDE,
+            headerAnimationLoop: false,
+            dismissOnTouchOutside: false,
+            title: 'Berhasil !',
+            desc: 'Data ditambahkan !',
+            btnOkOnPress: () => Navigator.of(context).popUntil((route) => route.isFirst),
+            btnOkIcon: Icons.check,
+            btnOkColor: Colors.blue.shade700
+          )..show();
         }
       });
     } on Exception catch(error) {

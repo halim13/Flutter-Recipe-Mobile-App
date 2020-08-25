@@ -8,59 +8,11 @@ import '../constants/connection.dart';
 import '../models/User.dart';
 
 class User extends ChangeNotifier {
-  String filename;
-  File file;
-  bool formEditUsername = false;
-  bool formEditBio = false;
-  bool isSaveChanges = false;
-  DateTime uniqueAvatar =  DateTime.now();
+  bool isLoading = false;
 
   List<UserData> profile;
   List<UserData> get items => [...profile];
 
-  bool isToggleSavedChanges() {
-    if(isSaveChanges) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-  bool isToggleFormEditUsername() {
-    if(formEditUsername) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-  bool isToggleFormEditBio() {
-    if(formEditBio) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  void toggleSaveChanges() {
-    isSaveChanges = !isSaveChanges;
-    notifyListeners();
-  }
-  void toggleFormEditUsername() {
-    formEditUsername = !formEditUsername;
-    isSaveChanges = !isSaveChanges;
-    notifyListeners();
-  }
-   void toggleFormEditBio() {
-    formEditBio = !formEditBio;
-    isSaveChanges = !isSaveChanges;
-    notifyListeners();
-  }
-  void isCancelEditUser() {
-    formEditUsername = false;
-    formEditBio = false;
-    isSaveChanges = false;
-    file = null;
-    notifyListeners();
-  }
   Future<void> refreshProfile() async {
     await getCurrentProfile();
   }
@@ -79,7 +31,7 @@ class User extends ChangeNotifier {
       throw error;
     }
   }
-  Future update(String username, String bio) async {
+  Future update(File file, String username, String bio) async {
     Map<String, String> fields = {
       "username": username,
       "bio": bio
@@ -88,12 +40,14 @@ class User extends ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, Object> extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
     String userId = extractedUserData["userId"];
-    String url = 'http://$baseurl:$port/api/v1/accounts/users/profile/update/$userId'; 
+    String url = 'http://$baseurl:$port/api/v1/accounts/users/profile/update/$userId';
+    isLoading = true;
+    notifyListeners();
     try {
       http.MultipartRequest request = http.MultipartRequest('PUT', Uri.parse(url));
       if(file != null) {
         http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
-          'avatar', filename
+          'avatar', file.path
         );
         request.files.add(multipartFile);
       }
@@ -103,15 +57,10 @@ class User extends ChangeNotifier {
       String responseData = await response.stream.bytesToString();
       final responseDataDecoded = json.decode(responseData);
       if(responseDataDecoded["status"] == 200) {
-        if(file != null) {
-          uniqueAvatar = DateTime.now();
-          file = null;
-        }
         refreshProfile();
+        isLoading = false;
+        notifyListeners();
       }
-      formEditUsername = false;
-      formEditBio = false;
-      isSaveChanges = false;
       notifyListeners();
     } catch(error) {
       print(error);

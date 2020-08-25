@@ -2,9 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_complete_guide/constants/url.dart';
+import 'package:provider/provider.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
+import '../constants/url.dart';
+import '../providers/user.dart';
 
 class EditProfileScreen extends StatefulWidget {
   EditProfileScreen({
@@ -65,7 +68,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           f = _file;
         });
         File cropped = await ImageCropper.cropImage(
-          sourcePath: '',
+          sourcePath: f.path,
           androidUiSettings: AndroidUiSettings(
           toolbarTitle: 'Crop It',
           toolbarColor: Colors.blueGrey[900],
@@ -76,9 +79,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             minimumAspectRatio: 1.0,
           )
         );
+        
         if(cropped != null) {
           setState(() {
             f = cropped;
+          });
+        } else {
+          setState(() {
+            f = null;
           });
         }
       }
@@ -91,6 +99,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       FormState form = formKey.currentState;
       if(form.validate()) {
         form.save();
+        await Provider.of<User>(context, listen: false).update(f, name, bio).then((value) {
+          AwesomeDialog(
+            context: context,
+            dialogType: DialogType.SUCCES,
+            animType: AnimType.BOTTOMSLIDE,
+            headerAnimationLoop: false,
+            dismissOnTouchOutside: false,
+            title: 'Berhasil !',
+            desc: 'Perubahan tersimpan !',
+            btnOkOnPress: () => Navigator.of(context).popUntil((route) => route.isFirst),
+            btnOkIcon: Icons.check,
+            btnOkColor: Colors.blue.shade700
+          )..show();
+        });
       }
     }
     return Scaffold(
@@ -130,13 +152,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             ? CachedNetworkImage(
                                 imageUrl: '$imagesAvatarUrl/${widget.avatar}',
                                 fit: BoxFit.cover,
-                                placeholder: (context, url) =>  CircularProgressIndicator(),
-                                errorWidget: (context, url, error) => Image.asset("assets/default-thumbnail-profile.jpg"),
+                                placeholder: (context, url) => Image.asset("assets/default-thumbnail.jpg"),
+                                errorWidget: (context, url, error) => Image.asset("assets/default-thumbnail.jpg"),
                               )
                             : FadeInImage(
                               fit: BoxFit.cover,
                               image: FileImage(f),
-                              placeholder: AssetImage("assets/default-thumbnail-profile.jpg")
+                              placeholder: AssetImage("assets/default-thumbnail.jpg")
                             )
                           ),
                         )
@@ -189,6 +211,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ),
                       hintText: "Name",
                       fillColor: Colors.white,
+                      filled: true,
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(5.0)),
                         borderSide: BorderSide(color: Colors.grey)
@@ -287,21 +310,33 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   Container(
                     width: double.infinity,
                     height: 45.0,
-                    child: RaisedButton(
-                      child: Text(
-                        'Simpan Perubahan', 
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0
-                        )
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        side: BorderSide(color: Colors.transparent)
-                      ),
-                      color: Colors.blue.shade700,
-                      elevation: 0.0,
-                      onPressed: () => saveProfile(),
+                    child: Consumer<User>(
+                      builder: (context, userProvider, child) {
+                        return RaisedButton(
+                          child: userProvider.isLoading 
+                          ? Center(
+                              child: SizedBox(
+                                width: 38.0,
+                                height: 38.0,
+                                child: CircularProgressIndicator()
+                              )
+                            )
+                          : Text(
+                              'Simpan Perubahan', 
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16.0
+                              )
+                            ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            side: BorderSide(color: Colors.transparent)
+                          ),
+                          color: Colors.blue.shade700,
+                          elevation: 0.0,
+                          onPressed: () => saveProfile(),
+                        );
+                      },
                     ),
                   )
                 ],

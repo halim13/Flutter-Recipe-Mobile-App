@@ -148,7 +148,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
                                   placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
                                   errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
                                   fadeOutDuration: Duration(seconds: 1),
-                                  fadeInDuration: Duration(seconds: 3),
+                                  fadeInDuration: Duration(seconds: 1),
                                 ),
                               ),
                               Positioned(

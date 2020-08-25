@@ -101,15 +101,15 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
         }
       }
       for (int i = 0; i < recipeProvider.steps.length; i++) {
-        TextEditingController controller = recipeProvider.steps[i].textEditingController;
-        if(controller.text == "") {
+        TextEditingController stepsController = recipeProvider.steps[i].textEditingController;
+        if(stepsController.text == "") {
           FocusNode node = recipeProvider.steps[i].focusNode;
           node.requestFocus();
           throw new Exception('Bagaimana cara memasaknya ?');
         }
         recipeProvider.stepsSendToHttp.add({
           "uuid": recipeProvider.steps[i].uuid,
-          "item": controller.text
+          "item": stepsController.text
         });
       }
       String categoryName = recipeProvider.categoryName;
