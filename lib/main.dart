@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/screens/detail.favorite.dart';
 
 import 'package:provider/provider.dart';
 import './providers/auth.dart';
@@ -79,13 +80,14 @@ class _MyAppState extends State<MyApp> {
         ),
         initialRoute: '/',
         routes: {
-          '/': (ctx) => TabsScreen(),
-          LoginScreen.routeName: (ctx) => LoginScreen(),
-          RegisterScreen.routeName: (ctx) => RegisterScreen(),
-          CategoryMealsScreen.routeName: (ctx) => CategoryMealsScreen(),
-          RecipeDetailScreen.routeName: (ctx) => RecipeDetailScreen(),
-          AddRecipeScreen.routeName: (ctx) => AddRecipeScreen(),
-          EditRecipeScreen.routeName: (ctx) => EditRecipeScreen()
+          '/': (context) => TabsScreen(),
+          LoginScreen.routeName: (context) => LoginScreen(),
+          RegisterScreen.routeName: (context) => RegisterScreen(),
+          CategoryMealsScreen.routeName: (context) => CategoryMealsScreen(),
+          RecipeDetailScreen.routeName: (context) => RecipeDetailScreen(),
+          RecipeDetailFavoriteScreen.routeName: (context) => RecipeDetailFavoriteScreen(),
+          AddRecipeScreen.routeName: (context) => AddRecipeScreen(),
+          EditRecipeScreen.routeName: (context) => EditRecipeScreen()
         },
         onUnknownRoute: (settings) {
           return MaterialPageRoute(

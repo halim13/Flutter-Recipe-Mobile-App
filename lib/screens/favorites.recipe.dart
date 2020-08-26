@@ -12,7 +12,7 @@ class FavoritesScreen extends StatefulWidget {
 class _FavoritesScreenState extends State<FavoritesScreen> {
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<RecipeDetail>(context, listen: false);
+    final recipeProvider = Provider.of<RecipeDetail>(context, listen: false);
     return FutureBuilder(
       future: Provider.of<RecipeDetail>(context, listen: false).getRecipeFavourite(),
       builder: (context, snapshot) {
@@ -33,7 +33,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     child: Image.asset('assets/no-network.png')
                   ),
                   SizedBox(height: 15.0),
-                  Text('Koneksi jaringan Anda buruk.',
+                  Text('Koneksi jaringan Anda buruk',
                     style: TextStyle(
                       fontSize: 16.0
                     ),
@@ -57,7 +57,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         }
         return Consumer<RecipeDetail>(
           child: RefreshIndicator(
-            onRefresh: () => provider.refreshRecipeFavourite(),
+            onRefresh: () => recipeProvider.refreshRecipeFavourite(),
             child: ListView(
               children: [
                 Container(
@@ -67,7 +67,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        'Belum ada favorit.', 
+                        'Belum ada favorit', 
                         style: TextStyle(
                           fontSize: 15.0
                         ),
@@ -91,8 +91,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     id: recipeProvider.displayRecipeFavourite[index].id,
                     uuid: recipeProvider.displayRecipeFavourite[index].uuid,
                     title: recipeProvider.displayRecipeFavourite[index].title,
+                    duration: recipeProvider.displayRecipeFavourite[index].duration,
                     imageUrl: recipeProvider.displayRecipeFavourite[index].imageUrl,
-                    duration: recipeProvider.displayRecipeFavourite[index].duration.toString(),
+                    portion: recipeProvider.displayRecipeFavourite[index].portion,
+                    name: recipeProvider.displayRecipeFavourite[index].name
                   );
                 }
               ),

@@ -27,6 +27,8 @@ class RecipeFavouriteData with ChangeNotifier {
   String uuid;
   String title;
   String duration;
+  String portion;
+  String name;
   int isfavourite;
   String imageUrl;
 
@@ -35,6 +37,8 @@ class RecipeFavouriteData with ChangeNotifier {
     this.uuid,
     this.title,
     this.duration,
+    this.portion,
+    this.name,
     this.isfavourite,
     this.imageUrl,
   });
@@ -44,7 +48,9 @@ class RecipeFavouriteData with ChangeNotifier {
     uuid: json["uuid"] == null ? null : json["uuid"],
     title: json["title"] == null ? null : json["title"],
     duration: json["duration"] == null ? null : json["duration"],
+    portion:  json["portion"] == null ? null : json["portion"],
     isfavourite: json["isfavourite"] == null ? null : json["isfavourite"],
     imageUrl: json["imageUrl"] == null ? null : json["imageUrl"],
+    name: json["name"] == null ? null : json["name"]
   );
 }

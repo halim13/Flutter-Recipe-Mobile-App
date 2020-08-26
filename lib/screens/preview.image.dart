@@ -37,8 +37,8 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
             tag: 'imageHero',
             child: CachedNetworkImage(
               imageUrl: '${widget.url}/${widget.body}',
-              placeholder: (context, url) => const CircularProgressIndicator(),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
+              placeholder: (context, url) => Image.asset('assets/default-avatar.png'),
+              errorWidget: (context, url, error) => Image.asset('assets/default-avatar.png'),
             ),
           )
         ),

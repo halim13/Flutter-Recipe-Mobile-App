@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:quartet/quartet.dart';
-import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:provider/provider.dart';
 
-import '../screens/preview.image.dart';
 import '../constants/url.dart';
-import '../providers/auth.dart';
+import '../screens/preview.image.dart';
 import '../providers/recipe.detail.dart';
+import '../providers/auth.dart';
 import './edit.recipe.dart';
 
-class RecipeDetailScreen extends StatefulWidget {
-  static const routeName = '/recipe-detail';
+class RecipeDetailFavoriteScreen extends StatefulWidget {
+  static const routeName = '/recipe-detail-favorite';
 
   @override
-  _RecipeDetailScreenState createState() => _RecipeDetailScreenState();
+  _RecipeDetailFavoriteScreenState createState() => _RecipeDetailFavoriteScreenState();
 }
 
-class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
-
+class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen> {
   void edit() {
     final routeArgs = ModalRoute.of(context).settings.arguments as Map<String, String>;
     Navigator.of(context).pushNamed(
@@ -26,7 +25,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
     );
   }
 
-  Widget buildSectionTitle(BuildContext context, String text) {
+   Widget buildSectionTitle(BuildContext context, String text) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
       child: Text(text,
@@ -53,9 +52,10 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
-    Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments;
+    Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments as Map<String, String>;
     RecipeDetail recipeProvider = Provider.of<RecipeDetail>(context, listen: false);
     return Scaffold(
       appBar: AppBar(

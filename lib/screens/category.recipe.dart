@@ -23,11 +23,12 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
     super.initState();
     controller.addListener(() {
       if (controller.position.pixels == controller.position.maxScrollExtent) {
-        final routeArgs = ModalRoute.of(context).settings.arguments as Map<String, String>;
+        Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments as Map<String, String>;
         Provider.of<RecipeShow>(context, listen: false).show(routeArgs['uuid'], 5);
       }
     });
   }
+
   @override
   void dispose() {
     super.dispose();
@@ -46,7 +47,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final routeArgs = ModalRoute.of(context).settings.arguments as Map<String, String>;
+    Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments;
     String categoryTitle = routeArgs['title'];
     String recipeId = routeArgs['uuid'];
     return Scaffold(
@@ -81,7 +82,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
                       child: Image.asset('assets/no-network.png')
                     ),
                     SizedBox(height: 15.0),
-                    Text('Koneksi jaringan Anda buruk.',
+                    Text('Koneksi jaringan Anda buruk',
                       style: TextStyle(
                         fontSize: 16.0
                       ),
@@ -105,7 +106,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
           }
           return Consumer<RecipeShow>(
             child: Center(
-              child: Text('Belum ada resep.'),
+              child: Text('Belum ada resep'),
             ),
             builder: (context, recipeProvider, child) => recipeProvider.showRecipeItem.length <= 0 ? child :
             RefreshIndicator(

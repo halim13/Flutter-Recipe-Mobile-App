@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/screens/detail.favorite.dart';
 import '../constants/url.dart';
-import '../screens/recipe.detail.dart';
 
 class RecipeItem extends StatelessWidget {
   final int id;
   final String uuid;
   final String title;
   final String imageUrl;
+  final String portion;
   final String duration;
-  final String complexity;
-  final String affordability;
+  final String name;
 
   RecipeItem({
     this.id,
     this.uuid,
     this.title,
     this.imageUrl,
-    this.affordability,
-    this.complexity,
-    this.duration
+    this.portion,
+    this.duration,
+    this.name
   });
 
   void selectRecipe(context) {
     Navigator.of(context).pushNamed(
-      RecipeDetailScreen.routeName,
+      RecipeDetailFavoriteScreen.routeName,
       arguments: {
         "uuid": uuid, 
         "title": title
@@ -81,41 +81,29 @@ class RecipeItem extends StatelessWidget {
               ],
             ),
             Padding(
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.all(20.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Row(
                     children: [
-                      Icon(
-                        Icons.schedule,
-                      ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      Text('$duration min'),
+                      Icon(Icons.schedule),
+                      SizedBox(width: 6),
+                      Text('${duration.toString()} min'),
                     ],
                   ),
                   Row(
                     children: [
-                      Icon(
-                        Icons.work,
-                      ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      Text(complexity.toString()),
+                      Icon(Icons.fastfood),
+                      SizedBox(width: 6),
+                      Text(portion),
                     ],
                   ),
                   Row(
                     children: [
-                      Icon(
-                        Icons.attach_money,
-                      ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      Text(affordability.toString()),
+                      Icon(Icons.people),
+                      SizedBox(width: 6),
+                      Text('Dibuat oleh $name'),
                     ],
                   ),
                 ],

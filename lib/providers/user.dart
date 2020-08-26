@@ -20,6 +20,7 @@ class User extends ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, Object> extractedUserData = json.decode(prefs.getString('userData'));
     String userId = extractedUserData["userId"];
+    print(userId);
     String url = 'http://$baseurl:$port/api/v1/accounts/users/profile/$userId'; 
     try {
       http.Response response = await http.get(url).timeout(Duration(seconds: 2));

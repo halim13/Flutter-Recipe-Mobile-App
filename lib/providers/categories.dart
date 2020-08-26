@@ -12,7 +12,6 @@ class Categories with ChangeNotifier {
   
   Future<void> refreshProducts() async {
     await getCategories();
-    notifyListeners();
   }
   Future<void> getCategories() async {
     String url = 'http://$baseurl:$port/api/v1/categories';

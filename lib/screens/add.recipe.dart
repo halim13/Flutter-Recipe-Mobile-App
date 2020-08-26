@@ -70,7 +70,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
       if(recipeProvider.titleController.text == "") {
         FocusNode node = recipeProvider.titleFocusNode;
         node.requestFocus();
-        throw new Exception('Judul Makanan tidak boleh kosong.');
+        throw new Exception('Judul Makanan tidak boleh kosong');
       } 
       if(recipeProvider.portionController.text == "") {
         FocusNode node = recipeProvider.portionFocusNode;
@@ -82,14 +82,14 @@ class _AddRecipeState extends State<AddRecipeScreen> {
         if(ingredientsGroupController.text == "") {
           FocusNode node = recipeProvider.ingredientsGroup[i].focusNode;
           node.requestFocus();
-          throw new Exception('Judul Bahan Makanan tidak boleh kosong.');
+          throw new Exception('Judul Bahan Makanan tidak boleh kosong');
         }
         for (int z = 0; z < recipeProvider.ingredientsGroup[i].ingredients.length; z++) {
           TextEditingController ingredientsController = recipeProvider.ingredientsGroup[i].ingredients[z].textEditingController;
           if(ingredientsController.text == "") {
             FocusNode node = recipeProvider.ingredientsGroup[i].ingredients[z].focusNode;
             node.requestFocus();
-            throw new Exception('Bahan Makanan tidak boleh kosong.');
+            throw new Exception('Bahan Makanan tidak boleh kosong');
           }
           recipeProvider.ingredientsGroupSendToHttp.add({
             "uuid": recipeProvider.ingredientsGroup[i].uuid,

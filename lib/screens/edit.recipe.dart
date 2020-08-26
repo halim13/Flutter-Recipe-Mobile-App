@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +21,6 @@ class EditRecipeScreen extends StatefulWidget {
 }
 
 class _EditRecipeScreenState extends State<EditRecipeScreen> {
-
   void changeImageRecipe() async {
     ImageSource imageSource = await showDialog<ImageSource>(context: context, builder: (context) => 
       AlertDialog(
@@ -69,7 +69,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
     try {
       if(recipeProvider.titleController.text == "") {
         recipeProvider.titleFocusNode.requestFocus();
-        throw new Exception('Judul Makanan jangan lupa diisi.');
+        throw new Exception('Judul Makanan jangan lupa diisi');
       }
       if(recipeProvider.portionController.text == "") {
         recipeProvider.portionFocusNode.requestFocus();
@@ -80,14 +80,14 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
         if(ingredientsGroupController.text == "") {
           FocusNode node = recipeProvider.ingredientsGroup[i].focusNode;
           node.requestFocus();
-          throw new Exception('Judul Bahan Makanan tidak boleh kosong.');
+          throw new Exception('Judul Bahan Makanan tidak boleh kosong');
         }
         for(int z = 0; z < recipeProvider.ingredientsGroup[i].ingredients.length; z++) {
           TextEditingController ingredientsController = recipeProvider.ingredientsGroup[i].ingredients[z].textEditingController;
           if(ingredientsController.text == "") {
             FocusNode node = recipeProvider.ingredientsGroup[i].ingredients[z].focusNode;
             node.requestFocus();
-            throw new Exception('Bahan Makanan tidak boleh kosong.');
+            throw new Exception('Bahan Makanan tidak boleh kosong');
           }
           recipeProvider.ingredientsGroupSendToHttp.add({
             "uuid": recipeProvider.ingredientsGroup[i].uuid,

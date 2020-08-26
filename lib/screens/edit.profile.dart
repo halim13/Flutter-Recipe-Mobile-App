@@ -238,6 +238,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   TextFormField(
                     initialValue: widget.email,
                     keyboardType: TextInputType.emailAddress,
+                    readOnly: true,
                     decoration: InputDecoration(
                       labelText: "E-mail Address",
                       labelStyle: TextStyle(

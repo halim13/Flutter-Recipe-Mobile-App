@@ -149,11 +149,11 @@ class ProfileScreenState extends State<ProfileScreen> {
           );
         }
         return Consumer<User>(
-          builder: (context, user, child) {
+          builder: (context, userProvider, child) {
             return RefreshIndicator(
-              onRefresh: () => user.refreshProfile(),
+              onRefresh: () => userProvider.refreshProfile(),
               child: ListView.builder(
-              itemCount: user.items.length,
+              itemCount: userProvider.items.length,
               itemBuilder: (context, i) {
                   return Column(
                     children: [
@@ -179,24 +179,20 @@ class ProfileScreenState extends State<ProfileScreen> {
                                     Container(
                                       width: 120.0,
                                       height: 120.0,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                      ),
                                       child: GestureDetector(
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(120.0),
-                                          child: CachedNetworkImage(
+                                        child: ClipOval(
+                                            child: CachedNetworkImage(
+                                            imageUrl: '$imagesAvatarUrl/${userProvider.items[i].avatar}',
                                             fit: BoxFit.cover,
-                                            placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
-                                            errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),                                          
-                                            imageUrl: '$imagesAvatarUrl/${user.items[i].avatar}',
+                                            placeholder: (context, url) => Image.asset('assets/default-avatar.png'),
+                                            errorWidget: (context, url, error) => Image.asset('assets/default-avatar.png')                                      
                                           ),
                                         ),
                                         onTap: () {
                                           Navigator.push(context, MaterialPageRoute(builder: (_) {
                                             return PreviewImageScreen(
                                               url: imagesAvatarUrl,
-                                              body: user.items[i].avatar
+                                              body: userProvider.items[i].avatar
                                             );
                                           }));
                                         },
@@ -210,39 +206,16 @@ class ProfileScreenState extends State<ProfileScreen> {
                         ],
                       ),
                       ListTile(
-                        title: Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('Name'),
-                            ],
-                          )
-                        ),
-                        subtitle: Consumer<User>(
-                          builder: (context, user, child) {
-                            return Text(
-                              user.items[i].name.toString()
-                            );
-                          }
-                        )
+                        title: Text('Name'),
+                        subtitle: Text(userProvider.items[i].name)
                       ),
                       ListTile(
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('E-mail Address'),
-                          ],
-                        ),
-                        subtitle: Text(user.items[i].email)
+                        title: Text('E-mail Address'),
+                        subtitle: Text(userProvider.items[i].email)
                       ),
                       ListTile(
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Bio'),
-                          ],
-                        ),
-                        subtitle: Text(user.items[i].bio)
+                        title: Text('Bio'),
+                        subtitle: Text(userProvider.items[i].bio)
                       ),                        
                     ],
                   );
@@ -254,18 +227,18 @@ class ProfileScreenState extends State<ProfileScreen> {
       }
     );
   }
-  Widget currentAvatar(User user, int i) {
-    return Container(
-      width: 120.0,
-      height: 120.0,
-      child: CachedNetworkImage(progressIndicatorBuilder: (context, url, progress) =>
-        CircularProgressIndicator(
-          value: progress.progress,
-        ),
-        imageUrl: '$imagesAvatarUrl/${user.items[i].avatar}',
-      ),
-    );
-  }
+  // Widget currentAvatar(User user, int i) {
+  //   return Container(
+  //     width: 120.0,
+  //     height: 120.0,
+  //     child: CachedNetworkImage(progressIndicatorBuilder: (context, url, progress) =>
+  //       CircularProgressIndicator(
+  //         value: progress.progress,
+  //       ),
+  //       imageUrl: '$imagesAvatarUrl/${user.items[i].avatar}',
+  //     ),
+  //   );
+  // }
   // Widget previewAvatar(User user) {
   //   return FadeInImage(
   //     width: 120.0,
