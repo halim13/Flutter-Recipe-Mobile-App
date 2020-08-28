@@ -6,8 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
-import '../constants/url.dart';
-import '../providers/user.dart';
+
+import '../../constants/url.dart';
+import '../../providers/user.dart';
 
 class EditProfileScreen extends StatefulWidget {
   EditProfileScreen({
@@ -44,7 +45,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           fontWeight: FontWeight.bold, 
         ),
       ),
-      actions: <Widget>[
+      actions: [
         MaterialButton(
           child: Text(
             "Camera",
@@ -317,9 +318,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           child: userProvider.isLoading 
                           ? Center(
                               child: SizedBox(
-                                width: 38.0,
-                                height: 38.0,
-                                child: CircularProgressIndicator()
+                                width: 30.0,
+                                height: 30.0,
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                ),
                               )
                             )
                           : Text(

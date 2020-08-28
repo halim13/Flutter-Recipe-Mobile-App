@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/screens/detail.favorite.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
+import '../screens/favorite/detail.favorite.dart';
 import '../constants/url.dart';
 
 class RecipeItem extends StatelessWidget {
@@ -39,7 +41,7 @@ class RecipeItem extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),
-        elevation: 4,
+        elevation: 4.0,
         margin: EdgeInsets.all(10.0),
         child: Column(
           children: [
@@ -50,11 +52,22 @@ class RecipeItem extends StatelessWidget {
                     topLeft: Radius.circular(15),
                     topRight: Radius.circular(15),
                   ),
-                  child: Image.network(
-                    '$imagesRecipesUrl/$imageUrl',
-                    height: 250,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
+                  child: CachedNetworkImage(
+                    imageUrl: '$imagesRecipesUrl/$imageUrl',
+                    imageBuilder: (context, imageProvider) => Container(
+                      width: double.infinity,
+                      height: 250.0,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    ),
+                    placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+                    errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+                    fadeOutDuration: Duration(seconds: 1),
+                    fadeInDuration: Duration(seconds: 1),
                   ),
                 ),
                 Positioned(
@@ -80,33 +93,36 @@ class RecipeItem extends StatelessWidget {
                 )
               ],
             ),
-            Padding(
+            Container(
               padding: EdgeInsets.all(20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.schedule),
-                      SizedBox(width: 6),
-                      Text('${duration.toString()} min'),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Icon(Icons.fastfood),
-                      SizedBox(width: 6),
-                      Text(portion),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Icon(Icons.people),
-                      SizedBox(width: 6),
-                      Text('Dibuat oleh $name'),
-                    ],
-                  ),
-                ],
+              height: 80.0,
+              child: Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.schedule),
+                        SizedBox(width: 6),
+                        Text('${duration.toString()} min'),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Icon(Icons.fastfood),
+                        SizedBox(width: 6),
+                        Text(portion),
+                      ],
+                    ),
+                    // Row(
+                    //   children: [
+                    //     Icon(Icons.people),
+                    //     SizedBox(width: 6),
+                    //     Text('Dibuat oleh $name'),
+                    //   ],
+                    // ),
+                  ],
+                ),
               ),
             ),
           ],

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/screens/detail.favorite.dart';
-
 import 'package:provider/provider.dart';
+
 import './providers/auth.dart';
 import './providers/categories.dart';
 import './providers/recipe.show.dart';
@@ -10,17 +9,21 @@ import './providers/user.dart';
 import './providers/recipe.edit.dart';
 import './providers/recipe.add.dart';
 import './colors/colors.dart';
+import 'screens/favorite/detail.favorite.dart';
 import './screens/tabs.dart';
-import './screens/categories.dart';
-import './screens/category.recipe.dart';
-import './screens/recipe.detail.dart';
-import './screens/login.dart';
-import './screens/register.dart';
-import './screens/add.recipe.dart';
-import './screens/edit.recipe.dart';
+import 'screens/recipe/categories.dart';
+import 'screens/recipe/category.dart';
+import 'screens/recipe/detail.dart';
+import 'screens/auth/login.dart';
+import 'screens/auth/register.dart';
+import 'screens/recipe/add.dart';
+import 'screens/recipe/edit.dart';
 
 
-void main() => runApp(MyApp());
+void main() { 
+  Provider.debugCheckInvalidValueType = null;
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -45,13 +48,17 @@ class _MyAppState extends State<MyApp> {
           value: RecipeEdit(),
         ),
         ChangeNotifierProvider.value(
+          value: RecipeDetail(),
+        ),
+        // ChangeNotifierProxyProvider<RecipeDetail, RecipeEdit>(
+        //   create: (BuildContext context) =>  null,
+        //   update: (BuildContext context, RecipeDetail recipeDetail, RecipeEdit recipeEdit) => RecipeEdit(recipeDetail.getRecipeFavourite())
+        // ),
+        ChangeNotifierProvider.value(
           value: RecipeAdd(),
         ),
         ChangeNotifierProvider.value(
           value: RecipeShow(),
-        ),
-        ChangeNotifierProvider.value(
-          value: RecipeDetail(),
         ),
       ],
       child: MaterialApp(
@@ -61,7 +68,7 @@ class _MyAppState extends State<MyApp> {
           appBarTheme: AppBarTheme(elevation: 0.0),
           primaryColor: primaryGrey.shade50,
           accentColor: primaryRed.shade700,
-          canvasColor: const Color.fromARGB(255, 255, 255, 255),
+          canvasColor: Color.fromARGB(255, 255, 255, 255),
           // fontFamily: 'Raleway',
           textTheme: ThemeData.light().textTheme.copyWith(
             bodyText1: TextStyle(

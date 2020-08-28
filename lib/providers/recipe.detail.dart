@@ -1,22 +1,22 @@
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import '../constants/connection.dart';
-import '../models/RecipeDetail.dart';
-import '../models/RecipeFavourite.dart';
 
+import '../constants/connection.dart';
+import '../models/RecipeDetail.dart' as recipeDetailModel;
+import '../models/RecipeFavourite.dart' as recipeFavoriteModel;
 
 class RecipeDetail with ChangeNotifier {
-  Data data;
+  recipeDetailModel.RecipeDetailDatas data;
   int favourite;
 
-  List<RecipeFavouriteData> displayRecipeFavourite = [];
+  List<recipeFavoriteModel.RecipeFavouriteData> displayRecipeFavourite = [];
 
-  bool isRecipeFavorite(String recipeId, int f) {
-    return favourite == 1 ? true : false;
-  }
+  bool isRecipeFavorite(String recipeId, int f) => favourite == 1 ? true : false;
+
   void toggleFavourite(String recipeId, int f, BuildContext context) {
     if(favourite == 0) {
       updateToFavourite(recipeId, 1);
@@ -52,11 +52,11 @@ class RecipeDetail with ChangeNotifier {
     String url = 'http://$baseurl:$port/api/v1/recipes/favourite'; 
     try {
       http.Response response = await http.get(url).timeout(Duration(seconds: 5));
-      RecipeFavouriteModel model = RecipeFavouriteModel.fromJson(json.decode(response.body));
-      List<RecipeFavouriteData> initialDisplayRecipeFavourite = [];
+      recipeFavoriteModel.RecipeFavouriteModel model = recipeFavoriteModel.RecipeFavouriteModel.fromJson(json.decode(response.body));
+      List<recipeFavoriteModel.RecipeFavouriteData> initialDisplayRecipeFavorite = [];
       model.data.forEach((item) {
-        initialDisplayRecipeFavourite.add(
-          RecipeFavouriteData(
+        initialDisplayRecipeFavorite.add(
+         recipeFavoriteModel.RecipeFavouriteData(
             id: item.id,
             uuid: item.uuid,
             title: item.title,
@@ -68,7 +68,7 @@ class RecipeDetail with ChangeNotifier {
           )
         );
       });
-      displayRecipeFavourite = initialDisplayRecipeFavourite;
+      displayRecipeFavourite = initialDisplayRecipeFavorite;
       notifyListeners();
     } catch(error) {
       print(error); 
@@ -91,7 +91,7 @@ class RecipeDetail with ChangeNotifier {
     String url = 'http://$baseurl:$port/api/v1/recipes/detail/$recipeId';
     try {
       http.Response response = await http.get(url);
-      RecipeDetailModel model = RecipeDetailModel.fromJson(json.decode(response.body));
+      recipeDetailModel.RecipeDetailModel model = recipeDetailModel.RecipeDetailModel.fromJson(json.decode(response.body));
       data = model.data;
       favourite = model.data.recipes.first.isfavourite;
       notifyListeners();

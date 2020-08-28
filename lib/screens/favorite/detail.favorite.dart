@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/providers/recipe.edit.dart';
+import 'package:provider/provider.dart';
 import 'package:quartet/quartet.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:provider/provider.dart';
 
-import '../constants/url.dart';
-import '../screens/preview.image.dart';
-import '../providers/recipe.detail.dart';
-import '../providers/auth.dart';
-import './edit.recipe.dart';
+import '../../constants/url.dart';
+import '../preview.image.dart';
+import '../../providers/auth.dart';
+import '../recipe/edit.dart';
 
 class RecipeDetailFavoriteScreen extends StatefulWidget {
   static const routeName = '/recipe-detail-favorite';
@@ -17,8 +17,9 @@ class RecipeDetailFavoriteScreen extends StatefulWidget {
 }
 
 class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen> {
+
   void edit() {
-    final routeArgs = ModalRoute.of(context).settings.arguments as Map<String, String>;
+    Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments;
     Navigator.of(context).pushNamed(
       EditRecipeScreen.routeName,
       arguments: routeArgs['uuid']
@@ -55,8 +56,8 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
 
   @override
   Widget build(BuildContext context) {
-    Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments as Map<String, String>;
-    RecipeDetail recipeProvider = Provider.of<RecipeDetail>(context, listen: false);
+    Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments;
+    RecipeEdit recipeProvider = Provider.of<RecipeEdit>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text(titleCase(routeArgs['title'])),
@@ -76,7 +77,7 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
         ],
       ),
       body: FutureBuilder(
-        future: Provider.of<RecipeDetail>(context, listen: false).detail(routeArgs['uuid']),
+        future: Provider.of<RecipeEdit>(context, listen: false).detail(routeArgs['uuid']),
         builder: (context, snapshot) {
           if(snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -95,7 +96,7 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
                   height: 300,
                   width: double.infinity,
                   child: CachedNetworkImage(
-                    imageUrl: '$imagesRecipesUrl/${recipeProvider.data.recipes.first.imageUrl}',
+                    imageUrl: '$imagesRecipesUrl/${recipeProvider.recipeDetailDatas.recipes.first.imageUrl}',
                     imageBuilder: (context, imageProvider) => Container(
                       decoration: BoxDecoration(
                         image: DecorationImage(
@@ -104,9 +105,10 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
                         ),
                       )
                     ),
-                    progressIndicatorBuilder: (context, url, progress) => CircularProgressIndicator(value: progress.progress),
                     placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
                     errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+                    fadeOutDuration: Duration(seconds: 1),
+                    fadeInDuration: Duration(seconds: 1),
                   ) 
                 ),
                 buildSectionTitle(context, 'Bahan - bahan'),
@@ -114,7 +116,7 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
                   ListView.separated(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: recipeProvider.data.ingredientsGroup.length,
+                    itemCount: recipeProvider.recipeDetailDatas.ingredientsGroup.length,
                     separatorBuilder: (context, index) {
                       return Divider();
                     },
@@ -123,7 +125,7 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('- ${recipeProvider.data.ingredientsGroup[i].body}', 
+                          Text('- ${recipeProvider.recipeDetailDatas.ingredientsGroup[i].body}', 
                             style: TextStyle(
                               fontSize: 16.0,
                               fontWeight: FontWeight.bold
@@ -133,10 +135,10 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
                           ListView(
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
-                            children: List.generate(recipeProvider.data.ingredientsGroup[i].ingredients.length, (z) => Container(
+                            children: List.generate(recipeProvider.recipeDetailDatas.ingredientsGroup[i].ingredients.length, (z) => Container(
                                 child: Container(
                                   margin: EdgeInsets.only(left: 10.0),
-                                  child: Text('- ${recipeProvider.data.ingredientsGroup[i].ingredients[z].body}',
+                                  child: Text('- ${recipeProvider.recipeDetailDatas.ingredientsGroup[i].ingredients[z].body}',
                                     style: TextStyle(
                                       fontSize: 16.0,
                                       height: 1.75
@@ -156,7 +158,7 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
                   ListView.separated(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: recipeProvider.data.steps.length,
+                    itemCount: recipeProvider.recipeDetailDatas.steps.length,
                     separatorBuilder: (context, index) {
                       return Divider();
                     },
@@ -173,7 +175,7 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
                             ),
                           ),
                           title: Text(
-                            recipeProvider.data.steps[i].body,
+                            recipeProvider.recipeDetailDatas.steps[i].body,
                             style: TextStyle(
                               fontSize: 16.0,
                               height: 1.75
@@ -181,7 +183,7 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
                           ),
                         ),
                         Row(
-                          children: List.generate(recipeProvider.data.steps[i].stepsImages.length, (z) => 
+                          children: List.generate(recipeProvider.recipeDetailDatas.steps[i].stepsImages.length, (z) => 
                             Expanded(
                               child: GestureDetector(
                                 onTap: () => Navigator.push(
@@ -189,14 +191,14 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
                                   MaterialPageRoute(builder: (context) {
                                   return PreviewImageScreen(
                                     url: imagesStepsUrl,
-                                    body: recipeProvider.data.steps[i].stepsImages[z].body
+                                    body: recipeProvider.recipeDetailDatas.steps[i].stepsImages[z].body
                                   );
                                 })),
                                 child: Container(
                                   child: CachedNetworkImage(
                                     width: 100.0,
                                     height: 100.0,
-                                    imageUrl: '$imagesStepsUrl/${recipeProvider.data.steps[i].stepsImages[z].body}',
+                                    imageUrl: '$imagesStepsUrl/${recipeProvider.recipeDetailDatas.steps[i].stepsImages[z].body}',
                                     placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
                                     errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
                                     fadeOutDuration: Duration(seconds: 1),
@@ -216,7 +218,7 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
           );
         }
       ),
-      floatingActionButton: Consumer<RecipeDetail>(
+      floatingActionButton: Consumer<RecipeEdit>(
         builder: (context, recipeProvider, ch) {
           return FloatingActionButton(
             backgroundColor: Colors.yellow.shade700,
@@ -228,4 +230,5 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
       )
     );
   }
+  
 }

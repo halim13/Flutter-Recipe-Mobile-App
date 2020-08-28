@@ -4,11 +4,12 @@ import 'package:flutter_complete_guide/constants/url.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../screens/preview.image.dart';
-import '../providers/auth.dart';
-import '../providers/user.dart';
-import './login.dart';
-import './register.dart';
+
+import '../preview.image.dart';
+import '../../providers/auth.dart';
+import '../../providers/user.dart';
+import '../auth/login.dart';
+import '../auth/register.dart';
 
 
 class ProfileScreen extends StatefulWidget {

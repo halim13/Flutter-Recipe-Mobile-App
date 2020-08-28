@@ -2,7 +2,7 @@ class RecipeDetailModel {
   int status;
   bool error;
   String message;
-  Data data;
+  RecipeDetailDatas data;
 
   RecipeDetailModel({
     this.status,
@@ -15,22 +15,22 @@ class RecipeDetailModel {
     status: json["status"] == null ? null : json["status"],
     error: json["error"] == null ? null : json["error"],
     message: json["message"] == null ? null : json["message"],
-    data: json["data"] == null ? null : Data.fromJson(json["data"]),
+    data: json["data"] == null ? null : RecipeDetailDatas.fromJson(json["data"]),
   );
 }
 
-class Data {
+class RecipeDetailDatas {
   List<RecipeDetailData> recipes;
   List<IngredientsGroup> ingredientsGroup;
   List<StepDetailData> steps;
 
-  Data({
+  RecipeDetailDatas({
     this.recipes,
     this.ingredientsGroup,
     this.steps,
   });
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
+  factory RecipeDetailDatas.fromJson(Map<String, dynamic> json) => RecipeDetailDatas(
     recipes: json["recipes"] == null ? null : List<RecipeDetailData>.from(json["recipes"].map((x) => RecipeDetailData.fromJson(x))),
     ingredientsGroup: json["ingredientsGroup"] == null ? null : List<IngredientsGroup>.from(json["ingredientsGroup"].map((x) => IngredientsGroup.fromJson(x))),
     steps: json["steps"] == null ? null : List<StepDetailData>.from(json["steps"].map((x) => StepDetailData.fromJson(x))),

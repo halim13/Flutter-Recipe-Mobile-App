@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/recipe.detail.dart';
-import '../widgets/recipe.item.dart';
+
+import '../../providers/recipe.edit.dart';
+import '../../widgets/recipe.item.dart';
 
 class FavoritesScreen extends StatefulWidget {
 
@@ -12,9 +13,8 @@ class FavoritesScreen extends StatefulWidget {
 class _FavoritesScreenState extends State<FavoritesScreen> {
   @override
   Widget build(BuildContext context) {
-    final recipeProvider = Provider.of<RecipeDetail>(context, listen: false);
     return FutureBuilder(
-      future: Provider.of<RecipeDetail>(context, listen: false).getRecipeFavourite(),
+      future:  Provider.of<RecipeEdit>(context, listen: false).getRecipeFavourite(),
       builder: (context, snapshot) {
         if(snapshot.connectionState == ConnectionState.waiting) {
           return Center(
@@ -22,42 +22,39 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           );
         }
         if(snapshot.hasError) {
-          return Consumer<RecipeDetail>(
-            builder: (context, recipeDetailProvider, child) =>
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 150.0,
-                    child: Image.asset('assets/no-network.png')
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 150.0,
+                  child: Image.asset('assets/no-network.png')
+                ),
+                SizedBox(height: 15.0),
+                Text('Koneksi jaringan Anda buruk',
+                  style: TextStyle(
+                    fontSize: 16.0
                   ),
-                  SizedBox(height: 15.0),
-                  Text('Koneksi jaringan Anda buruk',
+                ),
+                SizedBox(height: 10.0),
+                GestureDetector(
+                  child: Text('Coba Ulangi',
                     style: TextStyle(
-                      fontSize: 16.0
+                      fontSize: 16.0,
+                      decoration: TextDecoration.underline
                     ),
                   ),
-                  SizedBox(height: 10.0),
-                  GestureDetector(
-                    child: Text('Coba Ulangi',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        decoration: TextDecoration.underline
-                      ),
-                    ),
-                    onTap: () {
-                      setState((){});
-                    },
-                  ),
-                ],
-              ),
+                  onTap: () {
+                    setState((){});
+                  },
+                ),
+              ],
             ),
           );
         }
-        return Consumer<RecipeDetail>(
+        return Consumer<RecipeEdit>(
           child: RefreshIndicator(
-            onRefresh: () => recipeProvider.refreshRecipeFavourite(),
+            onRefresh: () => Provider.of<RecipeEdit>(context, listen: false).refreshRecipeFavourite(),
             child: ListView(
               children: [
                 Container(

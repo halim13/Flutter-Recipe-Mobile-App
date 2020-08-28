@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../constants/connection.dart';
 import '../models/User.dart';
 
@@ -20,7 +21,6 @@ class User extends ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, Object> extractedUserData = json.decode(prefs.getString('userData'));
     String userId = extractedUserData["userId"];
-    print(userId);
     String url = 'http://$baseurl:$port/api/v1/accounts/users/profile/$userId'; 
     try {
       http.Response response = await http.get(url).timeout(Duration(seconds: 2));
@@ -39,7 +39,7 @@ class User extends ChangeNotifier {
     };
     Map<String, String> headers = {"Content-Type": "application/json"};
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    Map<String, Object> extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
+    Map<String, Object> extractedUserData = json.decode(prefs.getString('userData'));
     String userId = extractedUserData["userId"];
     String url = 'http://$baseurl:$port/api/v1/accounts/users/profile/update/$userId';
     isLoading = true;

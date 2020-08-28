@@ -8,9 +8,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
-import '../widgets/text.form.ingredients.add.dart';
-import '../widgets/text.form.steps.add.dart';
-import '../providers/recipe.add.dart';
+
+import '../../widgets/text.form.ingredients.add.dart';
+import '../../widgets/text.form.steps.add.dart';
+import '../../providers/recipe.add.dart';
 
 class AddRecipeScreen extends StatefulWidget {
   static const routeName = '/add-recipe';
@@ -420,7 +421,11 @@ class _AddRecipeState extends State<AddRecipeScreen> {
                     RaisedButton(
                       child: Center(
                         child: SizedBox(
-                          child: CircularProgressIndicator()
+                          height: 30.0,
+                          width: 30.0,
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
                         )
                       ),
                       shape: RoundedRectangleBorder(

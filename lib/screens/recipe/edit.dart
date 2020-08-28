@@ -9,10 +9,11 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
-import '../widgets/text.form.ingredients.edited.dart';
-import '../widgets/text.form.steps.edited.dart';
-import '../constants/url.dart';
-import '../providers/recipe.edit.dart';
+
+import '../../widgets/text.form.ingredients.edited.dart';
+import '../../widgets/text.form.steps.edited.dart';
+import '../../constants/url.dart';
+import '../../providers/recipe.edit.dart';
 
 class EditRecipeScreen extends StatefulWidget {
   static const routeName = '/edit-recipe-screen';
@@ -481,7 +482,11 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                             child: recipeProvider.isLoading ? RaisedButton(
                               child: Center(
                                 child: SizedBox(
-                                  child: CircularProgressIndicator(),
+                                  height: 30.0,
+                                  width: 30.0,
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                  ),
                                 )
                               ),
                               shape: RoundedRectangleBorder(

@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../providers/auth.dart';
-import 'register.dart';
-import 'tabs.dart';
+
+import '../../providers/auth.dart';
+import './register.dart';
+import '../tabs.dart';
 
 
 class LoginScreen extends StatefulWidget {

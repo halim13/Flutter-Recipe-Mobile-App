@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quartet/quartet.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../models/RecipeShow.dart';
-import '../helpers/highlight.occurences.dart';
-import '../providers/recipe.show.dart';
-import '../constants/url.dart';
-import './recipe.detail.dart';
+
+import '../../models/RecipeShow.dart';
+import '../../helpers/highlight.occurences.dart';
+import '../../providers/recipe.show.dart';
+import '../../constants/url.dart';
+import './detail.dart';
 
 class CategoryMealsScreen extends StatefulWidget {
   static const routeName = '/category-meals';
@@ -175,32 +176,53 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
                               ),
                             ],
                           ),
-                          Padding(
+                          Container(
                             padding: EdgeInsets.all(20.0),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Row(
                                   children: [
                                     Icon(Icons.schedule),
-                                    SizedBox(width: 6),
+                                    SizedBox(width: 6.0),
                                     Text('${recipeProvider.showRecipeItem[index].duration.toString()} min'),
                                   ],
                                 ),
                                 Row(
                                   children: [
                                     Icon(Icons.fastfood),
-                                    SizedBox(width: 6),
+                                    SizedBox(width: 6.0),
                                     Text('${recipeProvider.showRecipeItem[index].portion}'),
                                   ],
                                 ),
-                                Row(
-                                  children: [
-                                    Icon(Icons.people),
-                                    SizedBox(width: 6),
-                                    Text('Dibuat oleh ${recipeProvider.showRecipeItem[index].name}'),
-                                  ],
-                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(top: 0.0, left: 0.0, right: 20.0, bottom: 15.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Icon(Icons.people),
+                                SizedBox(width: 6),
+                                RichText(
+                                  text: TextSpan(
+                                    text: 'Dibuat oleh : ',
+                                    style: TextStyle(
+                                      color: Colors.black, 
+                                      fontSize: 16.0
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: '${recipeProvider.showRecipeItem[index].name}',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16.0
+                                        ),
+                                      )
+                                    ]
+                                  ),
+                                )
                               ],
                             ),
                           ),
@@ -221,7 +243,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
 class DataSearch extends SearchDelegate<String> {
 
   ThemeData appBarTheme(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
+    ThemeData theme = Theme.of(context);
     return theme.copyWith(
       inputDecorationTheme: InputDecorationTheme(
         hintStyle: TextStyle(color: Colors.black),
@@ -264,23 +286,26 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    RecipeShow provider = Provider.of<RecipeShow>(context);
-    List<RecipeShowData> results = provider.showRecipeItem.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
+    RecipeShow recipeProvider = Provider.of<RecipeShow>(context);
+    List<RecipeShowData> results = recipeProvider.showRecipeItem.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
     return ListView.builder(
       itemCount: results.length,
-      itemBuilder: (context, index) {
+      itemBuilder: (context, i) {
         return InkWell(
           onTap: () => {
             Navigator.of(context).pushNamed(
               RecipeDetailScreen.routeName,
-              arguments: results[index].id
+              arguments: {
+                "uuid": results[i].uuid,
+                "title": results[i].title 
+              }
             )
           },
           child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.0)
             ),
-            elevation: 4,
+            elevation: 4.0,
             margin: EdgeInsets.all(10.0),
             child: Column(
               children: [
@@ -291,11 +316,15 @@ class DataSearch extends SearchDelegate<String> {
                         topLeft: Radius.circular(15.0),
                         topRight: Radius.circular(15.0),
                       ),
-                      child: Image.network(results[index].imageurl,
-                        height: 250.0,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
+                      child: CachedNetworkImage(
+                        width: 50.0,
+                        height: 50.0,
+                        imageUrl: '${results[i].imageurl}',
+                        placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+                        errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+                        fadeOutDuration: Duration(seconds: 1),
+                        fadeInDuration: Duration(seconds: 1),
+                      ), 
                     ),
                     Positioned(
                       bottom: 20.0,
@@ -307,7 +336,7 @@ class DataSearch extends SearchDelegate<String> {
                           vertical: 5.0,
                           horizontal: 20.0,
                         ),
-                        child: Text(results[index].title,
+                        child: Text(results[i].title,
                           style: TextStyle(
                             fontSize: 26.0,
                             color: Colors.white,
@@ -319,25 +348,53 @@ class DataSearch extends SearchDelegate<String> {
                     ),
                   ],
                 ),
-                Padding(
+                Container(
                   padding: EdgeInsets.all(20.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
                         children: [
                           Icon(Icons.schedule),
                           SizedBox(width: 6.0),
-                          Text('${results[index].duration} min'),
+                          Text('${results[i].duration} min'),
                         ],
                       ),
                       Row(
                         children: [
-                          Icon(Icons.people),
-                          SizedBox(width: 6),
-                          Text('Dibuat oleh ${results[index].name}'),
+                          Icon(Icons.fastfood),
+                          SizedBox(width: 6.0),
+                          Text('${results[i].portion}'),
                         ],
                       ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.only(top: 0.0, left: 0.0, right: 20.0, bottom: 15.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Icon(Icons.people),
+                      SizedBox(width: 6),
+                      RichText(
+                        text: TextSpan(
+                          text: 'Dibuat oleh : ',
+                          style: TextStyle(
+                            color: Colors.black, 
+                            fontSize: 16.0
+                          ),
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: '${results[i].name}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.0
+                              ),
+                            )
+                          ]
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -350,7 +407,7 @@ class DataSearch extends SearchDelegate<String> {
   }
   @override
   Widget buildSuggestions(BuildContext context) {
-    final recipeProvider = Provider.of<RecipeShow>(context);
+    RecipeShow recipeProvider = Provider.of<RecipeShow>(context);
     if(query.isEmpty) {
       return ListView.builder(
         itemCount: recipeProvider.searchSuggestionsItem.length,
@@ -359,16 +416,21 @@ class DataSearch extends SearchDelegate<String> {
             onTap: () {
               Navigator.of(context).pushNamed(
                 RecipeDetailScreen.routeName,
-                arguments: recipeProvider.searchSuggestionsItem[i].uuid
+                arguments: {
+                  "uuid": recipeProvider.searchSuggestionsItem[i].uuid,
+                  "title": recipeProvider.searchSuggestionsItem[i].title
+                }
               );
               recipeProvider.popularViews(recipeProvider.searchSuggestionsItem[i].uuid);
             },
-            leading: Image.network(
-              recipeProvider.searchSuggestionsItem[i].imageUrl,
-              height: 50.0,
+            leading: CachedNetworkImage(
               width: 50.0,
-              alignment: Alignment.center,
-              fit: BoxFit.cover,
+              height: 50.0,
+              imageUrl: '${recipeProvider.searchSuggestionsItem[i].imageurl}',
+              placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+              errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+              fadeOutDuration: Duration(seconds: 1),
+              fadeInDuration: Duration(seconds: 1),
             ),
             title: RichText(
               text: TextSpan(
@@ -383,7 +445,7 @@ class DataSearch extends SearchDelegate<String> {
         ),
       );
     }
-    final suggestionsList = recipeProvider.showRecipe.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
+    List<RecipeShowData> suggestionsList = recipeProvider.showRecipe.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
     return ListView.builder(
       itemCount: suggestionsList.length,
       itemBuilder: (context, index) => Card(
@@ -391,16 +453,21 @@ class DataSearch extends SearchDelegate<String> {
           onTap: () {
             Navigator.of(context).pushNamed(
               RecipeDetailScreen.routeName,
-              arguments: suggestionsList[index].uuid
+              arguments: {
+                'uuid': suggestionsList[index].uuid,
+                'title': suggestionsList[index].title
+              }
             );
             recipeProvider.popularViews(suggestionsList[index].uuid);
           },
-          leading: Image.network(
-            suggestionsList[index].imageurl,
-            height: 50.0,
+          leading: CachedNetworkImage(
             width: 50.0,
-            alignment: Alignment.center,
-            fit: BoxFit.cover,
+            height: 50.0,
+            imageUrl: '${suggestionsList[index].imageurl}',
+            placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+            errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+            fadeOutDuration: Duration(seconds: 1),
+            fadeInDuration: Duration(seconds: 1),
           ),
           title: RichText(
             text: TextSpan(

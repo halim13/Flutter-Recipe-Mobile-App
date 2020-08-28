@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../providers/categories.dart';
-import 'category.recipe.dart';
+import '../../providers/categories.dart';
+import 'category.dart';
 
 class CategoriesScreen extends StatefulWidget {
   static const routeName = '/categories';

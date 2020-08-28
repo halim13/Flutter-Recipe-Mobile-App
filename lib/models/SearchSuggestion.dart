@@ -22,17 +22,17 @@ class SearchSuggestionModel {
 class SearchSuggestionsData {
   String uuid;
   String title;
-  String imageUrl;
+  String imageurl;
 
   SearchSuggestionsData({
     this.uuid,
     this.title,
-    this.imageUrl,
+    this.imageurl,
   });
 
   factory SearchSuggestionsData.fromJson(Map<String, dynamic> json) => SearchSuggestionsData(
     uuid: json["uuid"],
     title: json["title"],
-    imageUrl: json["imageUrl"],
+    imageurl: json["imageurl"],
   );
 }

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../providers/auth.dart';
-import '../screens/add.recipe.dart';
-import '../screens/login.dart';
+import '../screens/recipe/add.dart';
+import '../screens/auth/login.dart';
 
 class MainDrawer extends StatelessWidget {
   Widget buildListTile(String title, IconData icon, Function tapHandler) {

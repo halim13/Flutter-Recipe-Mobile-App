@@ -46,32 +46,32 @@ class _FiltersScreenState extends State<FiltersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Your Filters'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.save),
-            onPressed: () {
-              final selectedFilters = {
-                'gluten': _glutenFree,
-                'lactose': _lactoseFree,
-                'vegan': _vegan,
-                'vegetarian': _vegetarian,
-              };
-              widget.saveFilters(selectedFilters);
-            },
-          )
-        ],
-      ),
-      drawer: MainDrawer(),
-      body: Column(
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.all(20),
-            child: Text(
-              'Adjust your meal selection.',
-              style: Theme.of(context).textTheme.headline6
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Your Filters'),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.save),
+                onPressed: () {
+                  final selectedFilters = {
+                    'gluten': _glutenFree,
+                    'lactose': _lactoseFree,
+                    'vegan': _vegan,
+                    'vegetarian': _vegetarian,
+                  };
+                  widget.saveFilters(selectedFilters);
+                },
+              )
+            ],
+          ),
+          drawer: MainDrawer(),
+          body: Column(
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.all(20),
+                child: Text(
+                  'Adjust your meal selection.',
+                  style: Theme.of(context).textTheme.headline6
             ),
           ),
           Expanded(
