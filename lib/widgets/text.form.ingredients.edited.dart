@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/recipe.edit.dart';
+
+import '../providers/recipe/edit.dart';
 
 Widget textFormIngredientsEdit(BuildContext context) {
   return Consumer<RecipeEdit>(

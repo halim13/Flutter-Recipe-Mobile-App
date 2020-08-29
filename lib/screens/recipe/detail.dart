@@ -6,8 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../preview.image.dart';
 import '../../constants/url.dart';
 import '../../providers/auth.dart';
-import '../../providers/recipe.edit.dart';
-// import '../../providers/recipe.detail.dart';
+import '../../providers/recipe/detail.dart';
 import './edit.dart';
 
 class RecipeDetailScreen extends StatefulWidget {
@@ -57,7 +56,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
   @override
   Widget build(BuildContext context) {
     Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments;
-    RecipeEdit recipeProvider = Provider.of<RecipeEdit>(context, listen: false);
+    RecipeDetail recipeProvider = Provider.of<RecipeDetail>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text(titleCase(routeArgs['title'])),
@@ -77,7 +76,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
         ],
       ),
       body: FutureBuilder(
-        future: Provider.of<RecipeEdit>(context, listen: false).detail(routeArgs['uuid']),
+        future: Provider.of<RecipeDetail>(context, listen: false).detail(routeArgs['uuid']),
         builder: (context, snapshot) {
           if(snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -96,7 +95,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   height: 300,
                   width: double.infinity,
                   child: CachedNetworkImage(
-                    imageUrl: '$imagesRecipesUrl/${recipeProvider.recipeDetailDatas.recipes.first.imageUrl}',
+                    imageUrl: '$imagesRecipesUrl/${recipeProvider.data.recipes.first.imageUrl}',
                     imageBuilder: (context, imageProvider) => Container(
                       decoration: BoxDecoration(
                         image: DecorationImage(
@@ -116,7 +115,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   ListView.separated(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: recipeProvider.recipeDetailDatas.ingredientsGroup.length,
+                    itemCount: recipeProvider.data.ingredientsGroup.length,
                     separatorBuilder: (context, index) {
                       return Divider();
                     },
@@ -125,7 +124,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('- ${recipeProvider.recipeDetailDatas.ingredientsGroup[i].body}', 
+                          Text('- ${recipeProvider.data.ingredientsGroup[i].body}', 
                             style: TextStyle(
                               fontSize: 16.0,
                               fontWeight: FontWeight.bold
@@ -135,10 +134,10 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                           ListView(
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
-                            children: List.generate(recipeProvider.recipeDetailDatas.ingredientsGroup[i].ingredients.length, (z) => Container(
+                            children: List.generate(recipeProvider.data.ingredientsGroup[i].ingredients.length, (z) => Container(
                                 child: Container(
                                   margin: EdgeInsets.only(left: 10.0),
-                                  child: Text('- ${recipeProvider.recipeDetailDatas.ingredientsGroup[i].ingredients[z].body}',
+                                  child: Text('- ${recipeProvider.data.ingredientsGroup[i].ingredients[z].body}',
                                     style: TextStyle(
                                       fontSize: 16.0,
                                       height: 1.75
@@ -158,7 +157,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   ListView.separated(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: recipeProvider.recipeDetailDatas.steps.length,
+                    itemCount: recipeProvider.data.steps.length,
                     separatorBuilder: (context, index) {
                       return Divider();
                     },
@@ -175,7 +174,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                             ),
                           ),
                           title: Text(
-                            recipeProvider.recipeDetailDatas.steps[i].body,
+                            recipeProvider.data.steps[i].body,
                             style: TextStyle(
                               fontSize: 16.0,
                               height: 1.75
@@ -183,7 +182,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                           ),
                         ),
                         Row(
-                          children: List.generate(recipeProvider.recipeDetailDatas.steps[i].stepsImages.length, (z) => 
+                          children: List.generate(recipeProvider.data.steps[i].stepsImages.length, (z) => 
                             Expanded(
                               child: GestureDetector(
                                 onTap: () => Navigator.push(
@@ -191,14 +190,14 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                                   MaterialPageRoute(builder: (context) {
                                   return PreviewImageScreen(
                                     url: imagesStepsUrl,
-                                    body: recipeProvider.recipeDetailDatas.steps[i].stepsImages[z].body
+                                    body: recipeProvider.data.steps[i].stepsImages[z].body
                                   );
                                 })),
                                 child: Container(
                                   child: CachedNetworkImage(
                                     width: 100.0,
                                     height: 100.0,
-                                    imageUrl: '$imagesStepsUrl/${recipeProvider.recipeDetailDatas.steps[i].stepsImages[z].body}',
+                                    imageUrl: '$imagesStepsUrl/${recipeProvider.data.steps[i].stepsImages[z].body}',
                                     placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
                                     errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
                                     fadeOutDuration: Duration(seconds: 1),
@@ -218,7 +217,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
           );
         }
       ),
-      floatingActionButton: Consumer<RecipeEdit>(
+      floatingActionButton: Consumer<RecipeDetail>(
         builder: (context, recipeProvider, ch) {
           return FloatingActionButton(
             backgroundColor: Colors.yellow.shade700,

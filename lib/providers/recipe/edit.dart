@@ -5,23 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-import '../constants/connection.dart';
-import '../constants/url.dart';
-import '../models/Recipe.dart';
-import '../models/RecipeDetail.dart' as recipeDetailModel;
-import '../models/RecipeFavourite.dart' as recipeFavoriteModel;
+import '../../constants/connection.dart';
+import '../../constants/url.dart';
+import '../../models/Recipe.dart';
+import 'detail.dart';
 
 class RecipeEdit extends ChangeNotifier {
-  recipeDetailModel.RecipeDetailDatas recipeDetailDatas;
-  int favourite;
 
-  List<recipeFavoriteModel.RecipeFavouriteData> displayRecipeFavourite = [];
 
-  bool isRecipeFavorite(String recipeId, int f) => favourite == 1 ? true : false;
+
 
   // RecipeEdit({ RecipeDetail recipeDetail}) : _recipeDetail = recipeDetail;
   // RecipeDetail _recipeDetail;
@@ -182,94 +178,6 @@ class RecipeEdit extends ChangeNotifier {
     notifyListeners();
   }
   
-  void toggleFavourite(String recipeId, int f, BuildContext context) {
-    if(favourite == 0) {
-      updateToFavourite(recipeId, 1);
-      favourite = 1;
-      Fluttertoast.showToast(
-        msg: 'Berhasil menambahkan ke daftar favorit',
-        toastLength: Toast.LENGTH_LONG,
-        backgroundColor: Colors.yellow.shade700,
-        textColor: Colors.white
-      );
-      notifyListeners();
-    } else {
-      updateToFavourite(recipeId, 0);
-      displayRecipeFavourite.removeWhere((el) => el.uuid == recipeId);
-      favourite = 0;
-      Fluttertoast.showToast(
-        msg: 'Berhasil hapus dari daftar favorit',
-        toastLength: Toast.LENGTH_LONG,
-        backgroundColor: Colors.yellow.shade700,
-        textColor: Colors.white
-      );
-      if(ModalRoute.of(context).settings.name == "/recipe-detail-favorite") {
-        Navigator.of(context).pop(true);
-        notifyListeners();
-      }
-      notifyListeners();
-    }
-  }
-
-  Future<void> refreshRecipeFavourite() async {
-    await getRecipeFavourite();
-  }
-
-  Future<void> getRecipeFavourite() async {
-    String url = 'http://$baseurl:$port/api/v1/recipes/favourite'; 
-    try {
-      http.Response response = await http.get(url).timeout(Duration(seconds: 5));
-      recipeFavoriteModel.RecipeFavouriteModel model = recipeFavoriteModel.RecipeFavouriteModel.fromJson(json.decode(response.body));
-      List<recipeFavoriteModel.RecipeFavouriteData> initialDisplayRecipeFavorite = [];
-      model.data.forEach((item) {
-        initialDisplayRecipeFavorite.add(
-         recipeFavoriteModel.RecipeFavouriteData(
-            id: item.id,
-            uuid: item.uuid,
-            title: item.title,
-            imageUrl: item.imageUrl,
-            portion: item.portion,
-            duration: item.duration,
-            isfavourite: item.isfavourite,
-            name: item.name
-          )
-        );
-      });
-      displayRecipeFavourite = initialDisplayRecipeFavorite;
-      notifyListeners();
-    } catch(error) {
-      print(error); 
-      throw error;
-    }
-  }
-
-  Future<void> updateToFavourite(String recipeId, int isfavourite) async {
-    String url = 'http://$baseurl:$port/api/v1/recipes/update/favourite/$recipeId';
-    try {
-      await http.put(url, body: {
-        "isFavourite": json.encode(isfavourite)
-      });
-      notifyListeners();
-    } catch(error) {
-      print(error);
-      throw error;
-    }
-  }
-
-  Future<void> detail(String recipeId) async {
-    String url = 'http://$baseurl:$port/api/v1/recipes/detail/$recipeId';
-    try {
-      http.Response response = await http.get(url);
-      recipeDetailModel.RecipeDetailModel model = recipeDetailModel.RecipeDetailModel.fromJson(json.decode(response.body));
-      recipeDetailDatas = model.data;
-      favourite = model.data.recipes.first.isfavourite;
-      notifyListeners();
-    } catch(error) {
-      print(error);
-      throw error;
-    }
-  }
-
   Future<void> edit(String recipeId) async {
     String url = 'http://$baseurl:$port/api/v1/recipes/edit/$recipeId'; 
     try {
@@ -338,7 +246,7 @@ class RecipeEdit extends ChangeNotifier {
     }
   }
 
-  Future update(String title, String recipeId, String ingredientsGroup, String removeIngredientsGroup, String ingredients, String removeIngredients, String stepsInParameter, String removeSteps, String portion, String categoryName) async {
+  Future update(BuildContext context,String title, String recipeId, String ingredientsGroup, String removeIngredientsGroup, String ingredients, String removeIngredients, String stepsInParameter, String removeSteps, String portion, String categoryName) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
     String userId = extractedUserData["userId"];
@@ -384,7 +292,7 @@ class RecipeEdit extends ChangeNotifier {
         removeIngredientsSendToHttp = [];
         stepsSendToHttp = [];
         removeStepsSendToHttp = [];
-        refreshRecipeFavourite();
+        Provider.of<RecipeDetail>(context, listen: false).getRecipeFavourite();
         notifyListeners();
       } 
       notifyListeners();  

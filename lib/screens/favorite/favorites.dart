@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/recipe.edit.dart';
+import '../../providers/recipe/detail.dart';
 import '../../widgets/recipe.item.dart';
 
 class FavoritesScreen extends StatefulWidget {
@@ -14,7 +14,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future:  Provider.of<RecipeEdit>(context, listen: false).getRecipeFavourite(),
+      future:  Provider.of<RecipeDetail>(context, listen: false).getRecipeFavourite(),
       builder: (context, snapshot) {
         if(snapshot.connectionState == ConnectionState.waiting) {
           return Center(
@@ -52,9 +52,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             ),
           );
         }
-        return Consumer<RecipeEdit>(
+        return Consumer<RecipeDetail>(
           child: RefreshIndicator(
-            onRefresh: () => Provider.of<RecipeEdit>(context, listen: false).refreshRecipeFavourite(),
+            onRefresh: () => Provider.of<RecipeDetail>(context, listen: false).refreshRecipeFavourite(),
             child: ListView(
               children: [
                 Container(

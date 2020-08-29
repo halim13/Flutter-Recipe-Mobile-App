@@ -5,7 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../models/RecipeShow.dart';
 import '../../helpers/highlight.occurences.dart';
-import '../../providers/recipe.show.dart';
+import '../../providers/recipe/show.dart';
 import '../../constants/url.dart';
 import './detail.dart';
 
@@ -178,24 +178,26 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
                           ),
                           Container(
                             padding: EdgeInsets.all(20.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(Icons.schedule),
-                                    SizedBox(width: 6.0),
-                                    Text('${recipeProvider.showRecipeItem[index].duration.toString()} min'),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Icon(Icons.fastfood),
-                                    SizedBox(width: 6.0),
-                                    Text('${recipeProvider.showRecipeItem[index].portion}'),
-                                  ],
-                                ),
-                              ],
+                            child: Expanded(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(Icons.schedule),
+                                      SizedBox(width: 6.0),
+                                      Text('${recipeProvider.showRecipeItem[index].duration.toString()} min'),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Icon(Icons.fastfood),
+                                      SizedBox(width: 6.0),
+                                      Text('${recipeProvider.showRecipeItem[index].portion}'),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           Container(

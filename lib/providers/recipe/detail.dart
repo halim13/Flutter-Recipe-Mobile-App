@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
-import '../constants/connection.dart';
-import '../models/RecipeDetail.dart' as recipeDetailModel;
-import '../models/RecipeFavourite.dart' as recipeFavoriteModel;
+import '../../constants/connection.dart';
+import '../../models/RecipeDetail.dart' as recipeDetailModel;
+import '../../models/RecipeFavourite.dart' as recipeFavoriteModel;
 
 class RecipeDetail with ChangeNotifier {
   recipeDetailModel.RecipeDetailDatas data;

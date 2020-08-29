@@ -3,21 +3,21 @@ import 'package:provider/provider.dart';
 
 import './providers/auth.dart';
 import './providers/categories.dart';
-import './providers/recipe.show.dart';
-import './providers/recipe.detail.dart';
+import './providers/recipe/show.dart';
+import './providers/recipe/detail.dart';
 import './providers/user.dart';
-import './providers/recipe.edit.dart';
-import './providers/recipe.add.dart';
+import './providers/recipe/edit.dart';
+import './providers/recipe/add.dart';
 import './colors/colors.dart';
-import 'screens/favorite/detail.favorite.dart';
+import './screens/favorite/detail.favorite.dart';
 import './screens/tabs.dart';
-import 'screens/recipe/categories.dart';
-import 'screens/recipe/category.dart';
-import 'screens/recipe/detail.dart';
-import 'screens/auth/login.dart';
-import 'screens/auth/register.dart';
-import 'screens/recipe/add.dart';
-import 'screens/recipe/edit.dart';
+import './screens/recipe/categories.dart';
+import './screens/recipe/category.dart';
+import './screens/recipe/detail.dart';
+import './screens/auth/login.dart';
+import './screens/auth/register.dart';
+import './screens/recipe/add.dart';
+import './screens/recipe/edit.dart';
 
 
 void main() { 
@@ -50,10 +50,6 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider.value(
           value: RecipeDetail(),
         ),
-        // ChangeNotifierProxyProvider<RecipeDetail, RecipeEdit>(
-        //   create: (BuildContext context) =>  null,
-        //   update: (BuildContext context, RecipeDetail recipeDetail, RecipeEdit recipeEdit) => RecipeEdit(recipeDetail.getRecipeFavourite())
-        // ),
         ChangeNotifierProvider.value(
           value: RecipeAdd(),
         ),
@@ -98,7 +94,7 @@ class _MyAppState extends State<MyApp> {
         },
         onUnknownRoute: (settings) {
           return MaterialPageRoute(
-            builder: (ctx) => CategoriesScreen(),
+            builder: (BuildContext context) => CategoriesScreen(),
           );
         },
       ),

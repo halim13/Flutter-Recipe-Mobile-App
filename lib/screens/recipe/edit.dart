@@ -13,7 +13,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import '../../widgets/text.form.ingredients.edited.dart';
 import '../../widgets/text.form.steps.edited.dart';
 import '../../constants/url.dart';
-import '../../providers/recipe.edit.dart';
+import '../../providers/recipe/edit.dart';
 
 class EditRecipeScreen extends StatefulWidget {
   static const routeName = '/edit-recipe-screen';
@@ -136,7 +136,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
       String removeSteps = jsonEncode(uniqueRemoveSteps);
       Object recipeId = ModalRoute.of(context).settings.arguments;
       await pr.show();
-      await Provider.of<RecipeEdit>(context, listen: false).update(title, recipeId, ingredientsGroup, removeIngredientsGroup, ingredients, removeIngredients, steps, removeSteps, portion, categoryName).then((value) async {
+      await Provider.of<RecipeEdit>(context, listen: false).update(context, title, recipeId, ingredientsGroup, removeIngredientsGroup, ingredients, removeIngredients, steps, removeSteps, portion, categoryName).then((value) async {
         if(value["status"] == 200) {
           await pr.hide();
           AwesomeDialog(

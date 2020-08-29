@@ -95,7 +95,6 @@ class RecipeItem extends StatelessWidget {
             ),
             Container(
               padding: EdgeInsets.all(20.0),
-              height: 80.0,
               child: Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -114,15 +113,36 @@ class RecipeItem extends StatelessWidget {
                         Text(portion),
                       ],
                     ),
-                    // Row(
-                    //   children: [
-                    //     Icon(Icons.people),
-                    //     SizedBox(width: 6),
-                    //     Text('Dibuat oleh $name'),
-                    //   ],
-                    // ),
                   ],
                 ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.only(top: 0.0, left: 0.0, right: 20.0, bottom: 15.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Icon(Icons.people),
+                  SizedBox(width: 6),
+                  RichText(
+                    text: TextSpan(
+                      text: 'Dibuat oleh : ',
+                      style: TextStyle(
+                        color: Colors.black, 
+                        fontSize: 16.0
+                      ),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: '$name',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0
+                          ),
+                        )
+                      ]
+                    ),
+                  )
+                ],
               ),
             ),
           ],

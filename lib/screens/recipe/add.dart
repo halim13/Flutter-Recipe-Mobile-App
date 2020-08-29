@@ -11,7 +11,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 
 import '../../widgets/text.form.ingredients.add.dart';
 import '../../widgets/text.form.steps.add.dart';
-import '../../providers/recipe.add.dart';
+import '../../providers/recipe/add.dart';
 
 class AddRecipeScreen extends StatefulWidget {
   static const routeName = '/add-recipe';
