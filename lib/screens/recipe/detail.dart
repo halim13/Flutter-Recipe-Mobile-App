@@ -234,8 +234,8 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
               return FloatingActionButton(
                 backgroundColor: Colors.yellow.shade700,
                 foregroundColor: Colors.black,
-                child: Icon(recipeProvider.isRecipeFavorite(routeArgs['uuid'], recipeProvider.favourite) ? Icons.star : Icons.star_border),
-                onPressed: () => recipeProvider.toggleFavorite(routeArgs['uuid'], recipeProvider.favourite, context)
+                child: Icon(recipeProvider.isRecipeFavorite(routeArgs['uuid'], recipeProvider.favorite) ? Icons.star : Icons.star_border),
+                onPressed: () => recipeProvider.toggleFavorite(routeArgs['uuid'], recipeProvider.favorite, context)
               );
             },
           ) : FutureBuilder(

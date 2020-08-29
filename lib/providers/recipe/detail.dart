@@ -11,16 +11,16 @@ import '../../models/RecipeFavourite.dart' as recipeFavoriteModel;
 
 class RecipeDetail with ChangeNotifier {
   recipeDetailModel.RecipeDetailDatas data;
-  int favourite;
+  int favorite;
 
   List<recipeFavoriteModel.RecipeFavouriteData> displayRecipeFavourite = [];
 
-  bool isRecipeFavorite(String recipeId, int f) => favourite == 1 ? true : false;
+  bool isRecipeFavorite(String recipeId, int f) => favorite == 1 ? true : false;
 
   void toggleFavorite(String recipeId, int f, BuildContext context) {
-    if(favourite == 0) {
+    if(favorite == 0) {
       updateToFavorite(recipeId, 1);
-      favourite = 1;
+      favorite = 1;
       Fluttertoast.showToast(
         msg: 'Berhasil menambahkan ke daftar favorit',
         toastLength: Toast.LENGTH_LONG,
@@ -31,7 +31,7 @@ class RecipeDetail with ChangeNotifier {
     } else {
       updateToFavorite(recipeId, 0);
       displayRecipeFavourite.removeWhere((el) => el.uuid == recipeId);
-      favourite = 0;
+      favorite = 0;
       Fluttertoast.showToast(
         msg: 'Berhasil hapus dari daftar favorit',
         toastLength: Toast.LENGTH_LONG,
@@ -93,7 +93,7 @@ class RecipeDetail with ChangeNotifier {
       http.Response response = await http.get(url);
       recipeDetailModel.RecipeDetailModel model = recipeDetailModel.RecipeDetailModel.fromJson(json.decode(response.body));
       data = model.data;
-      favourite = model.data.recipes.first.isfavourite;
+      favorite = model.data.recipes.first.isfavorite;
       notifyListeners();
     } catch(error) {
       print(error);

@@ -42,14 +42,14 @@ class RecipeDetailData {
   String uuid;
   String title;
   String imageUrl;
-  int isfavourite;
+  int isfavorite;
 
   RecipeDetailData({
     this.id,
     this.uuid,
     this.title,
     this.imageUrl,
-    this.isfavourite
+    this.isfavorite
   });
 
   factory RecipeDetailData.fromJson(Map<String, dynamic> json) => RecipeDetailData(
@@ -57,7 +57,7 @@ class RecipeDetailData {
     uuid: json["uuid"] == null ? null : json["uuid"],
     title: json["title"] == null ? null : json["title"],
     imageUrl: json["imageUrl"] == null ? null : json["imageUrl"],
-    isfavourite: json["isfavourite"] == null ? null : json["isfavourite"]
+    isfavorite: json["isfavorite"] == null ? null : json["isfavorite"]
   );
 }
 
