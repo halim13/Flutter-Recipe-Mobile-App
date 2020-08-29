@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/main.drawer.dart';
-import '../providers/auth.dart';
+import '../providers/auth/auth.dart';
 import '../providers/custom/bottom_navy_bar.dart';
-import '../providers/user.dart';
-import 'profile/profile.dart';
-import 'profile/edit.dart';
-import 'favorite/favorites.dart';
-import 'recipe/categories.dart';
+import '../providers/user/user.dart';
+import './profile/profile.dart';
+import './profile/edit.dart';
+import './favorite/favorites.dart';
+import './recipe/categories.dart';
 
 class TabsScreen extends StatefulWidget {
 
@@ -64,10 +64,10 @@ class TabsScreenState extends State<TabsScreen> {
                   context,
                   MaterialPageRoute(builder: (context) {
                     return EditProfileScreen(
-                      avatar: userProvider.profile.first.avatar,
-                      name: userProvider.profile.first.name,
-                      bio: userProvider.profile.first.bio,
-                      email: userProvider.profile.first.email,
+                      avatar: userProvider.getCurrentProfileItem.first.avatar,
+                      name: userProvider.getCurrentProfileItem.first.name,
+                      bio: userProvider.getCurrentProfileItem.first.bio,
+                      email: userProvider.getCurrentProfileItem.first.email,
                     );
                   })
                 );
@@ -95,12 +95,12 @@ class TabsScreenState extends State<TabsScreen> {
           ),
           BottomNavyBarItem(
             icon: Icon(Icons.star),
-            title: Text('Favourites'),
+            title: Text('Favorites'),
             activeColor: Colors.yellow.shade700
           ),
           BottomNavyBarItem(
             icon: Icon(Icons.account_circle),
-            title: Text('Profile'),
+            title: Text('Profil'),
             activeColor: Colors.blue.shade700,
           ),
         ],

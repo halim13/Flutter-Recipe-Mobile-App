@@ -17,9 +17,9 @@ class RecipeDetail with ChangeNotifier {
 
   bool isRecipeFavorite(String recipeId, int f) => favourite == 1 ? true : false;
 
-  void toggleFavourite(String recipeId, int f, BuildContext context) {
+  void toggleFavorite(String recipeId, int f, BuildContext context) {
     if(favourite == 0) {
-      updateToFavourite(recipeId, 1);
+      updateToFavorite(recipeId, 1);
       favourite = 1;
       Fluttertoast.showToast(
         msg: 'Berhasil menambahkan ke daftar favorit',
@@ -29,7 +29,7 @@ class RecipeDetail with ChangeNotifier {
       );
       notifyListeners();
     } else {
-      updateToFavourite(recipeId, 0);
+      updateToFavorite(recipeId, 0);
       displayRecipeFavourite.removeWhere((el) => el.uuid == recipeId);
       favourite = 0;
       Fluttertoast.showToast(
@@ -49,7 +49,7 @@ class RecipeDetail with ChangeNotifier {
     await getRecipeFavourite();
   }
   Future<void> getRecipeFavourite() async {
-    String url = 'http://$baseurl:$port/api/v1/recipes/favourite'; 
+    String url = 'http://$baseurl:$port/api/v1/recipes/favorite'; 
     try {
       http.Response response = await http.get(url).timeout(Duration(seconds: 5));
       recipeFavoriteModel.RecipeFavouriteModel model = recipeFavoriteModel.RecipeFavouriteModel.fromJson(json.decode(response.body));
@@ -75,11 +75,11 @@ class RecipeDetail with ChangeNotifier {
       throw error;
     }
   }
-  Future<void> updateToFavourite(String recipeId, int isfavourite) async {
-    String url = 'http://$baseurl:$port/api/v1/recipes/update/favourite/$recipeId';
+  Future<void> updateToFavorite(String recipeId, int isfavourite) async {
+    String url = 'http://$baseurl:$port/api/v1/recipes/update/favorite/$recipeId';
     try {
       await http.put(url, body: {
-        "isFavourite": json.encode(isfavourite)
+        "isFavorite": json.encode(isfavourite)
       });
       notifyListeners();
     } catch(error) {

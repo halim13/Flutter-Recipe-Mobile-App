@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../../providers/categories.dart';
-import 'category.dart';
+import '../../providers/category/categories.dart';
+import 'show.dart';
 
 class CategoriesScreen extends StatefulWidget {
   static const routeName = '/categories';
@@ -14,7 +14,7 @@ class CategoriesScreen extends StatefulWidget {
 class _CategoriesScreenState extends State<CategoriesScreen> {
   void selectCategory(BuildContext context, String uuid, String title) {
     Navigator.of(context).pushNamed(
-      CategoryMealsScreen.routeName,
+      ShowRecipeScreen.routeName,
       arguments: {
         'uuid': uuid,
         'title': title,

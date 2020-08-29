@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './providers/auth.dart';
-import './providers/categories.dart';
+import './providers/auth/auth.dart';
+import './providers/category/categories.dart';
 import './providers/recipe/show.dart';
 import './providers/recipe/detail.dart';
-import './providers/user.dart';
+import './providers/user/user.dart';
 import './providers/recipe/edit.dart';
 import './providers/recipe/add.dart';
 import './colors/colors.dart';
 import './screens/favorite/detail.favorite.dart';
 import './screens/tabs.dart';
 import './screens/recipe/categories.dart';
-import './screens/recipe/category.dart';
+import 'screens/recipe/show.dart';
 import './screens/recipe/detail.dart';
 import './screens/auth/login.dart';
 import './screens/auth/register.dart';
@@ -86,7 +86,7 @@ class _MyAppState extends State<MyApp> {
           '/': (context) => TabsScreen(),
           LoginScreen.routeName: (context) => LoginScreen(),
           RegisterScreen.routeName: (context) => RegisterScreen(),
-          CategoryMealsScreen.routeName: (context) => CategoryMealsScreen(),
+          ShowRecipeScreen.routeName: (context) =>  ShowRecipeScreen(),
           RecipeDetailScreen.routeName: (context) => RecipeDetailScreen(),
           RecipeDetailFavoriteScreen.routeName: (context) => RecipeDetailFavoriteScreen(),
           AddRecipeScreen.routeName: (context) => AddRecipeScreen(),

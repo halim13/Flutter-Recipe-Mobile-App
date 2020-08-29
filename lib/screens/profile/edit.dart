@@ -8,7 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 
 import '../../constants/url.dart';
-import '../../providers/user.dart';
+import '../../providers/user/user.dart';
 
 class EditProfileScreen extends StatefulWidget {
   EditProfileScreen({
@@ -155,6 +155,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 fit: BoxFit.cover,
                                 placeholder: (context, url) => Image.asset("assets/default-thumbnail.jpg"),
                                 errorWidget: (context, url, error) => Image.asset("assets/default-thumbnail.jpg"),
+                                fadeOutDuration: Duration(seconds: 1),
+                                fadeInDuration: Duration(seconds: 1),
                               )
                             : FadeInImage(
                               fit: BoxFit.cover,

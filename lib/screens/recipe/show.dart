@@ -4,19 +4,20 @@ import 'package:quartet/quartet.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../models/RecipeShow.dart';
+import '../profile/view.dart';
 import '../../helpers/highlight.occurences.dart';
 import '../../providers/recipe/show.dart';
 import '../../constants/url.dart';
 import './detail.dart';
 
-class CategoryMealsScreen extends StatefulWidget {
+class ShowRecipeScreen extends StatefulWidget {
   static const routeName = '/category-meals';
 
   @override
-  _CategoryMealsScreenState createState() => _CategoryMealsScreenState();
+  _ShowRecipeScreenState createState() => _ShowRecipeScreenState();
 }
 
-class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
+class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
   ScrollController controller = ScrollController();
 
   @override
@@ -25,7 +26,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
     controller.addListener(() {
       if (controller.position.pixels == controller.position.maxScrollExtent) {
         Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments as Map<String, String>;
-        Provider.of<RecipeShow>(context, listen: false).show(routeArgs['uuid'], 5);
+        Provider.of<RecipeShow>(context, listen: false).getShow(routeArgs['uuid'], 5);
       }
     });
   }
@@ -36,12 +37,13 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
     controller.dispose();
   }
 
-  void selectMeal(context, String title, String uuid) {
+  void selectRecipe(context, String title, String uuid, String userId) {
     Navigator.of(context).pushNamed(
       RecipeDetailScreen.routeName,
       arguments: {
         'uuid': uuid,
         'title': title,
+        'userId': userId
       },
     );
   }
@@ -64,7 +66,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
         ],
       ),
       body: FutureBuilder(
-        future: Provider.of<RecipeShow>(context, listen: false).show(recipeId),
+        future: Provider.of<RecipeShow>(context, listen: false).getShow(recipeId),
         builder: (context, snapshot) {
           if(snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -109,17 +111,17 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
             child: Center(
               child: Text('Belum ada resep'),
             ),
-            builder: (context, recipeProvider, child) => recipeProvider.showRecipeItem.length <= 0 ? child :
+            builder: (context, recipeProvider, child) => recipeProvider.getShowItem.length <= 0 ? child :
             RefreshIndicator(
               onRefresh: () => recipeProvider.refreshRecipe(recipeId),
               child: ListView.builder(
               controller: controller,
-              itemCount: recipeProvider.showRecipeItem.length,
-              itemBuilder: (context, index) {
-                if(index == recipeProvider.showRecipeItem.length) 
+              itemCount: recipeProvider.getShowItem.length,
+              itemBuilder: (context, i) {
+                if(i == recipeProvider.getShowItem.length) 
                   return CircularProgressIndicator();
                   return InkWell(
-                    onTap: () => selectMeal(context, recipeProvider.showRecipeItem[index].title.toString(), recipeProvider.showRecipeItem[index].uuid),
+                    onTap: () => selectRecipe(context, recipeProvider.getShowItem[i].title, recipeProvider.getShowItem[i].uuid, recipeProvider.getShowItem[i].userId),
                     child: Card(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0)
@@ -136,7 +138,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
                                   topRight: Radius.circular(15.0),
                                 ),
                                 child: CachedNetworkImage(
-                                  imageUrl: '$imagesRecipesUrl/${recipeProvider.showRecipeItem[index].imageurl}',
+                                  imageUrl: '$imagesRecipesUrl/${recipeProvider.getShowItem[i].imageurl}',
                                   imageBuilder: (context, imageProvider) => Container(
                                     width: double.infinity,
                                     height: 250.0,
@@ -164,7 +166,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
                                     horizontal: 20.0,
                                   ),
                                   child: Text(
-                                    titleCase(recipeProvider.showRecipeItem[index].title),
+                                    titleCase(recipeProvider.getShowItem[i].title),
                                     style: TextStyle(
                                       fontSize: 26.0,
                                       color: Colors.white,
@@ -186,46 +188,54 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
                                     children: [
                                       Icon(Icons.schedule),
                                       SizedBox(width: 6.0),
-                                      Text('${recipeProvider.showRecipeItem[index].duration.toString()} min'),
+                                      Text('${recipeProvider.getShowItem[i].duration.toString()} min'),
                                     ],
                                   ),
                                   Row(
                                     children: [
                                       Icon(Icons.fastfood),
                                       SizedBox(width: 6.0),
-                                      Text('${recipeProvider.showRecipeItem[index].portion}'),
+                                      Text('${recipeProvider.getShowItem[i].portion}'),
                                     ],
                                   ),
                                 ],
                               ),
                             ),
                           ),
-                          Container(
-                            padding: EdgeInsets.only(top: 0.0, left: 0.0, right: 20.0, bottom: 15.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Icon(Icons.people),
-                                SizedBox(width: 6),
-                                RichText(
-                                  text: TextSpan(
-                                    text: 'Dibuat oleh : ',
-                                    style: TextStyle(
-                                      color: Colors.black, 
-                                      fontSize: 16.0
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ViewProfileScreen()),
+                              );
+                            },
+                            child: Container(
+                              padding: EdgeInsets.only(top: 0.0, left: 0.0, right: 20.0, bottom: 15.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Icon(Icons.people),
+                                  SizedBox(width: 6),
+                                  RichText(
+                                    text: TextSpan(
+                                      text: 'Dibuat oleh : ',
+                                      style: TextStyle(
+                                        color: Colors.black, 
+                                        fontSize: 16.0
+                                      ),
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                          text: '${recipeProvider.getShowItem[i].name}',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16.0
+                                          ),
+                                        )
+                                      ]
                                     ),
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        text: '${recipeProvider.showRecipeItem[index].name}',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16.0
-                                        ),
-                                      )
-                                    ]
-                                  ),
-                                )
-                              ],
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ],
@@ -289,7 +299,7 @@ class DataSearch extends SearchDelegate<String> {
   @override
   Widget buildResults(BuildContext context) {
     RecipeShow recipeProvider = Provider.of<RecipeShow>(context);
-    List<RecipeShowData> results = recipeProvider.showRecipeItem.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
+    List<RecipeShowData> results = recipeProvider.getShowItem.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
     return ListView.builder(
       itemCount: results.length,
       itemBuilder: (context, i) {
@@ -447,7 +457,7 @@ class DataSearch extends SearchDelegate<String> {
         ),
       );
     }
-    List<RecipeShowData> suggestionsList = recipeProvider.showRecipe.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
+    List<RecipeShowData> suggestionsList = recipeProvider.getShowItem.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
     return ListView.builder(
       itemCount: suggestionsList.length,
       itemBuilder: (context, index) => Card(

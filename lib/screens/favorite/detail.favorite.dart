@@ -4,10 +4,10 @@ import 'package:quartet/quartet.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../constants/url.dart';
-import '../preview.image.dart';
-import '../../providers/auth.dart';
-import '../recipe/edit.dart';
+import '../../providers/auth/auth.dart';
 import '../../providers/recipe/detail.dart';
+import '../preview.image.dart';
+import '../recipe/edit.dart';
 
 class RecipeDetailFavoriteScreen extends StatefulWidget {
   static const routeName = '/recipe-detail-favorite';
@@ -63,7 +63,7 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
         title: Text(titleCase(routeArgs['title'])),
         actions: [
           Consumer<Auth>(
-            builder: (context, authProvider, child) => authProvider.isAuth ? IconButton(
+            builder: (BuildContext context, Auth authProvider, Widget child) => authProvider.isAuth ? IconButton(
               icon: Icon(
                 Icons.edit,
                 color: Colors.blue.shade700,
@@ -218,15 +218,22 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
           );
         }
       ),
-      floatingActionButton: Consumer<RecipeDetail>(
-        builder: (context, recipeProvider, ch) {
-          return FloatingActionButton(
-            backgroundColor: Colors.yellow.shade700,
-            foregroundColor: Colors.black,
-            child: Icon(recipeProvider.isRecipeFavorite(routeArgs['uuid'], recipeProvider.favourite) ? Icons.star : Icons.star_border),
-            onPressed: () => recipeProvider.toggleFavourite(routeArgs['uuid'], recipeProvider.favourite, context)
+      floatingActionButton: Consumer<Auth>( 
+        builder: (BuildContext context, Auth authProvider, Widget child) {
+          return authProvider.isAuth ? Consumer<RecipeDetail>(
+            builder: (context, recipeProvider, ch) {
+              return FloatingActionButton(
+                backgroundColor: Colors.yellow.shade700,
+                foregroundColor: Colors.black,
+                child: Icon(recipeProvider.isRecipeFavorite(routeArgs['uuid'], recipeProvider.favourite) ? Icons.star : Icons.star_border),
+                onPressed: () => recipeProvider.toggleFavorite(routeArgs['uuid'], recipeProvider.favourite, context)
+              );
+            },
+          ) : FutureBuilder(
+            future: authProvider.tryAutoLogin(),
+            builder: (ctx, snapshot) => Container()
           );
-        },
+        }
       )
     );
   }

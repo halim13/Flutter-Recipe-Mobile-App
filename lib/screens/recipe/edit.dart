@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dropdown_search/dropdown_search.dart';
-import 'package:progress_dialog/progress_dialog.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
@@ -22,6 +22,7 @@ class EditRecipeScreen extends StatefulWidget {
 }
 
 class _EditRecipeScreenState extends State<EditRecipeScreen> {
+
   void changeImageRecipe() async {
     ImageSource imageSource = await showDialog<ImageSource>(context: context, builder: (context) => 
       AlertDialog(
@@ -59,12 +60,6 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
   }
 
   void save(BuildContext context) async {
-    ProgressDialog pr = ProgressDialog(
-      context, 
-      type: ProgressDialogType.Normal, 
-      isDismissible: false, 
-      showLogs: false
-    );
     RecipeEdit recipeProvider = Provider.of<RecipeEdit>(context, listen: false);
     recipeProvider.titleFocusNode.unfocus();
     try {
@@ -135,10 +130,8 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
       String steps = jsonEncode(uniqueSteps);
       String removeSteps = jsonEncode(uniqueRemoveSteps);
       Object recipeId = ModalRoute.of(context).settings.arguments;
-      await pr.show();
       await Provider.of<RecipeEdit>(context, listen: false).update(context, title, recipeId, ingredientsGroup, removeIngredientsGroup, ingredients, removeIngredients, steps, removeSteps, portion, categoryName).then((value) async {
         if(value["status"] == 200) {
-          await pr.hide();
           AwesomeDialog(
             context: context,
             dialogType: DialogType.SUCCES,
@@ -215,310 +208,316 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
               child: Text("Oops! Something went wrong! Please try again.")
             );
           }
-          return SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-              Stack(
-                overflow: Overflow.visible,
-                alignment: Alignment.center,
-                children: [
+          return Consumer<RecipeEdit>(
+          builder: (context, value, child) => ModalProgressHUD(
+              inAsyncCall: value.isLoading,
+              progressIndicator: Container(),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                  Stack(
+                    overflow: Overflow.visible,
+                    alignment: Alignment.center,
+                    children: [
+                      Consumer<RecipeEdit>(
+                        builder: (context, recipeProvider, child) {
+                          return SizedBox(
+                            width: double.infinity,
+                            height: 300.0,
+                            child: recipeProvider.fileImageRecipe == null ? CachedNetworkImage(
+                            imageUrl: '$imagesRecipesUrl/${recipeProvider.getFileImageRecipe}',
+                            imageBuilder: (context, imageProvider) => Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+                            errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+                            ) : Image.file(
+                              recipeProvider.fileImageRecipe,
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              height: 300.0,
+                            ),
+                          );
+                        }, 
+                      ),
+                      Positioned(
+                        child: IconButton(
+                          color: Colors.brown[300],
+                          icon: Icon(Icons.camera_alt), 
+                          onPressed: changeImageRecipe
+                        )
+                      )
+                    ]
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
+                    child: Text(
+                      'Kamu ingin buat masakan apa ?',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontStyle: FontStyle.italic
+                      ),
+                    ),
+                  ),
                   Consumer<RecipeEdit>(
                     builder: (context, recipeProvider, child) {
-                      return SizedBox(
-                        width: double.infinity,
-                        height: 300.0,
-                        child: recipeProvider.fileImageRecipe == null ? CachedNetworkImage(
-                        imageUrl: '$imagesRecipesUrl/${recipeProvider.getFileImageRecipe}',
-                        imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
-                        errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
-                        ) : Image.file(
-                          recipeProvider.fileImageRecipe,
-                          fit: BoxFit.cover,
+                      return Form(
+                        child: Container(
                           width: double.infinity,
-                          height: 300.0,
+                          margin: EdgeInsets.only(left: 18.0, right: 18.0),
+                          child: TextFormField(
+                            focusNode: recipeProvider.titleFocusNode,
+                            controller: recipeProvider.titleController,
+                            keyboardType: TextInputType.text,
+                            decoration: InputDecoration(
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                              ) 
+                            ),
+                            onSaved: (val) {
+                              recipeProvider.titleController.text = val;
+                            },
+                          ),
                         ),
                       );
-                    }, 
+                    }
                   ),
-                  Positioned(
-                    child: IconButton(
-                      color: Colors.brown[300],
-                      icon: Icon(Icons.camera_alt), 
-                      onPressed: changeImageRecipe
-                    )
-                  )
-                ]
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
-                child: Text(
-                  'Kamu ingin buat masakan apa ?',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontStyle: FontStyle.italic
-                  ),
-                ),
-              ),
-              Consumer<RecipeEdit>(
-                builder: (context, recipeProvider, child) {
-                  return Form(
-                    child: Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.only(left: 18.0, right: 18.0),
-                      child: TextFormField(
-                        focusNode: recipeProvider.titleFocusNode,
-                        controller: recipeProvider.titleController,
-                        keyboardType: TextInputType.text,
-                        decoration: InputDecoration(
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ) 
-                        ),
-                        onSaved: (val) {
-                          recipeProvider.titleController.text = val;
-                        },
+                  Container(
+                    margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
+                    child: Text(
+                      'Kategori apa ?',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontStyle: FontStyle.italic
                       ),
                     ),
-                  );
-                }
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
-                child: Text(
-                  'Kategori apa ?',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontStyle: FontStyle.italic
                   ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 18.0, top: 15.0, right: 18.0),
-                child: Column(
-                  children: [
-                    Consumer<RecipeEdit>(
-                      builder: (context, value, child) => DropdownSearch(
-                        mode: Mode.BOTTOM_SHEET,
-                        showSelectedItem: true,
-                        items: value.categoriesDisplay,
-                        label: "Pilih Kategori",
-                        onChanged: (v) {
-                          value.categoryName = v;
-                        },
-                        selectedItem: value.categoryName
-                      ),
-                    )
-                  ]
-                )
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
-                child: Text(
-                  'Untuk berapa porsi ?',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontStyle: FontStyle.italic
-                  ),
-                ),
-              ),
-              Consumer<RecipeEdit>(
-                builder: (context, recipeProvider, child) {
-                  return Form(
-                    child: Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.only(left: 18.0, right: 18.0),
-                      child: TextFormField(
-                        focusNode: recipeProvider.portionFocusNode,
-                        controller: recipeProvider.portionController,
-                        keyboardType: TextInputType.text,
-                        decoration: InputDecoration(
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
+                  Container(
+                    margin: EdgeInsets.only(left: 18.0, top: 15.0, right: 18.0),
+                    child: Column(
+                      children: [
+                        Consumer<RecipeEdit>(
+                          builder: (context, value, child) => DropdownSearch(
+                            mode: Mode.BOTTOM_SHEET,
+                            showSelectedItem: true,
+                            items: value.categoriesDisplay,
+                            label: "Pilih Kategori",
+                            onChanged: (v) {
+                              value.categoryName = v;
+                            },
+                            selectedItem: value.categoryName
                           ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ) 
-                        ),
-                        onSaved: (val) {
-                          recipeProvider.portionController.text = val;
-                        },
+                        )
+                      ]
+                    )
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
+                    child: Text(
+                      'Untuk berapa porsi ?',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontStyle: FontStyle.italic
                       ),
                     ),
-                  );
-                }
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0, bottom: 10.0),
-                child: Text(
-                  'Berapa lama memasak ini ?',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontStyle: FontStyle.italic
                   ),
-                ),
-              ),
-              Container(
-                height: 220.0,
-                child: Consumer<RecipeEdit>(
-                  builder: (context, value, child) {
-                  return CupertinoTimerPicker(
-                    initialTimerDuration: Duration(minutes: int.parse(value.duration)),
-                    backgroundColor: Colors.grey[300],
-                    mode: CupertinoTimerPickerMode.hm,
-                      onTimerDurationChanged: (val) {
-                        value.duration = val.inMinutes.toString();
-                      },
-                    );
-                  }
-                )
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
-                child: Text(
-                  'Apa saja bahan - bahan nya ?',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontStyle: FontStyle.italic
-                  ),
-                ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(6.0),
-                ),
-                margin: EdgeInsets.all(18.0),
-                padding: EdgeInsets.all(18.0),
-                width: double.infinity,
-                child: textFormIngredientsEdit(context)
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 10.0, right: 10.0),
-                padding: EdgeInsets.all(10.0),
-                width: double.infinity,
-                child: Consumer<RecipeEdit>(
-                  builder: (context, recipeProvider, child) {
-                    return RaisedButton(
-                      child: Text(
-                        'Tambah grup',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0
+                  Consumer<RecipeEdit>(
+                    builder: (context, recipeProvider, child) {
+                      return Form(
+                        child: Container(
+                          width: double.infinity,
+                          margin: EdgeInsets.only(left: 18.0, right: 18.0),
+                          child: TextFormField(
+                            focusNode: recipeProvider.portionFocusNode,
+                            controller: recipeProvider.portionController,
+                            keyboardType: TextInputType.text,
+                            decoration: InputDecoration(
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                              ) 
+                            ),
+                            onSaved: (val) {
+                              recipeProvider.portionController.text = val;
+                            },
+                          ),
                         ),
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        side: BorderSide(color: Colors.transparent)
-                      ),
-                      elevation: 0.0,
-                      color: Colors.brown.shade700,
-                      onPressed: () => recipeProvider.incrementIngredientsPerGroup()
-                    );
-                  },
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 18.0, top: 18.0, right: 18.0),
-                child: Text(
-                  'Bagaimana Memasak nya ?',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontStyle: FontStyle.italic
+                      );
+                    }
                   ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.all(10.0),
-                padding: EdgeInsets.all(10.0),
-                width: double.infinity,
-                child: textFormStepsEdited(context)
-              ),
-              Container(
-                margin: EdgeInsets.all(10.0),
-                padding: EdgeInsets.all(10.0),
-                width: double.infinity,
-                child: Consumer<RecipeEdit>(
-                  builder: (context, recipeProvider, child) {
-                    return RaisedButton(
-                      child: Text('Tambah langkah', 
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0
-                        ),  
+                  Container(
+                    margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0, bottom: 10.0),
+                    child: Text(
+                      'Berapa lama memasak ini ?',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontStyle: FontStyle.italic
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        side: BorderSide(color: Colors.transparent)
+                    ),
+                  ),
+                  Container(
+                    height: 220.0,
+                    child: Consumer<RecipeEdit>(
+                      builder: (context, value, child) {
+                      return CupertinoTimerPicker(
+                        initialTimerDuration: Duration(minutes: int.parse(value.duration)),
+                        backgroundColor: Colors.grey[300],
+                        mode: CupertinoTimerPickerMode.hm,
+                          onTimerDurationChanged: (val) {
+                            value.duration = val.inMinutes.toString();
+                          },
+                        );
+                      }
+                    )
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
+                    child: Text(
+                      'Apa saja bahan - bahan nya ?',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontStyle: FontStyle.italic
                       ),
-                      elevation: 0.0,
-                      color: Colors.brown.shade700,
-                      onPressed: () => recipeProvider.incrementsSteps()
-                    );
-                  }
-                ),
-              ),
-                Container(
-                  width: double.infinity,
-                  margin: EdgeInsets.all(10.0),
-                  padding: EdgeInsets.all(10.0),
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(6.0),
+                    ),
+                    margin: EdgeInsets.all(18.0),
+                    padding: EdgeInsets.all(18.0),
+                    width: double.infinity,
+                    child: textFormIngredientsEdit(context)
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 10.0, right: 10.0),
+                    padding: EdgeInsets.all(10.0),
+                    width: double.infinity,
                     child: Consumer<RecipeEdit>(
                       builder: (context, recipeProvider, child) {
-                        return Container(
-                            height: 48.0,
-                            child: recipeProvider.isLoading ? RaisedButton(
-                              child: Center(
-                                child: SizedBox(
-                                  height: 30.0,
-                                  width: 30.0,
-                                  child: CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                  ),
-                                )
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                                side: BorderSide(color: Colors.transparent)
-                              ),
-                              elevation: 0.0,
-                              color: Colors.blue.shade700,
-                              onPressed: () {},
-                            ) : RaisedButton(
-                                child: Text(
-                                  'Simpan Perubahan',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16.0
-                                  ),
-                                ) ,
-                                shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                                side: BorderSide(color: Colors.transparent)
-                              ),
-                              elevation: 0.0,
-                              color: Colors.blue.shade700,
-                              onPressed: () => save(context),  
-                            )
-                          );
-                        }
+                        return RaisedButton(
+                          child: Text(
+                            'Tambah grup',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0
+                            ),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            side: BorderSide(color: Colors.transparent)
+                          ),
+                          elevation: 0.0,
+                          color: Colors.brown.shade700,
+                          onPressed: () => recipeProvider.incrementIngredientsPerGroup()
+                        );
+                      },
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 18.0, top: 18.0, right: 18.0),
+                    child: Text(
+                      'Bagaimana Memasak nya ?',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontStyle: FontStyle.italic
                       ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(10.0),
+                    padding: EdgeInsets.all(10.0),
+                    width: double.infinity,
+                    child: textFormStepsEdited(context)
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(10.0),
+                    padding: EdgeInsets.all(10.0),
+                    width: double.infinity,
+                    child: Consumer<RecipeEdit>(
+                      builder: (context, recipeProvider, child) {
+                        return RaisedButton(
+                          child: Text('Tambah langkah', 
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0
+                            ),  
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            side: BorderSide(color: Colors.transparent)
+                          ),
+                          elevation: 0.0,
+                          color: Colors.brown.shade700,
+                          onPressed: () => recipeProvider.incrementsSteps()
+                        );
+                      }
+                    ),
+                  ),
+                    Container(
+                      width: double.infinity,
+                      margin: EdgeInsets.all(10.0),
+                      padding: EdgeInsets.all(10.0),
+                        child: Consumer<RecipeEdit>(
+                          builder: (context, recipeProvider, child) {
+                            return Container(
+                                height: 48.0,
+                                child: recipeProvider.isLoading ? RaisedButton(
+                                  child: Center(
+                                    child: SizedBox(
+                                      height: 30.0,
+                                      width: 30.0,
+                                      child: CircularProgressIndicator(
+                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                      ),
+                                    )
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    side: BorderSide(color: Colors.transparent)
+                                  ),
+                                  elevation: 0.0,
+                                  color: Colors.blue.shade700,
+                                  onPressed: () {},
+                                ) : RaisedButton(
+                                    child: Text(
+                                      'Simpan Perubahan',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16.0
+                                      ),
+                                    ) ,
+                                    shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    side: BorderSide(color: Colors.transparent)
+                                  ),
+                                  elevation: 0.0,
+                                  color: Colors.blue.shade700,
+                                  onPressed: () => save(context),  
+                                )
+                              );
+                            }
+                          ),
+                        )
+                      ],
                     )
-                  ],
-                )
-              );
+                  ),
+                ),
+          );
             },
           ),
         )

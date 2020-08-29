@@ -1,26 +1,24 @@
-// import 'package:path/path.dart' as path; // gunakan as path agar tidak terjadi bentrok
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../preview.image.dart';
+import '../../constants/url.dart';
 import '../../providers/auth/auth.dart';
 import '../../providers/user/user.dart';
-import '../../constants/url.dart';
 import '../auth/login.dart';
 import '../auth/register.dart';
 
 
-class ProfileScreen extends StatefulWidget {
-  static const routeName = '/profile';
+class ViewProfileScreen extends StatefulWidget {
+
+  static const routeName = '/review-profile';
   @override
-  ProfileScreenState createState() => ProfileScreenState();
+  ViewProfileScreenState createState() => ViewProfileScreenState();
 }
 
-class ProfileScreenState extends State<ProfileScreen> {
+class ViewProfileScreenState extends State<ViewProfileScreen> {
  
-  
   @override
   Widget build(BuildContext context) {
     return Consumer<Auth>(
@@ -108,7 +106,7 @@ class ProfileScreenState extends State<ProfileScreen> {
 
   Widget buildProfile() {
     return FutureBuilder(
-      future:  Provider.of<User>(context, listen: false).getCurrentProfile(),
+      future: Provider.of<User>(context, listen: false).getCurrentProfile(),
       builder: (context, snapshot) {
         if(snapshot.connectionState == ConnectionState.waiting) {
           return Center(
@@ -154,7 +152,7 @@ class ProfileScreenState extends State<ProfileScreen> {
             return RefreshIndicator(
               onRefresh: () => userProvider.refreshProfile(),
               child: ListView.builder(
-              itemCount: userProvider.getCurrentProfileItem.length,
+              itemCount: userProvider.getViewProfileItem.length,
               itemBuilder: (context, i) {
                   return Column(
                     children: [
@@ -183,7 +181,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                                       child: GestureDetector(
                                         child: ClipOval(
                                           child: CachedNetworkImage(
-                                            imageUrl: '$imagesAvatarUrl/${userProvider.getCurrentProfileItem[i].avatar}',
+                                            imageUrl: '$imagesAvatarUrl/${userProvider.getViewProfileItem[i].avatar}',
                                             fit: BoxFit.cover,
                                             placeholder: (context, url) => Image.asset('assets/default-avatar.png'),
                                             errorWidget: (context, url, error) => Image.asset('assets/default-avatar.png'),                                      
@@ -195,7 +193,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                                           Navigator.push(context, MaterialPageRoute(builder: (_) {
                                             return PreviewImageScreen(
                                               url: imagesAvatarUrl,
-                                              body: userProvider.getCurrentProfileItem[i].avatar
+                                              body: userProvider.getViewProfileItem[i].avatar
                                             );
                                           }));
                                         },
@@ -210,15 +208,15 @@ class ProfileScreenState extends State<ProfileScreen> {
                       ),
                       ListTile(
                         title: Text('Name'),
-                        subtitle: Text(userProvider.getCurrentProfileItem[i].name)
+                        subtitle: Text(userProvider.getViewProfileItem[i].name)
                       ),
                       ListTile(
                         title: Text('E-mail Address'),
-                        subtitle: Text(userProvider.getCurrentProfileItem[i].email)
+                        subtitle: Text(userProvider.getViewProfileItem[i].email)
                       ),
                       ListTile(
                         title: Text('Bio'),
-                        subtitle: Text(userProvider.getCurrentProfileItem[i].bio)
+                        subtitle: Text(userProvider.getViewProfileItem[i].bio)
                       ),                        
                     ],
                   );
@@ -230,26 +228,5 @@ class ProfileScreenState extends State<ProfileScreen> {
       }
     );
   }
-  // Widget currentAvatar(User user, int i) {
-  //   return Container(
-  //     width: 120.0,
-  //     height: 120.0,
-  //     child: CachedNetworkImage(progressIndicatorBuilder: (context, url, progress) =>
-  //       CircularProgressIndicator(
-  //         value: progress.progress,
-  //       ),
-  //       imageUrl: '$imagesAvatarUrl/${user.items[i].avatar}',
-  //     ),
-  //   );
-  // }
-  // Widget previewAvatar(User user) {
-  //   return FadeInImage(
-  //     width: 120.0,
-  //     height: 120.0,
-  //     fit: BoxFit.cover,
-  //     image: FileImage(user.file),
-  //     placeholder: AssetImage("assets/default-avatar.png")
-  //   );
-  // }
 }
 

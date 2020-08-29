@@ -28,6 +28,7 @@ class RecipeShowData with ChangeNotifier {
   String duration;
   String imageurl;
   String portion;
+  String userId;
   String name;
 
   RecipeShowData({
@@ -37,6 +38,7 @@ class RecipeShowData with ChangeNotifier {
     this.duration,
     this.imageurl,
     this.portion,
+    this.userId,
     this.name
   });
 
@@ -47,6 +49,7 @@ class RecipeShowData with ChangeNotifier {
     duration: json["duration"] == null ? null : json["duration"],
     imageurl: json["imageurl"] == null ? null : json["imageurl"],
     portion: json["portion"] == null ? null : json["portion"],
+    userId: json["user_id"] == null ? null : json["user_id"],
     name: json["name"] == null ? null : json["name"]
   );
 }
