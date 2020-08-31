@@ -59,16 +59,10 @@ class TabsScreenState extends State<TabsScreen> {
                 color: Colors.blue.shade700,
               ), 
               onPressed: () {
-                User userProvider = Provider.of<User>(context, listen: false);
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) {
-                    return EditProfileScreen(
-                      avatar: userProvider.getCurrentProfileItem.first.avatar,
-                      name: userProvider.getCurrentProfileItem.first.name,
-                      bio: userProvider.getCurrentProfileItem.first.bio,
-                      email: userProvider.getCurrentProfileItem.first.email,
-                    );
+                    return EditProfileScreen();
                   })
                 );
               },
