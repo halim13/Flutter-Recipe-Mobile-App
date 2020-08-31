@@ -124,25 +124,24 @@ class _AddRecipeState extends State<AddRecipeScreen> {
       setState(() {
         isInAsyncCall = true;
       });
-      await recipeProvider.store(title, ingredientsGroup, ingredients, steps, portion).then((value) async {
-        if(value["status"] == 200) {
-          setState(() {
-            isInAsyncCall = false;
-          });
-          AwesomeDialog(
-            context: context,
-            dialogType: DialogType.SUCCES,
-            animType: AnimType.BOTTOMSLIDE,
-            headerAnimationLoop: false,
-            dismissOnTouchOutside: false,
-            title: 'Berhasil !',
-            desc: 'Data ditambahkan !',
-            btnOkOnPress: () => Navigator.of(context).popUntil((route) => route.isFirst),
-            btnOkIcon: Icons.check,
-            btnOkColor: Colors.blue.shade700
-          )..show();
-        }
-      });
+      final response = await recipeProvider.store(title, ingredientsGroup, ingredients, steps, portion);
+      if(response["status"] == 200) {
+        setState(() {
+          isInAsyncCall = false;
+        });
+        AwesomeDialog(
+          context: context,
+          dialogType: response["data"] == "ALERTDEMO" ? DialogType.INFO : DialogType.SUCCES,
+          animType: AnimType.BOTTOMSLIDE,
+          headerAnimationLoop: false,
+          dismissOnTouchOutside: false,
+          title: 'Berhasil !',
+          desc: response["data"] == "ALERTDEMO" ? 'Silahkan Hapus salah satu Resep. Tidak boleh lebih dari 2 Resep' : 'Data ditambahkan !',
+          btnOkOnPress: () => Navigator.of(context).popUntil((route) => route.isFirst),
+          btnOkIcon: Icons.check,
+          btnOkColor: Colors.blue.shade700
+        )..show();
+      }
     } on Exception catch(error) {
       String errorSplit = error.toString();
       List<String> errorText = errorSplit.split(":");
@@ -171,6 +170,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
       ),
       body: ModalProgressHUD(
         inAsyncCall: isInAsyncCall,
+        opacity: 0.5,
         progressIndicator: Container(),
         child: SingleChildScrollView(
           child: Column(
@@ -366,7 +366,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
                       ),
                       elevation: 0.0,
                       color: Colors.brown.shade700,
-                      onPressed: () => value.incrementIngredientPerGroup()
+                      onPressed: () => value.incrementIngredientPerGroup(context)
                     );
                   },
                 ),
@@ -406,7 +406,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
                       ),
                       elevation: 0.0,
                       color: Colors.brown.shade700,
-                      onPressed: () => recipeProvider.incrementSteps()
+                      onPressed: () => recipeProvider.incrementSteps(context)
                     ); 
                   }
                 ),

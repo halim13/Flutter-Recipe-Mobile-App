@@ -3,22 +3,24 @@ import 'package:provider/provider.dart';
 
 import './providers/auth/auth.dart';
 import './providers/category/categories.dart';
+import './providers/user/user.dart';
+import './providers/recipe/my.recipe.dart';
 import './providers/recipe/show.dart';
 import './providers/recipe/detail.dart';
-import './providers/user/user.dart';
 import './providers/recipe/edit.dart';
 import './providers/recipe/add.dart';
 import './colors/colors.dart';
+
 import './screens/favorite/detail.favorite.dart';
-import './screens/tabs.dart';
+import './screens/tabs/tabs.dart';
 import './screens/recipe/categories.dart';
-import 'screens/recipe/show.dart';
+import './screens/recipe/show.dart';
 import './screens/recipe/detail.dart';
 import './screens/auth/login.dart';
 import './screens/auth/register.dart';
 import './screens/recipe/add.dart';
 import './screens/recipe/edit.dart';
-
+import './screens/recipe/my.recipe.dart';
 
 void main() { 
   Provider.debugCheckInvalidValueType = null;
@@ -43,6 +45,9 @@ class _MyAppState extends State<MyApp> {
         ),
         ChangeNotifierProvider.value(
           value: Categories(),
+        ),
+        ChangeNotifierProvider.value(
+          value: MyRecipe(),
         ),
         ChangeNotifierProvider.value(
           value: RecipeEdit(),
@@ -87,6 +92,7 @@ class _MyAppState extends State<MyApp> {
           LoginScreen.routeName: (context) => LoginScreen(),
           RegisterScreen.routeName: (context) => RegisterScreen(),
           ShowRecipeScreen.routeName: (context) =>  ShowRecipeScreen(),
+          MyRecipeScreen.routeName: (context) => MyRecipeScreen(),
           RecipeDetailScreen.routeName: (context) => RecipeDetailScreen(),
           RecipeDetailFavoriteScreen.routeName: (context) => RecipeDetailFavoriteScreen(),
           AddRecipeScreen.routeName: (context) => AddRecipeScreen(),

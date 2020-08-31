@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../providers/auth/auth.dart';
 import './login.dart';
-import '../tabs.dart';
+import '../tabs/tabs.dart';
 
 class RegisterScreen extends StatefulWidget {
   static const routeName = '/register';
@@ -38,14 +38,14 @@ class RegisterScreenState extends State<RegisterScreen> {
     //   return;
     // }
     try {
-      if(nameController.text.isEmpty || nameController.text.length < 3) {
-        throw ErrorDescription('Name is too short. Minimum 3 characters.');
+      if(nameController.text.isEmpty || nameController.text.length < 1) {
+        throw ErrorDescription('Nama tidak boleh kosong');
       }
       if(emailController.text.isEmpty || !emailController.text.contains('@')) {
-        throw ErrorDescription('Invalid email.');
+        throw ErrorDescription('Format Email salah. Contoh: johndoe@gmail.com');
       }
       if(passwordController.text.isEmpty || passwordController.text.length < 6) {
-        throw ErrorDescription('Password is too short. Minimum 6 characters.');
+        throw ErrorDescription('Kata Sandi Minimal 6 Karakter');
       }
       formKey.currentState.save();
       setState(() {

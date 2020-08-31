@@ -14,6 +14,7 @@ import '../../constants/url.dart';
 import '../../constants/connection.dart';
 
 class RecipeAdd with ChangeNotifier {
+
   RecipeAdd() {
     initState();
   }
@@ -130,26 +131,41 @@ class RecipeAdd with ChangeNotifier {
     }
   }
 
-  void incrementIngredientPerGroup() {
+  void incrementIngredientPerGroup(BuildContext context) {
     Uuid uuid = Uuid();
     String uuidv4IngredientPerGroup = uuid.v4();
     String uuidv4Ingredients = uuid.v4();
-    ingredientsGroup.add(
-      IngredientsGroup(
-        uuid: uuidv4IngredientPerGroup,
-        focusNode: FocusNode(),
-        textEditingController: TextEditingController(text: ""),
-        ingredients: [
-          Ingredients(
-            uuid: uuidv4Ingredients,
-            focusNode: FocusNode(),
-            textEditingController: TextEditingController(text: "")
-          )
-        ]
-      )
-    );
-    FocusNode nextNode = ingredientsGroup[ingredientsGroup.length-1].focusNode;
-    nextNode.requestFocus();
+    if(ingredientsGroup.length >= 10) {
+      SnackBar snackbar = SnackBar(
+        backgroundColor: Colors.red[300],
+        content: Text('Oops! Sudah Mencapai Batas Maksimal'),
+        action: SnackBarAction(
+          textColor: Colors.white,
+          label: 'Tutup',
+          onPressed: () {
+            Scaffold.of(context).hideCurrentSnackBar();
+          }
+        ),
+      );
+      Scaffold.of(context).showSnackBar(snackbar);
+    } else {
+      ingredientsGroup.add(
+        IngredientsGroup(
+          uuid: uuidv4IngredientPerGroup,
+          focusNode: FocusNode(),
+          textEditingController: TextEditingController(text: ""),
+          ingredients: [
+            Ingredients(
+              uuid: uuidv4Ingredients,
+              focusNode: FocusNode(),
+              textEditingController: TextEditingController(text: "")
+            )
+          ]
+        )
+      );
+      FocusNode nextNode = ingredientsGroup[ingredientsGroup.length-1].focusNode;
+      nextNode.requestFocus();
+    }
     notifyListeners();
   }
 
@@ -158,18 +174,33 @@ class RecipeAdd with ChangeNotifier {
     notifyListeners();
   }
 
-  void incrementIngredients(int i) {
+  void incrementIngredients(BuildContext context, int i) {
     Uuid uuid = Uuid();
     String uuidv4 = uuid.v4();
-    ingredientsGroup[i].ingredients.add(
-      Ingredients(
-        uuid: uuidv4,
-        focusNode: FocusNode(),
-        textEditingController: TextEditingController(text: "")
-      )
-    );
-    FocusNode nextNode = ingredientsGroup[i].ingredients[ingredientsGroup[i].ingredients.length-1].focusNode;
-    nextNode.requestFocus();
+    if(ingredientsGroup[i].ingredients.length >= 10) {
+      SnackBar snackbar = SnackBar(
+        backgroundColor: Colors.red[300],
+        content: Text('Oops! Sudah Mencapai Batas Maksimal'),
+        action: SnackBarAction(
+          textColor: Colors.white,
+          label: 'Tutup',
+          onPressed: () {
+            Scaffold.of(context).hideCurrentSnackBar();
+          }
+        ),
+      );
+      Scaffold.of(context).showSnackBar(snackbar);
+    } else { 
+      ingredientsGroup[i].ingredients.add(
+        Ingredients(
+          uuid: uuidv4,
+          focusNode: FocusNode(),
+          textEditingController: TextEditingController(text: "")
+        )
+      );
+      FocusNode nextNode = ingredientsGroup[i].ingredients[ingredientsGroup[i].ingredients.length-1].focusNode;
+      nextNode.requestFocus();
+    }
     notifyListeners();
   }
 
@@ -178,53 +209,68 @@ class RecipeAdd with ChangeNotifier {
     notifyListeners();
   }
 
-  void incrementSteps() {
+  void incrementSteps(BuildContext context) {
     Uuid uuid = Uuid();
-    steps.add(Steps(
-      uuid: uuid.v4(),
-      focusNode: FocusNode(),
-      textEditingController: TextEditingController(text: ""),
-      images: [
-        StepsImages(
-          uuid: uuid.v4(),
-          body: CachedNetworkImage(
-            width: 100.0,
-            height: 100.0,
-            imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
-            placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
-            errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
-            fadeOutDuration: Duration(seconds: 1),
-            fadeInDuration: Duration(seconds: 1),
-          )
+    if(steps.length >= 10) {
+      SnackBar snackbar = SnackBar(
+        backgroundColor: Colors.red[300],
+        content: Text('Oops! Sudah Mencapai Batas Maksimal'),
+        action: SnackBarAction(
+          textColor: Colors.white,
+          label: 'Tutup',
+          onPressed: () {
+            Scaffold.of(context).hideCurrentSnackBar();
+          }
         ),
-        StepsImages(
-          uuid: uuid.v4(),
-          body: CachedNetworkImage(
-            width: 100.0,
-            height: 100.0,
-            imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
-            placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
-            errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
-            fadeOutDuration: Duration(seconds: 1),
-            fadeInDuration: Duration(seconds: 1),
+      );
+      Scaffold.of(context).showSnackBar(snackbar);
+    } else {
+      steps.add(Steps(
+        uuid: uuid.v4(),
+        focusNode: FocusNode(),
+        textEditingController: TextEditingController(text: ""),
+        images: [
+          StepsImages(
+            uuid: uuid.v4(),
+            body: CachedNetworkImage(
+              width: 100.0,
+              height: 100.0,
+              imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
+              placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+              errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+              fadeOutDuration: Duration(seconds: 1),
+              fadeInDuration: Duration(seconds: 1),
+            )
+          ),
+          StepsImages(
+            uuid: uuid.v4(),
+            body: CachedNetworkImage(
+              width: 100.0,
+              height: 100.0,
+              imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
+              placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+              errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+              fadeOutDuration: Duration(seconds: 1),
+              fadeInDuration: Duration(seconds: 1),
+            )
+          ),
+          StepsImages(
+            uuid: uuid.v4(),
+            body: CachedNetworkImage(
+              width: 100.0,
+              height: 100.0,
+              imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
+              placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+              errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+              fadeOutDuration: Duration(seconds: 1),
+              fadeInDuration: Duration(seconds: 1),
+            )
           )
-        ),
-        StepsImages(
-          uuid: uuid.v4(),
-          body: CachedNetworkImage(
-            width: 100.0,
-            height: 100.0,
-            imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
-            placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
-            errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
-            fadeOutDuration: Duration(seconds: 1),
-            fadeInDuration: Duration(seconds: 1),
-          )
-        )
-      ]
-    ));
-    FocusNode nextNode = steps[steps.length-1].focusNode;
-    nextNode.requestFocus();
+        ]
+      ));
+      FocusNode nextNode = steps[steps.length-1].focusNode;
+      nextNode.requestFocus();
+    }
     notifyListeners();
   }
 
@@ -275,7 +321,7 @@ class RecipeAdd with ChangeNotifier {
       request.fields["steps"] = stepsParam;
       request.fields["categoryName"] = categoryName;
       request.fields["userId"] = userId; 
-      http.StreamedResponse response = await request.send();
+      http.StreamedResponse response = await request.send().timeout(Duration(seconds: 60));
       if(response.statusCode == 200) {
         ingredientsGroupSendToHttp = [];
         ingredientsSendToHttp = [];
@@ -292,4 +338,5 @@ class RecipeAdd with ChangeNotifier {
       print(error);
     }
   }
+  
 }

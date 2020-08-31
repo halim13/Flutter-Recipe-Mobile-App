@@ -45,7 +45,7 @@ class User extends ChangeNotifier {
     String userId = extractedUserData["userId"];
     String url = 'http://$baseurl:$port/api/v1/accounts/users/profile/$userId'; 
     try {
-      http.Response response = await http.get(url).timeout(Duration(seconds: 5));
+      http.Response response = await http.get(url).timeout(Duration(seconds: 60));
       UserModel model = UserModel.fromJson(json.decode(response.body));
       List<UserData> initialProfile = [];
       model.data.forEach((item) {
@@ -70,7 +70,7 @@ class User extends ChangeNotifier {
   Future view(String userId) async {
     String url = 'http://$baseurl:$port/api/v1/accounts/users/profile/view/$userId';
     try {
-      http.Response response = await http.get(url).timeout(Duration(seconds: 5));
+      http.Response response = await http.get(url).timeout(Duration(seconds: 60));
       UserModel model = UserModel.fromJson(json.decode(response.body));
       List<UserData> initialViewProfile = [];
       model.data.forEach((item) {
@@ -97,8 +97,8 @@ class User extends ChangeNotifier {
       "username": username,
       "bio": bio
     };
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, String> headers = {"Content-Type": "application/json"};
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, Object> extractedUserData = json.decode(prefs.getString('userData'));
     String userId = extractedUserData["userId"];
     String url = 'http://$baseurl:$port/api/v1/accounts/users/profile/update/$userId';
@@ -114,15 +114,16 @@ class User extends ChangeNotifier {
       }
       request.headers.addAll(headers);
       request.fields.addAll(fields);
-      http.StreamedResponse response = await request.send().timeout(Duration(seconds: 4));
+      http.StreamedResponse response = await request.send().timeout(Duration(seconds: 60));
       String responseData = await response.stream.bytesToString();
-      final responseDataDecoded = json.decode(responseData);
-      if(responseDataDecoded["status"] == 200) {
+      final responseDecoded = json.decode(responseData);
+      if(responseDecoded["status"] == 200) {
         refreshProfile();
         isLoading = false;
         notifyListeners();
       }
       notifyListeners();
+      return responseDecoded;
     } catch(error) {
       print(error);
       throw error;

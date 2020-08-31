@@ -100,9 +100,10 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
           }
           return SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  height: 300,
+                  height: 300.0,
                   width: double.infinity,
                   child: CachedNetworkImage(
                     imageUrl: '$imagesRecipesUrl/${recipeProvider.data.recipes.first.imageUrl}',
@@ -120,7 +121,71 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                     fadeInDuration: Duration(seconds: 1),
                   ) 
                 ),
-                buildSectionTitle(context, 'Bahan - bahan'),
+                Container(
+                  margin: EdgeInsets.all(10.0),
+                  padding: EdgeInsets.all(10.0),
+                  child: Text(
+                    'Judul Makanan',
+                    style: TextStyle(
+                      fontSize: 19.0,
+                    ),
+                  )
+                ), 
+                Container(
+                  margin: EdgeInsets.all(10.0),
+                  padding: EdgeInsets.all(10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.schedule),
+                          SizedBox(width: 6.0),
+                          Text('${routeArgs['duration']} min'),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(Icons.fastfood),
+                          SizedBox(width: 6.0),
+                          Text('${routeArgs['portion']}'),
+                        ],
+                      )
+                    ],
+                  )
+                ),
+                Container(
+                  margin: EdgeInsets.all(10.0),
+                  padding: EdgeInsets.all(10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Icon(Icons.people),
+                      SizedBox(width: 6),
+                      RichText(
+                        text: TextSpan(
+                          text: 'Dibuat oleh : ',
+                          style: TextStyle(
+                            color: Colors.black, 
+                            fontSize: 16.0
+                          ),
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: '${routeArgs['name']}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.0
+                              ),
+                            )
+                          ]
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Center(
+                  child: buildSectionTitle(context, 'Bahan - bahan')
+                ),
                 buildContainer(
                   ListView.separated(
                     shrinkWrap: true,
@@ -162,7 +227,9 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                     )
                   ),
                 ),
-                buildSectionTitle(context, 'Langkah Memasak'),
+                Center(
+                  child: buildSectionTitle(context, 'Langkah Memasak')
+                ),
                 buildContainer(
                   ListView.separated(
                     shrinkWrap: true,

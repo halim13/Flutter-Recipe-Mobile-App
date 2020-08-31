@@ -3,15 +3,15 @@ import 'package:provider/provider.dart';
 import 'package:quartet/quartet.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import '../../constants/url.dart';
 import '../../models/RecipeShow.dart';
-import '../profile/view.dart';
 import '../../helpers/highlight.occurences.dart';
 import '../../providers/recipe/show.dart';
-import '../../constants/url.dart';
+import '../profile/view.dart';
 import './detail.dart';
 
 class ShowRecipeScreen extends StatefulWidget {
-  static const routeName = '/category-meals';
+  static const routeName = '/show-recipe';
 
   @override
   _ShowRecipeScreenState createState() => _ShowRecipeScreenState();
@@ -37,13 +37,24 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
     controller.dispose();
   }
 
-  void selectRecipe(context, String title, String uuid, String userId) {
+  void selectRecipe(
+    BuildContext context, 
+    String uuid, 
+    String title, 
+    String portion,
+    String duration,
+    String userId,
+    String name
+  ) {
     Navigator.of(context).pushNamed(
       RecipeDetailScreen.routeName,
       arguments: {
         'uuid': uuid,
         'title': title,
-        'userId': userId
+        'portion': portion,
+        'duration':  duration,
+        'userId': userId,
+        'name': name
       },
     );
   }
@@ -51,8 +62,8 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
   @override
   Widget build(BuildContext context) {
     Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments;
+    String categoryId = routeArgs['uuid'];
     String categoryTitle = routeArgs['title'];
-    String recipeId = routeArgs['uuid'];
     return Scaffold(
       appBar: AppBar(
         title: Text(titleCase(categoryTitle)),
@@ -66,8 +77,8 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
         ],
       ),
       body: FutureBuilder(
-        future: Provider.of<RecipeShow>(context, listen: false).getShow(recipeId),
-        builder: (context, snapshot) {
+        future: Provider.of<RecipeShow>(context, listen: false).getShow(categoryId),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
           if(snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),
@@ -111,28 +122,38 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
             child: Center(
               child: Text('Belum ada resep'),
             ),
-            builder: (context, recipeProvider, child) => recipeProvider.getShowItem.length <= 0 ? child :
+            builder: (BuildContext context, RecipeShow recipeProvider, Widget child) => recipeProvider.getShowItem.length <= 0 ? child :
             RefreshIndicator(
-              onRefresh: () => recipeProvider.refreshRecipe(recipeId),
+              onRefresh: () => recipeProvider.refreshRecipe(categoryId),
               child: ListView.builder(
               controller: controller,
               itemCount: recipeProvider.getShowItem.length,
               itemBuilder: (context, i) {
                 if(i == recipeProvider.getShowItem.length) 
                   return CircularProgressIndicator();
-                  return InkWell(
-                    onTap: () => selectRecipe(context, recipeProvider.getShowItem[i].title, recipeProvider.getShowItem[i].uuid, recipeProvider.getShowItem[i].userId),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0)
-                      ),
-                      elevation: 4,
-                      margin: EdgeInsets.all(10.0),
-                      child: Column(
-                        children: [
-                          Stack(
-                            children: [
-                              ClipRRect(
+                  return Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0)
+                    ),
+                    elevation: 4,
+                    margin: EdgeInsets.all(10.0),
+                    child: Column(
+                      children: [
+                        Stack(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                selectRecipe(
+                                  context, 
+                                  recipeProvider.getShowItem[i].uuid,
+                                  recipeProvider.getShowItem[i].title, 
+                                  recipeProvider.getShowItem[i].portion,
+                                  recipeProvider.getShowItem[i].duration, 
+                                  recipeProvider.getShowItem[i].userId,
+                                  recipeProvider.getShowItem[i].name
+                                );
+                              },
+                              child: ClipRRect(
                                 borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(15.0),
                                   topRight: Radius.circular(15.0),
@@ -155,91 +176,91 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
                                   fadeInDuration: Duration(seconds: 1),
                                 ),
                               ),
-                              Positioned(
-                                bottom: 20.0,
-                                right: 10.0,
-                                child: Container(
-                                  width: 300.0,
-                                  color: Colors.black54,
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: 5.0,
-                                    horizontal: 20.0,
+                            ),
+                            Positioned(
+                              bottom: 20.0,
+                              right: 10.0,
+                              child: Container(
+                                width: 300.0,
+                                color: Colors.black54,
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 5.0,
+                                  horizontal: 20.0,
+                                ),
+                                child: Text(
+                                  titleCase(recipeProvider.getShowItem[i].title),
+                                  style: TextStyle(
+                                    fontSize: 26.0,
+                                    color: Colors.white,
                                   ),
-                                  child: Text(
-                                    titleCase(recipeProvider.getShowItem[i].title),
-                                    style: TextStyle(
-                                      fontSize: 26.0,
-                                      color: Colors.white,
-                                    ),
-                                    softWrap: true,
-                                    overflow: TextOverflow.fade,
-                                  ),
+                                  softWrap: true,
+                                  overflow: TextOverflow.fade,
                                 ),
                               ),
-                            ],
-                          ),
-                          Container(
-                            padding: EdgeInsets.all(20.0),
-                            child: Expanded(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Icon(Icons.schedule),
-                                      SizedBox(width: 6.0),
-                                      Text('${recipeProvider.getShowItem[i].duration.toString()} min'),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Icon(Icons.fastfood),
-                                      SizedBox(width: 6.0),
-                                      Text('${recipeProvider.getShowItem[i].portion}'),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                            ),
+                          ],
+                        ),
+                        Container(
+                          padding: EdgeInsets.all(20.0),
+                          child: Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.schedule),
+                                    SizedBox(width: 6.0),
+                                    Text('${recipeProvider.getShowItem[i].duration.toString()} min'),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(Icons.fastfood),
+                                    SizedBox(width: 6.0),
+                                    Text('${recipeProvider.getShowItem[i].portion}'),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => ViewProfileScreen()),
-                              );
-                            },
-                            child: Container(
-                              padding: EdgeInsets.only(top: 0.0, left: 0.0, right: 20.0, bottom: 15.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Icon(Icons.people),
-                                  SizedBox(width: 6),
-                                  RichText(
-                                    text: TextSpan(
-                                      text: 'Dibuat oleh : ',
-                                      style: TextStyle(
-                                        color: Colors.black, 
-                                        fontSize: 16.0
-                                      ),
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                          text: '${recipeProvider.getShowItem[i].name}',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16.0
-                                          ),
-                                        )
-                                      ]
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ViewProfileScreen(recipeProvider.getShowItem[i].userId, recipeProvider.getShowItem[i].name)),
+                            );
+                          },
+                          child: Container(
+                            padding: EdgeInsets.only(top: 0.0, left: 0.0, right: 20.0, bottom: 15.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Icon(Icons.people),
+                                SizedBox(width: 6),
+                                RichText(
+                                  text: TextSpan(
+                                    text: 'Dibuat oleh : ',
+                                    style: TextStyle(
+                                      color: Colors.black, 
+                                      fontSize: 16.0
                                     ),
-                                  )
-                                ],
-                              ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: '${recipeProvider.getShowItem[i].name}',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16.0
+                                        ),
+                                      )
+                                    ]
+                                  ),
+                                )
+                              ],
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   );
                 }

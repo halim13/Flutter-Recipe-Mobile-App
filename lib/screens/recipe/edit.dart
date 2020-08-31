@@ -130,22 +130,21 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
       String steps = jsonEncode(uniqueSteps);
       String removeSteps = jsonEncode(uniqueRemoveSteps);
       Object recipeId = ModalRoute.of(context).settings.arguments;
-      await Provider.of<RecipeEdit>(context, listen: false).update(context, title, recipeId, ingredientsGroup, removeIngredientsGroup, ingredients, removeIngredients, steps, removeSteps, portion, categoryName).then((value) async {
-        if(value["status"] == 200) {
-          AwesomeDialog(
-            context: context,
-            dialogType: DialogType.SUCCES,
-            animType: AnimType.BOTTOMSLIDE,
-            headerAnimationLoop: false,
-            dismissOnTouchOutside: false,
-            title: 'Berhasil !',
-            desc: 'Perubahan tersimpan !',
-            btnOkOnPress: () => Navigator.of(context).popUntil((route) => route.isFirst),
-            btnOkIcon: null, // Icons.check
-            btnOkColor: Colors.blue.shade700
-          )..show();
-        } 
-      });
+      final response = await Provider.of<RecipeEdit>(context, listen: false).update(context, title, recipeId, ingredientsGroup, removeIngredientsGroup, ingredients, removeIngredients, steps, removeSteps, portion, categoryName);
+      if(response["status"] == 200) {
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.SUCCES,
+          animType: AnimType.BOTTOMSLIDE,
+          headerAnimationLoop: false,
+          dismissOnTouchOutside: false,
+          title: 'Berhasil !',
+          desc: 'Perubahan tersimpan !',
+          btnOkOnPress: () => Navigator.of(context).popUntil((route) => route.isFirst),
+          btnOkIcon: null, // Icons.check
+          btnOkColor: Colors.blue.shade700
+        )..show();
+      } 
     } on Exception catch(error) {
       String errorSplit = error.toString();
       List<String> errorText = errorSplit.split(":");
@@ -209,8 +208,9 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
             );
           }
           return Consumer<RecipeEdit>(
-          builder: (context, value, child) => ModalProgressHUD(
-              inAsyncCall: value.isLoading,
+          builder: (BuildContext context, RecipeEdit recipeEdit, Widget child) => ModalProgressHUD(
+              inAsyncCall: recipeEdit.isLoading,
+              opacity: 0.5,
               progressIndicator: Container(),
               child: SingleChildScrollView(
                 child: Column(
@@ -423,7 +423,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                           ),
                           elevation: 0.0,
                           color: Colors.brown.shade700,
-                          onPressed: () => recipeProvider.incrementIngredientsPerGroup()
+                          onPressed: () => recipeProvider.incrementIngredientsPerGroup(context)
                         );
                       },
                     ),
@@ -463,7 +463,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                           ),
                           elevation: 0.0,
                           color: Colors.brown.shade700,
-                          onPressed: () => recipeProvider.incrementsSteps()
+                          onPressed: () => recipeProvider.incrementsSteps(context)
                         );
                       }
                     ),
@@ -517,7 +517,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                     )
                   ),
                 ),
-          );
+              );
             },
           ),
         )

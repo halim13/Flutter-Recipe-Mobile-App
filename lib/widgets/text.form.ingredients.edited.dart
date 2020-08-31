@@ -47,7 +47,7 @@ Widget textFormIngredientsEdit(BuildContext context) {
                               Icons.add_circle_outline,
                             ),
                             onPressed: () {
-                              recipeProvider.incrementIngredients(i);
+                              recipeProvider.incrementIngredients(context, i);
                             },
                           ),
                           IconButton(

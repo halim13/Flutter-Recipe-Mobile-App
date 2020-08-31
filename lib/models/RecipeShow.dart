@@ -22,7 +22,6 @@ class RecipeShowModel with ChangeNotifier {
 }
 
 class RecipeShowData with ChangeNotifier {
-  int id;
   String uuid;
   String title;
   String duration;
@@ -32,7 +31,6 @@ class RecipeShowData with ChangeNotifier {
   String name;
 
   RecipeShowData({
-    this.id,
     this.uuid,
     this.title,
     this.duration,
@@ -43,7 +41,6 @@ class RecipeShowData with ChangeNotifier {
   });
 
   factory RecipeShowData.fromJson(Map<String, dynamic> json) => RecipeShowData(
-    id: json["id"] == null ? null : json["id"],
     uuid: json["uuid"] == null ? null : json["uuid"],
     title: json["title"] == null ? null : json["title"],
     duration: json["duration"] == null ? null : json["duration"],

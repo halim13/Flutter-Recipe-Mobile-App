@@ -45,13 +45,15 @@ class RecipeDetail with ChangeNotifier {
       notifyListeners();
     }
   }
+
   Future<void> refreshRecipeFavourite() async {
     await getRecipeFavourite();
   }
+  
   Future<void> getRecipeFavourite() async {
     String url = 'http://$baseurl:$port/api/v1/recipes/favorite'; 
     try {
-      http.Response response = await http.get(url).timeout(Duration(seconds: 5));
+      http.Response response = await http.get(url).timeout(Duration(seconds: 60));
       recipeFavoriteModel.RecipeFavouriteModel model = recipeFavoriteModel.RecipeFavouriteModel.fromJson(json.decode(response.body));
       List<recipeFavoriteModel.RecipeFavouriteData> initialDisplayRecipeFavorite = [];
       model.data.forEach((item) {
@@ -75,6 +77,7 @@ class RecipeDetail with ChangeNotifier {
       throw error;
     }
   }
+
   Future<void> updateToFavorite(String recipeId, int isfavourite) async {
     String url = 'http://$baseurl:$port/api/v1/recipes/update/favorite/$recipeId';
     try {
@@ -87,6 +90,7 @@ class RecipeDetail with ChangeNotifier {
       throw error;
     }
   }
+
   Future<void> detail(String recipeId) async {
     String url = 'http://$baseurl:$port/api/v1/recipes/detail/$recipeId';
     try {
@@ -100,4 +104,5 @@ class RecipeDetail with ChangeNotifier {
       throw error;
     }
   }
+  
 }

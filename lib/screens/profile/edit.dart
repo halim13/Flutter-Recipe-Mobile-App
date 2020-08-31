@@ -79,8 +79,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           iosUiSettings: IOSUiSettings(
             minimumAspectRatio: 1.0,
           )
-        );
-        
+        );  
         if(cropped != null) {
           setState(() {
             f = cropped;
@@ -96,11 +95,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    void saveProfile() async {
+    void save() async {
       FormState form = formKey.currentState;
       if(form.validate()) {
         form.save();
-        await Provider.of<User>(context, listen: false).update(f, name, bio).then((value) {
+        final response = await Provider.of<User>(context, listen: false).update(f, name, bio);
+        if(response["status"] == 200) {
           AwesomeDialog(
             context: context,
             dialogType: DialogType.SUCCES,
@@ -113,9 +113,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             btnOkIcon: Icons.check,
             btnOkColor: Colors.blue.shade700
           )..show();
-        });
       }
     }
+  }
     return Scaffold(
       appBar: AppBar(
         title: Text('Ubah Profil'),
@@ -153,15 +153,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             ? CachedNetworkImage(
                                 imageUrl: '$imagesAvatarUrl/${widget.avatar}',
                                 fit: BoxFit.cover,
-                                placeholder: (context, url) => Image.asset("assets/default-thumbnail.jpg"),
-                                errorWidget: (context, url, error) => Image.asset("assets/default-thumbnail.jpg"),
+                                placeholder: (context, url) => Image.asset("assets/default-avatar.png"),
+                                errorWidget: (context, url, error) => Image.asset("assets/default-avatar.png"),
                                 fadeOutDuration: Duration(seconds: 1),
                                 fadeInDuration: Duration(seconds: 1),
                               )
                             : FadeInImage(
                               fit: BoxFit.cover,
                               image: FileImage(f),
-                              placeholder: AssetImage("assets/default-thumbnail.jpg")
+                              placeholder: AssetImage("assets/default-avatar.png")
                             )
                           ),
                         )
@@ -340,7 +340,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                           color: Colors.blue.shade700,
                           elevation: 0.0,
-                          onPressed: () => saveProfile(),
+                          onPressed: () => save(),
                         );
                       },
                     ),

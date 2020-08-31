@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/auth/auth.dart';
 import '../screens/recipe/add.dart';
+import '../screens/recipe/my.recipe.dart';
 import '../screens/auth/login.dart';
 
 class MainDrawer extends StatelessWidget {
@@ -10,13 +11,13 @@ class MainDrawer extends StatelessWidget {
     return ListTile(
       leading: Icon(
         icon,
-        size: 26,
+        size: 26.0,
       ),
       title: Text(
         title,
         style: TextStyle(
           fontFamily: 'RobotoCondensed',
-          fontSize: 24,
+          fontSize: 24.0,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -52,6 +53,21 @@ class MainDrawer extends StatelessWidget {
               if(authProvider.isAuth) {
                 return buildListTile('Tulis Resep', Icons.restaurant_menu, () {
                   Navigator.of(context).pushNamed(AddRecipeScreen.routeName);
+                });
+              } else {
+                return FutureBuilder(
+                  future: authProvider.tryAutoLogin(),
+                  builder: (ctx, snapshot) =>
+                  Container()
+                );
+              }
+            },
+          ),
+          Consumer<Auth>(
+            builder: (context, authProvider, child) {
+              if(authProvider.isAuth) {
+                return buildListTile('Resep Saya', Icons.receipt, () {
+                  Navigator.of(context).pushNamed(MyRecipeScreen.routeName);
                 });
               } else {
                 return FutureBuilder(

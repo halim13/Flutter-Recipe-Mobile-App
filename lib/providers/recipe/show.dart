@@ -18,10 +18,11 @@ class RecipeShow with ChangeNotifier {
   Future<void> refreshRecipe(String recipeId) async {
     await getShow(recipeId);
   }
+
   Future<void> suggestions() async {
     String url = 'http://$baseurl:$port/api/v1/recipes/search-suggestions';
     try {
-      http.Response response = await http.get(url);
+      http.Response response = await http.get(url).timeout(Duration(seconds: 60));
       SearchSuggestionModel model = SearchSuggestionModel.fromJson(json.decode(response.body));
       List<SearchSuggestionsData> loadedSearchSuggestions = model.data;
       searchSuggestions = loadedSearchSuggestions;
@@ -31,10 +32,11 @@ class RecipeShow with ChangeNotifier {
       print(error);
     }
   }
+
   Future<void> popularViews(String recipeId) async {
     String url = 'http://$baseurl:$port/api/v1/recipes/popular-views/$recipeId';
     try { 
-      await http.get(url);
+      await http.get(url).timeout(Duration(seconds: 60));
       suggestions();
       notifyListeners();
     } catch(error) {
@@ -42,16 +44,16 @@ class RecipeShow with ChangeNotifier {
       throw error;
     }
   }
-  Future<void> getShow(String recipeId, [int limit = 0]) async {
+
+  Future<void> getShow(String categoryId, [int limit = 0]) async {
     limit = limit + 5;
-    String url = 'http://$baseurl:$port/api/v1/recipes/show/$recipeId?limit=$limit'; 
+    String url = 'http://$baseurl:$port/api/v1/recipes/show/$categoryId?limit=$limit'; 
     try {
-      http.Response response = await http.get(url).timeout(Duration(seconds: 5));
+      http.Response response = await http.get(url).timeout(Duration(seconds: 60));
       RecipeShowModel model = RecipeShowModel.fromJson(json.decode(response.body));
       List<RecipeShowData> initialShow = [];
       model.data.forEach((item) {
         initialShow.add(RecipeShowData(
-          id: item.id,
           uuid: item.uuid,
           title: item.title,
           imageurl: item.imageurl,
@@ -69,4 +71,5 @@ class RecipeShow with ChangeNotifier {
       throw error;
     }
   }
+
 }

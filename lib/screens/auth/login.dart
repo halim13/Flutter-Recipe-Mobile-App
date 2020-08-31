@@ -7,8 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../providers/auth/auth.dart';
 import './register.dart';
-import '../tabs.dart';
-
+import '../tabs/tabs.dart';
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login';
@@ -38,10 +37,10 @@ class LoginScreenState extends State<LoginScreen> {
     // }
     try {
       if (emailController.text.isEmpty || !emailController.text.contains('@')) {
-        throw ErrorDescription("Invalid email.");
+        throw ErrorDescription("Format Email salah. Contoh: johndoe@gmail.com");
       }
       if (passwordController.text.isEmpty || passwordController.text.length < 6) {
-        throw ErrorDescription("Password is too short. Minimum 6 characters.");
+        throw ErrorDescription("Kata Sandi Minimal 6 Karakter");
       }
       formKey.currentState.save();
       setState(() {

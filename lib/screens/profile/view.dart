@@ -4,14 +4,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import '../preview.image.dart';
 import '../../constants/url.dart';
-import '../../providers/auth/auth.dart';
 import '../../providers/user/user.dart';
-import '../auth/login.dart';
-import '../auth/register.dart';
 
 
 class ViewProfileScreen extends StatefulWidget {
-
+  ViewProfileScreen(this.userId, this.name);
+  final String userId;
+  final String name;
   static const routeName = '/review-profile';
   @override
   ViewProfileScreenState createState() => ViewProfileScreenState();
@@ -21,137 +20,55 @@ class ViewProfileScreenState extends State<ViewProfileScreen> {
  
   @override
   Widget build(BuildContext context) {
-    return Consumer<Auth>(
-      builder: (context, auth, child) {
-        if(auth.isAuth) {
-          return buildProfile();
-        } else {
-          return FutureBuilder(
-            future: auth.tryAutoLogin(),
-            builder: (context, snapshot) =>
-            snapshot.connectionState == ConnectionState.waiting
-            ? Center(
-                child: CircularProgressIndicator()
-              )
-            : Container(
-                height: double.infinity,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Color(0xFF73AEF5),
-                      Color(0xFF61A4F1),
-                      Color(0xFF478DE0),
-                      Color(0xFF398AE5),
-                    ],
-                    stops: [0.1, 0.4, 0.7, 0.9],
-                  ),
-                ),
-              child: Center(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.name),
+      ),
+      body: FutureBuilder(
+        future: Provider.of<User>(context, listen: false).view(widget.userId),
+        builder: (context, snapshot) {
+          if(snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator()
+            );
+          }
+          if(snapshot.hasError) {
+            return Consumer<User>(
+              builder: (BuildContext context, User userProvider, Widget child) =>
+              Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    RaisedButton(
-                      elevation: 2.0,
-                      onPressed: () {
-                        Navigator.of(context).pushNamed(LoginScreen.routeName);
-                      },
-                      padding: EdgeInsets.all(15.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      color: Colors.white,
-                      child: Text(
-                        'Login',
-                        style: TextStyle(
-                          color: Colors.blue.shade700,
-                          letterSpacing: 1.5,
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold
-                        ),
+                    Container(
+                      width: 150.0,
+                      child: Image.asset('assets/no-network.png')
+                    ),
+                    SizedBox(height: 15.0),
+                    Text('Koneksi jaringan Anda buruk.',
+                      style: TextStyle(
+                        fontSize: 16.0
                       ),
                     ),
-                    SizedBox(height: 12.0),
-                    RaisedButton(
-                      elevation: 2.0,
-                      onPressed: () {
-                        Navigator.of(context).pushNamed(RegisterScreen.routeName);
-                      },
-                      padding: EdgeInsets.all(15.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      color: Colors.white,
-                      child: Text(
-                        'Register',
+                    SizedBox(height: 10.0),
+                    GestureDetector(
+                      child: Text('Coba Ulangi',
                         style: TextStyle(
-                          color: Colors.blue.shade700,
-                          letterSpacing: 1.5,
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold
+                          fontSize: 16.0,
+                          decoration: TextDecoration.underline
                         ),
                       ),
+                      onTap: () {
+                        setState((){});
+                      },
                     ),
-                  ]
+                  ],
                 ),
               ),
-            ),
-          );
-        }
-      },
-    );
-  }
-
-  Widget buildProfile() {
-    return FutureBuilder(
-      future: Provider.of<User>(context, listen: false).getCurrentProfile(),
-      builder: (context, snapshot) {
-        if(snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-            child: CircularProgressIndicator()
-          );
-        }
-        if(snapshot.hasError) {
+            );
+          }
           return Consumer<User>(
-            builder: (context, userProvider, child) =>
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 150.0,
-                    child: Image.asset('assets/no-network.png')
-                  ),
-                  SizedBox(height: 15.0),
-                  Text('Koneksi jaringan Anda buruk.',
-                    style: TextStyle(
-                      fontSize: 16.0
-                    ),
-                  ),
-                  SizedBox(height: 10.0),
-                  GestureDetector(
-                    child: Text('Coba Ulangi',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        decoration: TextDecoration.underline
-                      ),
-                    ),
-                    onTap: () {
-                      setState((){});
-                    },
-                  ),
-                ],
-              ),
-            ),
-          );
-        }
-        return Consumer<User>(
-          builder: (context, userProvider, child) {
-            return RefreshIndicator(
-              onRefresh: () => userProvider.refreshProfile(),
-              child: ListView.builder(
+            builder: (BuildContext context, User userProvider, Widget child) {
+              return ListView.builder(
               itemCount: userProvider.getViewProfileItem.length,
               itemBuilder: (context, i) {
                   return Column(
@@ -221,11 +138,11 @@ class ViewProfileScreenState extends State<ViewProfileScreen> {
                     ],
                   );
                 },
-              ),
-            );
-          },
-        );
-      }
+              );
+            },
+          );
+        }
+      ),
     );
   }
 }
