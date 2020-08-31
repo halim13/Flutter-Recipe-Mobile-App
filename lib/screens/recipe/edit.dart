@@ -141,7 +141,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
           title: 'Berhasil !',
           desc: 'Perubahan tersimpan !',
           btnOkOnPress: () => Navigator.of(context).popUntil((route) => route.isFirst),
-          btnOkIcon: null, // Icons.check
+          btnOkIcon: null,
           btnOkColor: Colors.blue.shade700
         )..show();
       } 

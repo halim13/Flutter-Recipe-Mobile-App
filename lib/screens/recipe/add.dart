@@ -136,9 +136,9 @@ class _AddRecipeState extends State<AddRecipeScreen> {
           headerAnimationLoop: false,
           dismissOnTouchOutside: false,
           title: 'Berhasil !',
-          desc: response["data"] == "ALERTDEMO" ? 'Silahkan Hapus salah satu Resep. Tidak boleh lebih dari 2 Resep' : 'Data ditambahkan !',
+          desc: response["data"] == "ALERTDEMO" ? 'Untuk DEMO Akun \n Tidak boleh lebih dari 2 Resep' : 'Data ditambahkan !',
           btnOkOnPress: () => Navigator.of(context).popUntil((route) => route.isFirst),
-          btnOkIcon: Icons.check,
+          btnOkIcon: null,
           btnOkColor: Colors.blue.shade700
         )..show();
       }

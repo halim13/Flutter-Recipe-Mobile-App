@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../../widgets/main.drawer.dart';
 import '../../providers/auth/auth.dart';
 import '../../providers/custom/bottom_navy_bar.dart';
-import '../../providers/user/user.dart';
 import '../profile/profile.dart';
 import '../profile/edit.dart';
 import '../favorite/favorites.dart';
