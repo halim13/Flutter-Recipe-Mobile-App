@@ -1,56 +1,59 @@
 import 'package:flutter/material.dart';
 
-class RecipeFavouriteModel with ChangeNotifier {
+class RecipeFavoriteModel with ChangeNotifier {
   int status;
   bool error;
   String message;
-  List<RecipeFavouriteData> data;
+  List<RecipeFavoriteData> data;
 
-  RecipeFavouriteModel({
+  RecipeFavoriteModel({
     this.status,
     this.error,
     this.message,
     this.data,
   });
 
-  factory RecipeFavouriteModel.fromJson(Map<String, dynamic> json) => RecipeFavouriteModel(
+  factory RecipeFavoriteModel.fromJson(Map<String, dynamic> json) => RecipeFavoriteModel(
     status: json["status"] == null ? null : json["status"],
     error: json["error"] == null ? null : json["error"],
     message: json["message"] == null ? null : json["message"],
-    data: json["data"] == null ? null : List<RecipeFavouriteData>.from(json["data"].map((x) => RecipeFavouriteData.fromJson(x))),
+    data: json["data"] == null ? null : List<RecipeFavoriteData>.from(json["data"].map((x) => RecipeFavoriteData.fromJson(x))),
   );
 
 }
 
-class RecipeFavouriteData with ChangeNotifier {
+class RecipeFavoriteData with ChangeNotifier {
   int id;
   String uuid;
   String title;
   String duration;
   String portion;
   String name;
-  int isfavourite;
+  int isfavorite;
+  String userId;
   String imageUrl;
 
-  RecipeFavouriteData({
+  RecipeFavoriteData({
     this.id,
     this.uuid,
     this.title,
-    this.duration,
-    this.portion,
-    this.name,
-    this.isfavourite,
     this.imageUrl,
+    this.duration,
+    this.isfavorite,
+    this.portion,
+    this.userId,
+    this.name,
   });
 
-  factory RecipeFavouriteData.fromJson(Map<String, dynamic> json) => RecipeFavouriteData(
+  factory RecipeFavoriteData.fromJson(Map<String, dynamic> json) => RecipeFavoriteData(
     id: json["id"] == null ? null : json["id"],
     uuid: json["uuid"] == null ? null : json["uuid"],
     title: json["title"] == null ? null : json["title"],
     duration: json["duration"] == null ? null : json["duration"],
     portion:  json["portion"] == null ? null : json["portion"],
-    isfavourite: json["isfavourite"] == null ? null : json["isfavourite"],
+    isfavorite: json["isfavorite"] == null ? null : json["isfavorite"],
     imageUrl: json["imageUrl"] == null ? null : json["imageUrl"],
+    userId: json["user_id"] == null ? null : json["user_id"],
     name: json["name"] == null ? null : json["name"]
   );
 }

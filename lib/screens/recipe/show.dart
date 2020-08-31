@@ -135,7 +135,7 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0)
                     ),
-                    elevation: 4,
+                    elevation: 4.0,
                     margin: EdgeInsets.all(10.0),
                     child: Column(
                       children: [
@@ -217,7 +217,7 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
                                   children: [
                                     Icon(Icons.fastfood),
                                     SizedBox(width: 6.0),
-                                    Text('${recipeProvider.getShowItem[i].portion}'),
+                                    Text('${recipeProvider.getShowItem[i].portion} Porsi'),
                                   ],
                                 ),
                               ],
@@ -330,7 +330,11 @@ class DataSearch extends SearchDelegate<String> {
               RecipeDetailScreen.routeName,
               arguments: {
                 "uuid": results[i].uuid,
-                "title": results[i].title 
+                "title": results[i].title,
+                "portion": results[i].portion,
+                "duration":  results[i].duration,
+                "userId": results[i].userId,
+                "name": results[i].name
               }
             )
           },
@@ -352,7 +356,7 @@ class DataSearch extends SearchDelegate<String> {
                       child: CachedNetworkImage(
                         width: 50.0,
                         height: 50.0,
-                        imageUrl: '${results[i].imageurl}',
+                        imageUrl: '$imagesRecipesUrl/${results[i].imageurl}',
                         placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
                         errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
                         fadeOutDuration: Duration(seconds: 1),
@@ -451,7 +455,11 @@ class DataSearch extends SearchDelegate<String> {
                 RecipeDetailScreen.routeName,
                 arguments: {
                   "uuid": recipeProvider.searchSuggestionsItem[i].uuid,
-                  "title": recipeProvider.searchSuggestionsItem[i].title
+                  "title": recipeProvider.searchSuggestionsItem[i].title,
+                  "portion": recipeProvider.searchSuggestionsItem[i].portion,
+                  "duration":  recipeProvider.searchSuggestionsItem[i].duration,
+                  "userId": recipeProvider.searchSuggestionsItem[i].userId,
+                  "name": recipeProvider.searchSuggestionsItem[i].name
                 }
               );
               recipeProvider.popularViews(recipeProvider.searchSuggestionsItem[i].uuid);
@@ -459,7 +467,7 @@ class DataSearch extends SearchDelegate<String> {
             leading: CachedNetworkImage(
               width: 50.0,
               height: 50.0,
-              imageUrl: '${recipeProvider.searchSuggestionsItem[i].imageurl}',
+              imageUrl: '$imagesRecipesUrl/${recipeProvider.searchSuggestionsItem[i].imageurl}',
               placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
               errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
               fadeOutDuration: Duration(seconds: 1),
@@ -481,22 +489,26 @@ class DataSearch extends SearchDelegate<String> {
     List<RecipeShowData> suggestionsList = recipeProvider.getShowItem.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
     return ListView.builder(
       itemCount: suggestionsList.length,
-      itemBuilder: (context, index) => Card(
+      itemBuilder: (context, i) => Card(
         child: ListTile(
           onTap: () {
             Navigator.of(context).pushNamed(
               RecipeDetailScreen.routeName,
               arguments: {
-                'uuid': suggestionsList[index].uuid,
-                'title': suggestionsList[index].title
+                "uuid": suggestionsList[i].uuid,
+                "title": suggestionsList[i].title,
+                "portion": suggestionsList[i].portion,
+                "duration":  suggestionsList[i].duration,
+                "userId": suggestionsList[i].userId,
+                "name": suggestionsList[i].name
               }
             );
-            recipeProvider.popularViews(suggestionsList[index].uuid);
+            recipeProvider.popularViews(suggestionsList[i].uuid);
           },
           leading: CachedNetworkImage(
             width: 50.0,
             height: 50.0,
-            imageUrl: '${suggestionsList[index].imageurl}',
+            imageUrl: '$imagesRecipesUrl/${suggestionsList[i].imageurl}',
             placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
             errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
             fadeOutDuration: Duration(seconds: 1),
@@ -504,7 +516,7 @@ class DataSearch extends SearchDelegate<String> {
           ),
           title: RichText(
             text: TextSpan(
-              children: highlightOccurrences(suggestionsList[index].title, query),
+              children: highlightOccurrences(suggestionsList[i].title, query),
               style: TextStyle(
                 color: Colors.grey,
                 fontWeight: FontWeight.bold

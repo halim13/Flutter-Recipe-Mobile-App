@@ -22,17 +22,29 @@ class SearchSuggestionModel {
 class SearchSuggestionsData {
   String uuid;
   String title;
+  String duration;
   String imageurl;
+  String portion;
+  String userId;
+  String name;
 
   SearchSuggestionsData({
     this.uuid,
     this.title,
+    this.duration,
     this.imageurl,
+    this.portion,
+    this.userId,
+    this.name
   });
 
   factory SearchSuggestionsData.fromJson(Map<String, dynamic> json) => SearchSuggestionsData(
-    uuid: json["uuid"],
-    title: json["title"],
-    imageurl: json["imageurl"],
+    uuid: json["uuid"] == null ? null : json["uuid"],
+    title: json["title"] == null ? null : json["title"],
+    duration: json["duration"] == null ? null : json["duration"],
+    imageurl: json["imageurl"] == null ? null : json["imageurl"],
+    portion: json["portion"] == null ? null : json["portion"],
+    userId: json["user_id"] == null ? null : json["user_id"],
+    name: json["name"] == null ? null : json["name"]
   );
 }

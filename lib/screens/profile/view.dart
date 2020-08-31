@@ -17,7 +17,6 @@ class ViewProfileScreen extends StatefulWidget {
 }
 
 class ViewProfileScreenState extends State<ViewProfileScreen> {
- 
   @override
   Widget build(BuildContext context) {
     return Scaffold(

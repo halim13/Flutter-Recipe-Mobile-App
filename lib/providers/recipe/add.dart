@@ -17,6 +17,7 @@ class RecipeAdd with ChangeNotifier {
 
   RecipeAdd() {
     initState();
+    notifyListeners();
   }
   GlobalKey<FormState> formTitleKey = GlobalKey();
   ScrollController ingredientsScrollController = ScrollController();
@@ -24,8 +25,10 @@ class RecipeAdd with ChangeNotifier {
   bool isLoading = false;
   File fileImageRecipe;
   String filenameImageRecipe;
-  String categoryName = "";
+  String categoryName;
+  String portionName;
   List categoriesDisplay = [""];
+  List<String> portionsDisplay = ["1", "2", "3", "4", "5", "6", "7", "8"];
   String duration;
   TextEditingController titleController = TextEditingController();
   TextEditingController portionController = TextEditingController();
@@ -317,7 +320,7 @@ class RecipeAdd with ChangeNotifier {
       request.fields["title"] = title;
       request.fields["ingredientsGroup"] = ingredientsGroupParam;
       request.fields["ingredients"] = ingredients;
-      request.fields["portion"] = portion; 
+      request.fields["portion"] = portionName; 
       request.fields["steps"] = stepsParam;
       request.fields["categoryName"] = categoryName;
       request.fields["userId"] = userId; 

@@ -68,11 +68,11 @@ class _AddRecipeState extends State<AddRecipeScreen> {
         node.requestFocus();
         throw new Exception('Judul Makanan tidak boleh kosong');
       } 
-      if(recipeProvider.portionController.text == "") {
-        FocusNode node = recipeProvider.portionFocusNode;
-        node.requestFocus();
-        throw new Exception('Untuk berapa porsi ?');
-      } 
+      // if(recipeProvider.portionController.text == "") {
+      //   FocusNode node = recipeProvider.portionFocusNode;
+      //   node.requestFocus();
+      //   throw new Exception('Untuk berapa porsi ?');
+      // } 
       for (int i = 0; i < recipeProvider.ingredientsGroup.length; i++) {
         TextEditingController ingredientsGroupController = recipeProvider.ingredientsGroup[i].textEditingController;
         if(ingredientsGroupController.text == "") {
@@ -256,14 +256,14 @@ class _AddRecipeState extends State<AddRecipeScreen> {
                 child: Column(
                   children: [
                     Consumer<RecipeAdd>(
-                      builder: (context, value, child) => DropdownSearch(
+                      builder: (BuildContext context, RecipeAdd recipeProvider, Widget child) => DropdownSearch(
                         mode: Mode.BOTTOM_SHEET,
-                        items: value.categoriesDisplay,
+                        items: recipeProvider.categoriesDisplay,
                         label: "Pilih Kategori",
                         onChanged: (v) {
-                          value.categoryName = v;
+                          recipeProvider.categoryName = v;
                         },
-                        selectedItem: value.categoryName
+                        selectedItem: recipeProvider.categoryName
                       ),
                     )
                   ]
@@ -279,32 +279,51 @@ class _AddRecipeState extends State<AddRecipeScreen> {
                     ),
                   ),
                 ),
-                Consumer<RecipeAdd>(
-                  builder: (context, recipeProvider, child) {
-                    return Form(
-                      child: Container(
-                        width: double.infinity,
-                        margin: EdgeInsets.only(left: 18.0, right: 18.0),
-                        child: TextFormField(
-                          focusNode: recipeProvider.portionFocusNode,
-                          controller: recipeProvider.portionController,
-                          keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                            ) 
-                          ),
-                          onSaved: (val) {
-                            recipeProvider.portionController.text = val;
+                Container(
+                  margin: EdgeInsets.only(left: 18.0, top: 15.0, right: 18.0),
+                  child: Column(
+                    children: [
+                      Consumer<RecipeAdd>(
+                        builder: (BuildContext context, RecipeAdd recipeProvider, Widget child) => DropdownSearch(
+                          mode: Mode.BOTTOM_SHEET,
+                          showSelectedItem: true,
+                          items: recipeProvider.portionsDisplay,
+                          label: "Pilih Porsi",
+                          onChanged: (v) {
+                            recipeProvider.portionName = v;
                           },
+                          selectedItem: recipeProvider.portionName
                         ),
-                      ),
-                    );
-                  }
-              ),
+                      )
+                    ]
+                  )
+                ),
+              //   Consumer<RecipeAdd>(
+              //     builder: (BuildContext context, RecipeAdd recipeProvider, Widget child) {
+              //       return Form(
+              //         child: Container(
+              //           width: double.infinity,
+              //           margin: EdgeInsets.only(left: 18.0, right: 18.0),
+              //           child: TextFormField(
+              //             focusNode: recipeProvider.portionFocusNode,
+              //             controller: recipeProvider.portionController,
+              //             keyboardType: TextInputType.text,
+              //             decoration: InputDecoration(
+              //               enabledBorder: UnderlineInputBorder(
+              //                 borderSide: BorderSide(color: Colors.grey),
+              //               ),
+              //               focusedBorder: UnderlineInputBorder(
+              //                 borderSide: BorderSide(color: Colors.grey),
+              //               ) 
+              //             ),
+              //             onSaved: (val) {
+              //               recipeProvider.portionController.text = val;
+              //             },
+              //           ),
+              //         ),
+              //       );
+              //     }
+              // ),
               Container(
                 margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0, bottom: 10.0),
                 child: Text(

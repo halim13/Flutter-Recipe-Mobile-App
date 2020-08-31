@@ -7,13 +7,13 @@ import 'package:http/http.dart' as http;
 
 import '../../constants/connection.dart';
 import '../../models/RecipeDetail.dart' as recipeDetailModel;
-import '../../models/RecipeFavourite.dart' as recipeFavoriteModel;
+import '../../models/RecipeFavorite.dart' as recipeFavoriteModel;
 
 class RecipeDetail with ChangeNotifier {
   recipeDetailModel.RecipeDetailDatas data;
   int favorite;
 
-  List<recipeFavoriteModel.RecipeFavouriteData> displayRecipeFavourite = [];
+  List<recipeFavoriteModel.RecipeFavoriteData> displayRecipeFavourite = [];
 
   bool isRecipeFavorite(String recipeId, int f) => favorite == 1 ? true : false;
 
@@ -54,18 +54,19 @@ class RecipeDetail with ChangeNotifier {
     String url = 'http://$baseurl:$port/api/v1/recipes/favorite'; 
     try {
       http.Response response = await http.get(url).timeout(Duration(seconds: 60));
-      recipeFavoriteModel.RecipeFavouriteModel model = recipeFavoriteModel.RecipeFavouriteModel.fromJson(json.decode(response.body));
-      List<recipeFavoriteModel.RecipeFavouriteData> initialDisplayRecipeFavorite = [];
+      recipeFavoriteModel.RecipeFavoriteModel model = recipeFavoriteModel.RecipeFavoriteModel.fromJson(json.decode(response.body));
+      List<recipeFavoriteModel.RecipeFavoriteData> initialDisplayRecipeFavorite = [];
       model.data.forEach((item) {
         initialDisplayRecipeFavorite.add(
-         recipeFavoriteModel.RecipeFavouriteData(
+         recipeFavoriteModel.RecipeFavoriteData(
             id: item.id,
             uuid: item.uuid,
             title: item.title,
             imageUrl: item.imageUrl,
             portion: item.portion,
             duration: item.duration,
-            isfavourite: item.isfavourite,
+            isfavorite: item.isfavorite,
+            userId: item.userId,
             name: item.name
           )
         );

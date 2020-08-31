@@ -203,7 +203,7 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
                                   children: [
                                     Icon(Icons.fastfood),
                                     SizedBox(width: 6.0),
-                                    Text('${recipeProvider.getShowItem[i].portion}'),
+                                    Text('${recipeProvider.getShowItem[i].portion} Porsi'),
                                   ],
                                 ),
                               ],

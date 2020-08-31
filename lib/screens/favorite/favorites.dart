@@ -83,15 +83,16 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
               onRefresh: () => recipeProvider.refreshRecipeFavourite(),
               child: ListView.builder(
               itemCount: recipeProvider.displayRecipeFavourite.length,
-                itemBuilder: (context, index) {
+                itemBuilder: (context, i) {
                   return RecipeItem(
-                    id: recipeProvider.displayRecipeFavourite[index].id,
-                    uuid: recipeProvider.displayRecipeFavourite[index].uuid,
-                    title: recipeProvider.displayRecipeFavourite[index].title,
-                    duration: recipeProvider.displayRecipeFavourite[index].duration,
-                    imageUrl: recipeProvider.displayRecipeFavourite[index].imageUrl,
-                    portion: recipeProvider.displayRecipeFavourite[index].portion,
-                    name: recipeProvider.displayRecipeFavourite[index].name
+                    id: recipeProvider.displayRecipeFavourite[i].id,
+                    uuid: recipeProvider.displayRecipeFavourite[i].uuid,
+                    title: recipeProvider.displayRecipeFavourite[i].title,
+                    duration: recipeProvider.displayRecipeFavourite[i].duration,
+                    imageUrl: recipeProvider.displayRecipeFavourite[i].imageUrl,
+                    userId: recipeProvider.displayRecipeFavourite[i].userId,
+                    portion: recipeProvider.displayRecipeFavourite[i].portion,
+                    name: recipeProvider.displayRecipeFavourite[i].name
                   );
                 }
               ),

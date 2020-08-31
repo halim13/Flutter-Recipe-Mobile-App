@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import '../screens/profile/view.dart';
 import '../screens/favorite/detail.favorite.dart';
 import '../constants/url.dart';
 
@@ -11,6 +12,7 @@ class RecipeItem extends StatelessWidget {
   final String imageUrl;
   final String portion;
   final String duration;
+  final String userId;
   final String name;
 
   RecipeItem({
@@ -20,37 +22,60 @@ class RecipeItem extends StatelessWidget {
     this.imageUrl,
     this.portion,
     this.duration,
+    this.userId,
     this.name
   });
 
-  void selectRecipe(context) {
+ void selectRecipe(
+    BuildContext context, 
+    String uuid, 
+    String title, 
+    String portion,
+    String duration,
+    String userId,
+    String name
+  ) {
     Navigator.of(context).pushNamed(
       RecipeDetailFavoriteScreen.routeName,
       arguments: {
-        "uuid": uuid, 
-        "title": title
+        'uuid': uuid,
+        'title': title,
+        'portion': portion,
+        'duration':  duration,
+        'userId': userId,
+        'name': name
       },
     );
-  }  
+  }
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => selectRecipe(context),
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        elevation: 4.0,
-        margin: EdgeInsets.all(10.0),
-        child: Column(
-          children: [
-            Stack(
-              children: [
-                ClipRRect(
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      elevation: 4.0,
+      margin: EdgeInsets.all(10.0),
+      child: Column(
+        children: [
+          Stack(
+            children: [
+              InkWell(
+                onTap: () {
+                  selectRecipe(
+                    context, 
+                    uuid,
+                    title, 
+                    portion,
+                    duration, 
+                    userId,
+                    name
+                  );
+                },
+                child: ClipRRect(
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(15),
-                    topRight: Radius.circular(15),
+                    topLeft: Radius.circular(15.0),
+                    topRight: Radius.circular(15.0),
                   ),
                   child: CachedNetworkImage(
                     imageUrl: '$imagesRecipesUrl/$imageUrl',
@@ -70,60 +95,68 @@ class RecipeItem extends StatelessWidget {
                     fadeInDuration: Duration(seconds: 1),
                   ),
                 ),
-                Positioned(
-                  bottom: 20,
-                  right: 10,
-                  child: Container(
-                    width: 300,
-                    color: Colors.black54,
-                    padding: EdgeInsets.symmetric(
-                      vertical: 5,
-                      horizontal: 20,
-                    ),
-                    child: Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 26,
-                        color: Colors.white,
-                      ),
-                      softWrap: true,
-                      overflow: TextOverflow.fade,
-                    ),
+              ),
+              Positioned(
+                bottom: 20.0,
+                right: 10.0,
+                child: Container(
+                  width: 300.0,
+                  color: Colors.black54,
+                  padding: EdgeInsets.symmetric(
+                    vertical: 5.0,
+                    horizontal: 20.0,
                   ),
-                )
-              ],
-            ),
-            Container(
-              padding: EdgeInsets.all(20.0),
-              child: Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.schedule),
-                        SizedBox(width: 6),
-                        Text('${duration.toString()} min'),
-                      ],
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 26.0,
+                      color: Colors.white,
                     ),
-                    Row(
-                      children: [
-                        Icon(Icons.fastfood),
-                        SizedBox(width: 6),
-                        Text(portion),
-                      ],
-                    ),
-                  ],
+                    softWrap: true,
+                    overflow: TextOverflow.fade,
+                  ),
                 ),
+              )
+            ],
+          ),
+          Container(
+            padding: EdgeInsets.all(20.0),
+            child: Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.schedule),
+                      SizedBox(width: 6.0),
+                      Text('${duration.toString()} min'),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Icon(Icons.fastfood),
+                      SizedBox(width: 6.0),
+                      Text('$portion Porsi'),
+                    ],
+                  ),
+                ],
               ),
             ),
-            Container(
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ViewProfileScreen(userId, name)),
+              );
+            },
+            child: Container(
               padding: EdgeInsets.only(top: 0.0, left: 0.0, right: 20.0, bottom: 15.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Icon(Icons.people),
-                  SizedBox(width: 6),
+                  SizedBox(width: 6.0),
                   RichText(
                     text: TextSpan(
                       text: 'Dibuat oleh : ',
@@ -145,8 +178,8 @@ class RecipeItem extends StatelessWidget {
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

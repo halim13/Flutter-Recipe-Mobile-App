@@ -21,6 +21,7 @@ class RecipeEdit extends ChangeNotifier {
   Data data;
   File fileImageRecipe;
   String categoryName;
+  String portionName;
   String getFileImageRecipe;
   String filenameImageRecipe;
   bool isLoading = false;
@@ -32,7 +33,8 @@ class RecipeEdit extends ChangeNotifier {
 
   TextEditingController titleController = TextEditingController();
   TextEditingController portionController = TextEditingController();
-  List<String> categoriesDisplay = [];
+  List<String> categoriesDisplay = [""];
+  List<String> portionsDisplay = ["1", "2", "3", "4", "5", "6", "7", "8"];
    
   List<Map<String, Object>> ingredientsGroupSendToHttp = [];
   List<Map<String, Object>> removeIngredientsGroupSendToHttp = [];
@@ -235,10 +237,12 @@ class RecipeEdit extends ChangeNotifier {
         );
       });
       categoryName = data.recipes.first.categoryName;
+      portionName = data.recipes.first.portion;
       categoriesDisplay = initialCategoriesDisplay;
       duration = data.recipes.first.duration;
       titleController.text = data.recipes.first.title;
       portionController.text = data.recipes.first.portion;
+      
       List<Steps> initialSteps = [];
       List<IngredientsGroup> initialIngredientsGroup = [];
       for(int i = 0; i < getIngredientsGroup.length; i++) {
@@ -322,7 +326,7 @@ class RecipeEdit extends ChangeNotifier {
       request.fields["duration"] = duration;
       request.fields["steps"] = stepsInParameter;
       request.fields["removeSteps"] = removeSteps;
-      request.fields["portion"] = portion;
+      request.fields["portion"] = portionName;
       request.fields["categoryName"] = categoryName;
       request.fields["userId"] = userId; 
       http.StreamedResponse response = await request.send().timeout(Duration(seconds: 60));

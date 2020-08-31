@@ -125,7 +125,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   margin: EdgeInsets.all(10.0),
                   padding: EdgeInsets.all(10.0),
                   child: Text(
-                    'Judul Makanan',
+                    '${routeArgs['title']}',
                     style: TextStyle(
                       fontSize: 19.0,
                     ),
@@ -148,7 +148,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                         children: [
                           Icon(Icons.fastfood),
                           SizedBox(width: 6.0),
-                          Text('${routeArgs['portion']}'),
+                          Text('${routeArgs['portion']} Porsi'),
                         ],
                       )
                     ],
