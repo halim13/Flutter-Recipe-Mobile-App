@@ -94,9 +94,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
             );
           }
           if(snapshot.hasError) {
-            return Center(
-              child: Text('Oops! Something went wrong! Please Try Again.'),
-            );
+           
           }
           return SingleChildScrollView(
             child: Column(
@@ -122,7 +120,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   ) 
                 ),
                 Container(
-                  margin: EdgeInsets.all(10.0),
+                  margin: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0, bottom: 5.0),
                   padding: EdgeInsets.all(10.0),
                   child: Text(
                     '${routeArgs['title']}',
@@ -132,8 +130,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   )
                 ), 
                 Container(
-                  margin: EdgeInsets.all(10.0),
-                  padding: EdgeInsets.all(10.0),
+                  margin: EdgeInsets.only(left: 10.0, right: 10.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -155,8 +152,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   )
                 ),
                 Container(
-                  margin: EdgeInsets.all(10.0),
-                  padding: EdgeInsets.all(10.0),
+                  margin: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 30.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [

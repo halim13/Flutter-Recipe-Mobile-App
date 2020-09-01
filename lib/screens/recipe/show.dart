@@ -85,9 +85,7 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
             );
           }
           if(snapshot.hasError) {
-            return Consumer<RecipeShow>(
-              builder: (context, recipeShowProvider, child) =>
-              Center(
+            return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -115,8 +113,7 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
                     ),
                   ],
                 ),
-              ),
-            );
+              );
           }
           return Consumer<RecipeShow>(
             child: Center(
@@ -202,26 +199,24 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
                         ),
                         Container(
                           padding: EdgeInsets.all(20.0),
-                          child: Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(Icons.schedule),
-                                    SizedBox(width: 6.0),
-                                    Text('${recipeProvider.getShowItem[i].duration.toString()} min'),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Icon(Icons.fastfood),
-                                    SizedBox(width: 6.0),
-                                    Text('${recipeProvider.getShowItem[i].portion} Porsi'),
-                                  ],
-                                ),
-                              ],
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(Icons.schedule),
+                                  SizedBox(width: 6.0),
+                                  Text('${recipeProvider.getShowItem[i].duration} min'),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Icon(Icons.fastfood),
+                                  SizedBox(width: 6.0),
+                                  Text('${recipeProvider.getShowItem[i].portion} Porsi'),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                         GestureDetector(
@@ -237,7 +232,7 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Icon(Icons.people),
-                                SizedBox(width: 6),
+                                SizedBox(width: 6.0),
                                 RichText(
                                   text: TextSpan(
                                     text: 'Dibuat oleh : ',

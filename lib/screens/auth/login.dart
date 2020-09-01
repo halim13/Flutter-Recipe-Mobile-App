@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../providers/auth/auth.dart';
 import './register.dart';
@@ -31,16 +31,16 @@ class LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  Future login() async {
+  void login(context) async {
     // if (!formKey.currentState.validate()) {
     //   return;
     // }
     try {
       if (emailController.text.isEmpty || !emailController.text.contains('@')) {
-        throw ErrorDescription("Format Email salah. Contoh: johndoe@gmail.com");
+        throw new Exception("Format Email Salah. \n Contoh johndoe@gmail.com");
       }
       if (passwordController.text.isEmpty || passwordController.text.length < 6) {
-        throw ErrorDescription("Kata Sandi Minimal 6 Karakter");
+        throw new Exception("Kata Sandi Minimal 6 Karakter");
       }
       formKey.currentState.save();
       setState(() {
@@ -53,26 +53,52 @@ class LoginScreenState extends State<LoginScreen> {
       setState(() {
         loading = false;
       });
-    } on HttpException catch(error) {
+    } on HttpException catch(_) {
       setState(() {
         loading = false;
       });
-      Fluttertoast.showToast(
-        msg: error.toString(),
-        toastLength: Toast.LENGTH_SHORT,
-        backgroundColor: Colors.red.shade700,
-        textColor: Colors.white
+      // Fluttertoast.showToast(
+      //   msg: error.toString(),
+      //   toastLength: Toast.LENGTH_SHORT,
+      //   backgroundColor: Colors.red.shade700,
+      //   textColor: Colors.white
+      // );
+      SnackBar snackbar = SnackBar(
+        backgroundColor: Colors.red[300],
+        content: Text('Pengguna belum terdaftar'),
+        action: SnackBarAction(
+          textColor: Colors.white,
+          label: 'Tutup',
+          onPressed: () {
+            Scaffold.of(context).hideCurrentSnackBar();
+          }
+        ),
       );
-    } on ErrorDescription catch(error) {
+      Scaffold.of(context).showSnackBar(snackbar);
+    } on Exception catch(error) {
       setState(() {
         loading = false;
       });
-      Fluttertoast.showToast(
-        msg: error.toString(),
-        toastLength: Toast.LENGTH_SHORT,
-        backgroundColor: Colors.red.shade700,
-        textColor: Colors.white
+      String errorSplit = error.toString();
+      List<String> errorText = errorSplit.split(":");
+      SnackBar snackbar = SnackBar(
+        backgroundColor: Colors.red[300],
+        content: Text(errorText[1]),
+        action: SnackBarAction(
+          textColor: Colors.white,
+          label: 'Tutup',
+          onPressed: () {
+            Scaffold.of(context).hideCurrentSnackBar();
+          }
+        ),
       );
+      Scaffold.of(context).showSnackBar(snackbar);
+      // Fluttertoast.showToast(
+      //   msg: errorText[1],
+      //   toastLength: Toast.LENGTH_SHORT,
+      //   backgroundColor: Colors.red.shade700,
+      //   textColor: Colors.white
+      // );
     }
   }
 
@@ -254,19 +280,26 @@ class LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget buildLoginBtn() {
+  Widget buildLoginBtn(context) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
+      height: 100.0,
       child: RaisedButton(
         elevation: 5.0,
-        onPressed: login,
+        onPressed: () => login(context),
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
         color: Colors.white,
-        child: loading ? CircularProgressIndicator() : Text(
+        child: loading ? Center(
+          child: SizedBox(
+            width: 18.0,
+            height: 18.0,
+            child: CircularProgressIndicator()
+          )
+        ) : Text(
           'LOGIN',
           style: TextStyle(
             color: Color(0xFF527DAA),
@@ -279,27 +312,27 @@ class LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget buildSignInWithText() {
-    return Column(
-      children: <Widget>[
-        Text(
-          '- OR -',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-        SizedBox(height: 20.0),
-        Text(
-          'Sign in with',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold
-          ),
-        ),
-      ],
-    );
-  }
+  // Widget buildSignInWithText() {
+  //   return Column(
+  //     children: <Widget>[
+  //       Text(
+  //         '- OR -',
+  //         style: TextStyle(
+  //           color: Colors.white,
+  //           fontWeight: FontWeight.w400,
+  //         ),
+  //       ),
+  //       SizedBox(height: 20.0),
+  //       Text(
+  //         'Sign in with',
+  //         style: TextStyle(
+  //           color: Colors.white,
+  //           fontWeight: FontWeight.bold
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget buildSocialBtn(Function onTap) {
     return GestureDetector(
@@ -337,7 +370,7 @@ class LoginScreenState extends State<LoginScreen> {
         text: TextSpan(
           children: [
             TextSpan(
-              text: 'Don\'t have an Account? ',
+              text: 'Don\'t have an Account ? ',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 18.0,
@@ -361,68 +394,70 @@ class LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light,
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Stack(
-            children: <Widget>[
-              Container(
-                height: double.infinity,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Color(0xFF73AEF5),
-                      Color(0xFF61A4F1),
-                      Color(0xFF478DE0),
-                      Color(0xFF398AE5),
-                    ],
-                    stops: [0.1, 0.4, 0.7, 0.9],
-                  ),
-                ),
-              ),
-              Form(
-                key: formKey,
-                child: Container(
+      body: Builder(
+          builder: (context) => AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.light,
+          child: GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: Stack(
+              children: <Widget>[
+                Container(
                   height: double.infinity,
-                  child: SingleChildScrollView(
-                    physics: AlwaysScrollableScrollPhysics(),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 40.0,
-                      vertical: 120.0,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          'Sign In',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 30.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 30.0),
-                        buildEmailTF(),
-                        SizedBox(
-                          height: 30.0,
-                        ),
-                        buildPasswordTF(),
-                        buildForgotPasswordBtn(),
-                        buildRememberMeCheckbox(),
-                        buildLoginBtn(),
-                        buildSignInWithText(),
-                        buildSocialBtnRow(),
-                        buildSignupBtn(),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Color(0xFF73AEF5),
+                        Color(0xFF61A4F1),
+                        Color(0xFF478DE0),
+                        Color(0xFF398AE5),
                       ],
+                      stops: [0.1, 0.4, 0.7, 0.9],
                     ),
                   ),
                 ),
-              )
-            ],
+                Form(
+                  key: formKey,
+                  child: Container(
+                    height: double.infinity,
+                    child: SingleChildScrollView(
+                      physics: AlwaysScrollableScrollPhysics(),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 40.0,
+                        vertical: 120.0,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            'Sign In',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 30.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 30.0),
+                          buildEmailTF(),
+                          SizedBox(
+                            height: 30.0,
+                          ),
+                          buildPasswordTF(),
+                          // buildForgotPasswordBtn(),
+                          // buildRememberMeCheckbox(),
+                          buildLoginBtn(context),
+                          // buildSignInWithText(),
+                          // buildSocialBtnRow(),
+                          buildSignupBtn(),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

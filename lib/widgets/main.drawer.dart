@@ -31,11 +31,19 @@ class MainDrawer extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            height: 120,
+            height: 120.0,
             width: double.infinity,
             padding: EdgeInsets.all(20),
-            alignment: Alignment.centerLeft,
-            color: Colors.grey,
+            alignment: Alignment.bottomRight,
+            color: Colors.blue.shade700,
+            child: Text(
+              'V 1.0.0+1',
+              style: TextStyle(
+                fontSize: 16.0,
+                color: Colors.white,
+                fontWeight: FontWeight.bold
+              ),
+            ),
             // color: Theme.of(context).accentColor,
             // child: Text(
             //   'Cooking Up!',

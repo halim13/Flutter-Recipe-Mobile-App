@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth/auth.dart';
@@ -33,19 +33,19 @@ class RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  void register() async {
+  void register(context) async {
     // if (!formKey.currentState.validate()) {
     //   return;
     // }
     try {
       if(nameController.text.isEmpty || nameController.text.length < 1) {
-        throw ErrorDescription('Nama tidak boleh kosong');
+        throw new Exception('Nama tidak boleh kosong');
       }
       if(emailController.text.isEmpty || !emailController.text.contains('@')) {
-        throw ErrorDescription('Format Email salah. Contoh: johndoe@gmail.com');
+        throw new Exception('Format Email Salah. \n Contoh johndoe@gmail.com');
       }
       if(passwordController.text.isEmpty || passwordController.text.length < 6) {
-        throw ErrorDescription('Kata Sandi Minimal 6 Karakter');
+        throw new Exception('Kata Sandi Minimal 6 Karakter');
       }
       formKey.currentState.save();
       setState(() {
@@ -58,26 +58,52 @@ class RegisterScreenState extends State<RegisterScreen> {
       setState(() {
         loading = false;
       });
-    } on HttpException catch(error) { 
+    } on HttpException catch(_) { 
       setState(() {
         loading = false;
       });
-      Fluttertoast.showToast(
-        msg: error.toString(),
-        toastLength: Toast.LENGTH_SHORT,
-        backgroundColor: Colors.red.shade700,
-        textColor: Colors.white
+      SnackBar snackbar = SnackBar(
+        backgroundColor: Colors.red[300],
+        content: Text('Pengguna sudah tersedia'),
+        action: SnackBarAction(
+          textColor: Colors.white,
+          label: 'Tutup',
+          onPressed: () {
+            Scaffold.of(context).hideCurrentSnackBar();
+          }
+        ),
       );
-    } on ErrorDescription catch(error) {
+      Scaffold.of(context).showSnackBar(snackbar);
+      // Fluttertoast.showToast(
+      //   msg: error.toString(),
+      //   toastLength: Toast.LENGTH_SHORT,
+      //   backgroundColor: Colors.red.shade700,
+      //   textColor: Colors.white
+      // );
+    } on Exception catch(error) {
       setState(() {
         loading = false;
       });
-      Fluttertoast.showToast(
-        msg: error.toString(),
-        toastLength: Toast.LENGTH_SHORT,
-        backgroundColor: Colors.red.shade700,
-        textColor: Colors.white
+      String errorSplit = error.toString();
+      List<String> errorText = errorSplit.split(":");
+      SnackBar snackbar = SnackBar(
+        backgroundColor: Colors.red[300],
+        content: Text(errorText[1]),
+        action: SnackBarAction(
+          textColor: Colors.white,
+          label: 'Tutup',
+          onPressed: () {
+            Scaffold.of(context).hideCurrentSnackBar();
+          }
+        ),
       );
+      Scaffold.of(context).showSnackBar(snackbar);
+    //   Fluttertoast.showToast(
+    //     msg: error.toString(),
+    //     toastLength: Toast.LENGTH_SHORT,
+    //     backgroundColor: Colors.red.shade700,
+    //     textColor: Colors.white
+    //   );
     }
   }
 
@@ -264,19 +290,26 @@ class RegisterScreenState extends State<RegisterScreen> {
   }
 
  
-  Widget buildRegisterBtn() {
+  Widget buildRegisterBtn(context) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
+      height: 100.0,
       child: RaisedButton(
         elevation: 5.0,
-        onPressed: register,
+        onPressed: () => register(context),
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
         color: Colors.white,
-        child: loading ? CircularProgressIndicator() : Text(
+        child: loading ? Center(
+          child: SizedBox(
+            width: 18.0,
+            height: 18.0,
+            child: CircularProgressIndicator()
+          )
+        ) : Text(
           'SIGN UP',
           style: TextStyle(
             color: Color(0xFF527DAA),
@@ -343,7 +376,6 @@ class RegisterScreenState extends State<RegisterScreen> {
           ),
           _buildSocialBtn(
             () => print('Login with Google'),
-           
           ),
         ],
       ),
@@ -359,7 +391,7 @@ class RegisterScreenState extends State<RegisterScreen> {
         text: TextSpan(
           children: [
             TextSpan(
-              text: 'Already have an Account? ',
+              text: 'Already have an Account ? ',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 18.0,
@@ -383,67 +415,69 @@ class RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light,
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Stack(
-            children: <Widget>[
-              Container(
-                height: double.infinity,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Color(0xFF73AEF5),
-                      Color(0xFF61A4F1),
-                      Color(0xFF478DE0),
-                      Color(0xFF398AE5),
-                    ],
-                    stops: [0.1, 0.4, 0.7, 0.9],
-                  ),
-                ),
-              ),
-              Form(
-                key: formKey,
-                child: Container(
+      body: Builder(
+          builder: (context) => AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.light,
+          child: GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: Stack(
+              children: <Widget>[
+                Container(
                   height: double.infinity,
-                  child: SingleChildScrollView(
-                    physics: AlwaysScrollableScrollPhysics(),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 40.0,
-                      vertical: 120.0,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          'Sign Up',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 30.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 30.0),
-                        buildNameTF(),
-                        SizedBox(height: 30.0),
-                        buildEmailTF(),
-                        SizedBox(height: 30.0),
-                        buildPasswordTF(),
-                        SizedBox(height: 30.0),
-                        buildRegisterBtn(),
-                        buildSignInWithText(),
-                        buildSocialBtnRow(),
-                        buildSignInBtn(),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Color(0xFF73AEF5),
+                        Color(0xFF61A4F1),
+                        Color(0xFF478DE0),
+                        Color(0xFF398AE5),
                       ],
+                      stops: [0.1, 0.4, 0.7, 0.9],
                     ),
                   ),
                 ),
-              )
-            ],
+                Form(
+                  key: formKey,
+                  child: Container(
+                    height: double.infinity,
+                    child: SingleChildScrollView(
+                      physics: AlwaysScrollableScrollPhysics(),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 40.0,
+                        vertical: 120.0,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Sign Up',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 30.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 30.0),
+                          buildNameTF(),
+                          SizedBox(height: 30.0),
+                          buildEmailTF(),
+                          SizedBox(height: 30.0),
+                          buildPasswordTF(),
+             
+                          buildRegisterBtn(context),
+                          // buildSignInWithText(),
+                          // buildSocialBtnRow(),
+                          buildSignInBtn(),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

@@ -188,26 +188,24 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
                         ),
                         Container(
                           padding: EdgeInsets.all(20.0),
-                          child: Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(Icons.schedule),
-                                    SizedBox(width: 6.0),
-                                    Text('${recipeProvider.getShowItem[i].duration.toString()} min'),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Icon(Icons.fastfood),
-                                    SizedBox(width: 6.0),
-                                    Text('${recipeProvider.getShowItem[i].portion} Porsi'),
-                                  ],
-                                ),
-                              ],
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(Icons.schedule),
+                                  SizedBox(width: 6.0),
+                                  Text('${recipeProvider.getShowItem[i].duration.toString()} min'),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Icon(Icons.fastfood),
+                                  SizedBox(width: 6.0),
+                                  Text('${recipeProvider.getShowItem[i].portion} Porsi'),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                         GestureDetector(

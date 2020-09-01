@@ -121,26 +121,24 @@ class RecipeItem extends StatelessWidget {
           ),
           Container(
             padding: EdgeInsets.all(20.0),
-            child: Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.schedule),
-                      SizedBox(width: 6.0),
-                      Text('${duration.toString()} min'),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Icon(Icons.fastfood),
-                      SizedBox(width: 6.0),
-                      Text('$portion Porsi'),
-                    ],
-                  ),
-                ],
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.schedule),
+                    SizedBox(width: 6.0),
+                    Text('${duration.toString()} min'),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Icon(Icons.fastfood),
+                    SizedBox(width: 6.0),
+                    Text('$portion Porsi'),
+                  ],
+                ),
+              ],
             ),
           ),
           GestureDetector(

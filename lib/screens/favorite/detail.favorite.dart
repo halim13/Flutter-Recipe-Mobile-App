@@ -86,7 +86,33 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
           }
           if(snapshot.hasError) {
             return Center(
-              child: Text('Oops! Something went wrong! Please Try Again.'),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 150.0,
+                    child: Image.asset('assets/no-network.png')
+                  ),
+                  SizedBox(height: 15.0),
+                  Text('Koneksi jaringan Anda buruk',
+                    style: TextStyle(
+                      fontSize: 16.0
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
+                  GestureDetector(
+                    child: Text('Coba Ulangi',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        decoration: TextDecoration.underline
+                      ),
+                    ),
+                    onTap: () {
+                      setState((){});
+                    },
+                  ),
+                ],
+              ),
             );
           }
           return SingleChildScrollView(
@@ -123,8 +149,7 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
                   )
                 ), 
                 Container(
-                  margin: EdgeInsets.all(10.0),
-                  padding: EdgeInsets.all(10.0),
+                  margin: EdgeInsets.only(left: 10.0, right: 10.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -146,13 +171,12 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
                   )
                 ),
                 Container(
-                  margin: EdgeInsets.all(10.0),
-                  padding: EdgeInsets.all(10.0),
+                  margin: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 30.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Icon(Icons.people),
-                      SizedBox(width: 6),
+                      SizedBox(width: 6.0),
                       RichText(
                         text: TextSpan(
                           text: 'Dibuat oleh : ',

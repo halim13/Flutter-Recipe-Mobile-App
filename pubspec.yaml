@@ -49,6 +49,8 @@ flutter_icons:
   android: true
   ios: true
   image_path: "assets/logo-flutter-recipe.png"
+  adaptive_icon_background: "#191919"
+  adaptive_icon_foreground: "assets/logo-flutter-recipe.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
