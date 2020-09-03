@@ -34,36 +34,33 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           );
         }
         if(snapshot.hasError) {
-          return Consumer<Categories>(
-            builder: (context, categoryProvider, child) =>
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 150.0,
-                    child: Image.asset('assets/no-network.png')
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 150.0,
+                  child: Image.asset('assets/no-network.png')
+                ),
+                SizedBox(height: 15.0),
+                Text('Koneksi jaringan Anda buruk.',
+                  style: TextStyle(
+                    fontSize: 16.0
                   ),
-                  SizedBox(height: 15.0),
-                  Text('Koneksi jaringan Anda buruk.',
+                ),
+                SizedBox(height: 10.0),
+                GestureDetector(
+                  child: Text('Coba Ulangi',
                     style: TextStyle(
-                      fontSize: 16.0
+                      fontSize: 16.0,
+                      decoration: TextDecoration.underline
                     ),
                   ),
-                  SizedBox(height: 10.0),
-                  GestureDetector(
-                    child: Text('Coba Ulangi',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        decoration: TextDecoration.underline
-                      ),
-                    ),
-                    onTap: () {
-                      setState((){});
-                    },
-                  ),
-                ],
-              ),
+                  onTap: () {
+                    setState((){});
+                  },
+                ),
+              ],
             ),
           );
         }

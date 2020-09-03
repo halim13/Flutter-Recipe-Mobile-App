@@ -14,7 +14,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future:  Provider.of<RecipeDetail>(context, listen: false).getRecipeFavourite(),
+      future: Provider.of<RecipeDetail>(context, listen: false).getRecipeFavorite(),
       builder: (context, snapshot) {
         if(snapshot.connectionState == ConnectionState.waiting) {
           return Center(
@@ -54,7 +54,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         }
         return Consumer<RecipeDetail>(
           child: RefreshIndicator(
-            onRefresh: () => Provider.of<RecipeDetail>(context, listen: false).refreshRecipeFavourite(),
+            onRefresh: () => Provider.of<RecipeDetail>(context, listen: false).refreshRecipeFavorite(),
             child: ListView(
               children: [
                 Container(
@@ -76,23 +76,23 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             ),
           ),
           builder: (context, recipeProvider, child) {
-            if(recipeProvider.displayRecipeFavourite.length <= 0) {
+            if(recipeProvider.displayRecipeFavorite.length <= 0) {
               return child;
             }
             return RefreshIndicator(
-              onRefresh: () => recipeProvider.refreshRecipeFavourite(),
+              onRefresh: () => recipeProvider.refreshRecipeFavorite(),
               child: ListView.builder(
-              itemCount: recipeProvider.displayRecipeFavourite.length,
+              itemCount: recipeProvider.displayRecipeFavorite.length,
                 itemBuilder: (context, i) {
                   return RecipeItem(
-                    id: recipeProvider.displayRecipeFavourite[i].id,
-                    uuid: recipeProvider.displayRecipeFavourite[i].uuid,
-                    title: recipeProvider.displayRecipeFavourite[i].title,
-                    duration: recipeProvider.displayRecipeFavourite[i].duration,
-                    imageUrl: recipeProvider.displayRecipeFavourite[i].imageUrl,
-                    userId: recipeProvider.displayRecipeFavourite[i].userId,
-                    portion: recipeProvider.displayRecipeFavourite[i].portion,
-                    name: recipeProvider.displayRecipeFavourite[i].name
+                    id: recipeProvider.displayRecipeFavorite[i].id,
+                    uuid: recipeProvider.displayRecipeFavorite[i].uuid,
+                    title: recipeProvider.displayRecipeFavorite[i].title,
+                    duration: recipeProvider.displayRecipeFavorite[i].duration,
+                    imageUrl: recipeProvider.displayRecipeFavorite[i].imageUrl,
+                    userId: recipeProvider.displayRecipeFavorite[i].userId,
+                    portion: recipeProvider.displayRecipeFavorite[i].portion,
+                    name: recipeProvider.displayRecipeFavorite[i].name
                   );
                 }
               ),

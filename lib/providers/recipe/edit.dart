@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/providers/recipe/show.dart';
 import 'package:uuid/uuid.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
@@ -292,11 +293,38 @@ class RecipeEdit extends ChangeNotifier {
     }
   }
 
-  Future update(BuildContext context,String title, String recipeId, String ingredientsGroup, String removeIngredientsGroup, String ingredients, String removeIngredients, String stepsInParameter, String removeSteps, String portion, String categoryName) async {
+  Future update(
+    BuildContext context,
+    String title, 
+    String recipeId, 
+    String categoryId,
+    String ingredientsGroup, 
+    String removeIngredientsGroup, 
+    String ingredients, 
+    String removeIngredients, 
+    String stepsParam, 
+    String removeSteps, 
+    String portion, 
+    String categoryName
+  ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
     String userId = extractedUserData["userId"];
-    String url = 'http://$baseurl:$port/api/v1/recipes/update/$recipeId'; 
+    Map<String, String> fields = {
+      "title": title,
+      "ingredients": ingredients,
+      "removeIngredients": removeIngredients,
+      "ingredientsGroup": ingredientsGroup,
+      "removeIngredientsGroup": removeIngredientsGroup,
+      "duration": duration,
+      "steps": stepsParam,
+      "removeSteps": removeSteps,
+      "portion": portionName,
+      "categoryName": categoryName,
+      "userId": userId
+    };
+    Map<String, String> headers = {"Content-Type": "application/json"};
+    String url = 'http://$baseurl:$port/api/v1/recipes/update/$recipeId';
     isLoading = true;
     notifyListeners();
     try {
@@ -318,17 +346,8 @@ class RecipeEdit extends ChangeNotifier {
         );
         request.files.add(multipartFile);
       }
-      request.fields["title"] = title;
-      request.fields["ingredients"] = ingredients;
-      request.fields["removeIngredients"] = removeIngredients;
-      request.fields["ingredientsGroup"] = ingredientsGroup;
-      request.fields["removeIngredientsGroup"] = removeIngredientsGroup;
-      request.fields["duration"] = duration;
-      request.fields["steps"] = stepsInParameter;
-      request.fields["removeSteps"] = removeSteps;
-      request.fields["portion"] = portionName;
-      request.fields["categoryName"] = categoryName;
-      request.fields["userId"] = userId; 
+      request.headers.addAll(headers);
+      request.fields.addAll(fields);
       http.StreamedResponse response = await request.send().timeout(Duration(seconds: 60));
       if(response.statusCode == 200) {
         isLoading = false;
@@ -339,7 +358,9 @@ class RecipeEdit extends ChangeNotifier {
         stepsSendToHttp = [];
         removeStepsSendToHttp = [];
         fileImageRecipe = null;
-        Provider.of<RecipeDetail>(context, listen: false).refreshRecipeFavourite();
+        Provider.of<RecipeShow>(context, listen: false).getShow(categoryId);
+        Provider.of<RecipeDetail>(context, listen: false).detail(recipeId);
+        Provider.of<RecipeDetail>(context, listen: false).refreshRecipeFavorite();
         notifyListeners();
       } 
       String responseData = await response.stream.bytesToString();

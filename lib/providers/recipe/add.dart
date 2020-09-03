@@ -290,10 +290,27 @@ class RecipeAdd with ChangeNotifier {
     notifyListeners();
   }
   
-  Future store(String title, String ingredientsGroupParam, String ingredients, String stepsParam, String portion) async {
+  Future store(
+    String title, 
+    String ingredientsGroupParam, 
+    String ingredients, 
+    String stepsParam, 
+    String portion
+  ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    Map<String, Object> extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
+    Map<String, Object> extractedUserData = json.decode(prefs.getString('userData'));
     String userId = extractedUserData["userId"];
+    Map<String, String> fields = {
+      "duration": duration.toString(),
+      "title": title,
+      "ingredientsGroup": ingredientsGroupParam,
+      "ingredients": ingredients,
+      "portion": portionName,
+      "steps": stepsParam,
+      "categoryName": categoryName,
+      "userId": userId
+    };
+    Map<String, String> headers = {"Content-Type": "application/json"};
     String url = 'http://$baseurl:$port/api/v1/recipes/store'; 
     isLoading = true;
     notifyListeners();
@@ -316,14 +333,8 @@ class RecipeAdd with ChangeNotifier {
         );
         request.files.add(multipartFile);
       }
-      request.fields["duration"] = duration.toString();
-      request.fields["title"] = title;
-      request.fields["ingredientsGroup"] = ingredientsGroupParam;
-      request.fields["ingredients"] = ingredients;
-      request.fields["portion"] = portionName; 
-      request.fields["steps"] = stepsParam;
-      request.fields["categoryName"] = categoryName;
-      request.fields["userId"] = userId; 
+      request.headers.addAll(headers);
+      request.fields.addAll(fields);
       http.StreamedResponse response = await request.send().timeout(Duration(seconds: 60));
       if(response.statusCode == 200) {
         ingredientsGroupSendToHttp = [];

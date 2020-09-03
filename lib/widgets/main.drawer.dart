@@ -1,12 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:package_info/package_info.dart';
 
 import '../providers/auth/auth.dart';
 import '../screens/recipe/add.dart';
 import '../screens/recipe/my.recipe.dart';
 import '../screens/auth/login.dart';
 
-class MainDrawer extends StatelessWidget {
+class MainDrawer extends StatefulWidget {
+  
+  @override
+  _MainDrawerState createState() => _MainDrawerState();
+}
+
+class _MainDrawerState extends State<MainDrawer> {
+  
+   PackageInfo _packageInfo = PackageInfo(
+    appName: 'Unknown',
+    packageName: 'Unknown',
+    version: 'Unknown',
+    buildNumber: 'Unknown',
+  );
+
+  Future<void> _initPackageInfo() async {
+    final PackageInfo info = await PackageInfo.fromPlatform();
+    setState(() {
+      _packageInfo = info;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initPackageInfo();
+  }
   Widget buildListTile(String title, IconData icon, Function tapHandler) {
     return ListTile(
       leading: Icon(
@@ -37,7 +64,7 @@ class MainDrawer extends StatelessWidget {
             alignment: Alignment.bottomRight,
             color: Colors.blue.shade700,
             child: Text(
-              'V 1.0.0+1',
+              _packageInfo.version,
               style: TextStyle(
                 fontSize: 16.0,
                 color: Colors.white,

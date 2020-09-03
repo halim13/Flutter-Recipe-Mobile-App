@@ -21,7 +21,7 @@ class RecipeDetailModel {
 
 class RecipeDetailDatas {
   List<RecipeDetailData> recipes;
-  List<IngredientsGroup> ingredientsGroup;
+  List<IngredientsGroupDetail> ingredientsGroup;
   List<StepDetailData> steps;
 
   RecipeDetailDatas({
@@ -32,47 +32,53 @@ class RecipeDetailDatas {
 
   factory RecipeDetailDatas.fromJson(Map<String, dynamic> json) => RecipeDetailDatas(
     recipes: json["recipes"] == null ? null : List<RecipeDetailData>.from(json["recipes"].map((x) => RecipeDetailData.fromJson(x))),
-    ingredientsGroup: json["ingredientsGroup"] == null ? null : List<IngredientsGroup>.from(json["ingredientsGroup"].map((x) => IngredientsGroup.fromJson(x))),
+    ingredientsGroup: json["ingredientsGroup"] == null ? null : List<IngredientsGroupDetail>.from(json["ingredientsGroup"].map((x) => IngredientsGroupDetail.fromJson(x))),
     steps: json["steps"] == null ? null : List<StepDetailData>.from(json["steps"].map((x) => StepDetailData.fromJson(x))),
   );
 }
 
 class RecipeDetailData {
-  int id;
   String uuid;
   String title;
-  String imageUrl;
+  String imageurl;
+  String portion;
+  String duration;
   int isfavorite;
+  User user;
 
   RecipeDetailData({
-    this.id,
     this.uuid,
     this.title,
-    this.imageUrl,
-    this.isfavorite
+    this.imageurl,
+    this.portion, 
+    this.duration,
+    this.isfavorite,
+    this.user
   });
 
   factory RecipeDetailData.fromJson(Map<String, dynamic> json) => RecipeDetailData(
-    id: json["id"] == null ? null : json["id"],
     uuid: json["uuid"] == null ? null : json["uuid"],
     title: json["title"] == null ? null : json["title"],
-    imageUrl: json["imageUrl"] == null ? null : json["imageUrl"],
-    isfavorite: json["isfavorite"] == null ? null : json["isfavorite"]
+    imageurl: json["imageurl"] == null ? null : json["imageurl"],
+    portion: json["portion"] == null ? null : json["portion"],
+    duration: json["duration"] == null ? null : json["duration"],
+    isfavorite: json["isfavorite"] == null ? null : json["isfavorite"],
+    user: User.fromJson(json["user"])
   );
 }
 
-class IngredientsGroup {
+class IngredientsGroupDetail {
   String uuid;
   String body;
   List<Ingredients> ingredients;
 
-  IngredientsGroup({
+  IngredientsGroupDetail({
     this.uuid,
     this.body,
     this.ingredients
   });
 
-  factory IngredientsGroup.fromJson(Map<String, dynamic> json) => IngredientsGroup(
+  factory IngredientsGroupDetail.fromJson(Map<String, dynamic> json) => IngredientsGroupDetail(
     uuid: json["uuid"] == null ? null : json["uuid"],
     body: json["body"] == null ? null : json["body"],
     ingredients: List<Ingredients>.from(json["ingredients"].map((x) => Ingredients.fromJson(x))),
@@ -123,5 +129,21 @@ class StepsDetailImages {
   factory StepsDetailImages.fromJson(Map<String, dynamic> json) => StepsDetailImages(
     uuid: json["uuid"] == null ? null : json["uuid"],
     body: json["body"] == null ? null : json["body"],
+  );
+}
+
+
+class User {
+  String uuid;
+  String name;
+
+  User({
+    this.uuid,
+    this.name,
+  });
+
+  factory User.fromJson(Map<String, dynamic> json) => User(
+    uuid: json["uuid"],
+    name: json["name"],
   );
 }

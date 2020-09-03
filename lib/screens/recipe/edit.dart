@@ -3,6 +3,9 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/providers/recipe/detail.dart';
+import 'package:flutter_complete_guide/screens/recipe/detail.dart';
+
 import 'package:provider/provider.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -129,8 +132,23 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
       String removeIngredients = jsonEncode(uniqueRemoveIngredients);
       String steps = jsonEncode(uniqueSteps);
       String removeSteps = jsonEncode(uniqueRemoveSteps);
-      Object recipeId = ModalRoute.of(context).settings.arguments;
-      final response = await Provider.of<RecipeEdit>(context, listen: false).update(context, title, recipeId, ingredientsGroup, removeIngredientsGroup, ingredients, removeIngredients, steps, removeSteps, portion, categoryName);
+      Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments;
+      String recipeId = routeArgs["recipeId"];
+      String categoryId = routeArgs["categoryId"];
+      final response = await Provider.of<RecipeEdit>(context, listen: false).update(
+        context, 
+        title, 
+        recipeId, 
+        categoryId,
+        ingredientsGroup, 
+        removeIngredientsGroup, 
+        ingredients, 
+        removeIngredients, 
+        steps, 
+        removeSteps, 
+        portion, 
+        categoryName
+      );
       if(response["status"] == 200) {
         AwesomeDialog(
           context: context,
@@ -138,9 +156,11 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
           animType: AnimType.BOTTOMSLIDE,
           headerAnimationLoop: false,
           dismissOnTouchOutside: false,
-          title: 'Berhasil !',
-          desc: 'Perubahan tersimpan !',
-          btnOkOnPress: () => Navigator.of(context).popUntil((route) => route.isFirst),
+          title: 'Berhasil',
+          desc: 'Perubahan tersimpan',
+          btnOkOnPress: () {
+            Navigator.pop(context);
+          },
           btnOkIcon: null,
           btnOkColor: Colors.blue.shade700
         )..show();
@@ -170,8 +190,8 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: Text('Batal Ubah?', style: TextStyle(color: Colors.black)),
-        content: Text('Perubahan data tidak tersimpan apabila Anda keluar.'),
+        title: Text('Batal Ubah ?', style: TextStyle(color: Colors.black)),
+        content: Text('Perubahan Data tidak tersimpan Apabila Anda Keluar'),
         actions: [
           FlatButton(
             onPressed: () => Navigator.pop(context, false),
@@ -187,7 +207,8 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
   }
 
   Widget build(BuildContext context) {
-    Object recipeId = ModalRoute.of(context).settings.arguments;
+    Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments;
+    String recipeId = routeArgs["recipeId"];
     return Scaffold(
     appBar: AppBar(
       title: Text('Ubah Resep'),
@@ -203,8 +224,34 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
             );
           }
           if(snapshot.hasError) {
-            return Center(
-              child: Text("Oops! Something went wrong! Please try again.")
+           return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 150.0,
+                    child: Image.asset('assets/no-network.png')
+                  ),
+                  SizedBox(height: 15.0),
+                  Text('Koneksi jaringan Anda buruk.',
+                    style: TextStyle(
+                      fontSize: 16.0
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
+                  GestureDetector(
+                    child: Text('Coba Ulangi',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        decoration: TextDecoration.underline
+                      ),
+                    ),
+                    onTap: () {
+                      setState((){});
+                    },
+                  ),
+                ],
+              ),
             );
           }
           return Consumer<RecipeEdit>(

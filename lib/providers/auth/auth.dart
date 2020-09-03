@@ -102,12 +102,12 @@ class Auth with ChangeNotifier {
     }
   }
   Future<bool> tryAutoLogin() async {
-    final prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('userData')) {
       return false;
     }
-    final extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
-    final expiryDate = DateTime.parse(extractedUserData['expiryDate']);
+    Map<String, Object> extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
+    DateTime  expiryDate = DateTime.parse(extractedUserData['expiryDate']);
     if (expiryDate.isBefore(DateTime.now())) {
       return false;
     }
@@ -135,7 +135,7 @@ class Auth with ChangeNotifier {
       authTimer.cancel();
       authTimer = null;
     }
-    final prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
   // prefs.remove('userData'); Menghapus secara spesifik
     prefs.clear();
     notifyListeners();
@@ -165,7 +165,7 @@ class Auth with ChangeNotifier {
     if (authTimer != null) {
       authTimer.cancel();
     }
-    final timeToExpiry = _expiryDate.difference(DateTime.now()).inSeconds; 
+    int timeToExpiry = _expiryDate.difference(DateTime.now()).inSeconds; 
     // Kalo ini udah lewat dari perjanjian batas waktu, maka otomatis logout
     authTimer = Timer(Duration(seconds: timeToExpiry), checkToken);
   }

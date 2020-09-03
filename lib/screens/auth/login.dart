@@ -48,7 +48,7 @@ class LoginScreenState extends State<LoginScreen> {
       });
       final response = await Provider.of<Auth>(context, listen: false).login(email, password);
       if(response["status"] == 200) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => TabsScreen()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => TabsScreen()));
       }
       setState(() {
         loading = false;

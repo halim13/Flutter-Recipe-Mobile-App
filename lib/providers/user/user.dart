@@ -93,14 +93,14 @@ class User extends ChangeNotifier {
   }
 
   Future update(File file, String username, String bio) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, Object> extractedUserData = json.decode(prefs.getString('userData'));
+    String userId = extractedUserData["userId"];
     Map<String, String> fields = {
       "username": username,
       "bio": bio
     };
     Map<String, String> headers = {"Content-Type": "application/json"};
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    Map<String, Object> extractedUserData = json.decode(prefs.getString('userData'));
-    String userId = extractedUserData["userId"];
     String url = 'http://$baseurl:$port/api/v1/accounts/users/profile/update/$userId';
     isLoading = true;
     notifyListeners();

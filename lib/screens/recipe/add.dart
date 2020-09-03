@@ -135,9 +135,9 @@ class _AddRecipeState extends State<AddRecipeScreen> {
           animType: AnimType.BOTTOMSLIDE,
           headerAnimationLoop: false,
           dismissOnTouchOutside: false,
-          title: 'Berhasil !',
-          desc: response["data"] == "ALERTDEMO" ? 'Untuk DEMO Akun \n Tidak boleh lebih dari 2 Resep' : 'Data ditambahkan !',
-          btnOkOnPress: () => Navigator.of(context).popUntil((route) => route.isFirst),
+          title: 'Berhasil',
+          desc: response["data"] == "ALERTDEMO" ? 'Untuk DEMO Akun \n Tidak boleh lebih dari 2 Resep' : 'Resep berhasil dibuat',
+          btnOkOnPress: () => Navigator.of(context).pop(),
           btnOkIcon: null,
           btnOkColor: Colors.blue.shade700
         )..show();
@@ -435,7 +435,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
                 padding: EdgeInsets.all(10),
                 width: double.infinity,
                 child: Consumer<RecipeAdd>(
-                  builder: (context, recipeProvider, child) {
+                  builder: (BuildContext context, RecipeAdd recipeProvider, Widget child) {
                     return Container(
                       height: 48.0,
                       child: recipeProvider.isLoading ? 

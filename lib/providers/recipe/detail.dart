@@ -6,14 +6,21 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
 import '../../constants/connection.dart';
-import '../../models/RecipeDetail.dart' as recipeDetailModel;
-import '../../models/RecipeFavorite.dart' as recipeFavoriteModel;
+import '../../models/RecipeDetail.dart';
+import '../../models/RecipeFavorite.dart';
 
 class RecipeDetail with ChangeNotifier {
-  recipeDetailModel.RecipeDetailDatas data;
+  List<RecipeDetailData> recipeDetail = [];
+  List<IngredientsGroupDetail> ingredientsGroupDetail = [];
+  List<StepDetailData> stepsDetail = [];
   int favorite;
 
-  List<recipeFavoriteModel.RecipeFavoriteData> displayRecipeFavourite = [];
+  List<RecipeDetailData> get getRecipeDetail => [...recipeDetail];
+  List<IngredientsGroupDetail> get getIngredientsGroupDetail => [...ingredientsGroupDetail];
+  List<StepDetailData> get getStepsDetail => [...stepsDetail];
+
+
+  List<RecipeFavoriteData> displayRecipeFavorite = [];
 
   bool isRecipeFavorite(String recipeId, int f) => favorite == 1 ? true : false;
 
@@ -30,7 +37,7 @@ class RecipeDetail with ChangeNotifier {
       notifyListeners();
     } else {
       updateToFavorite(recipeId, 0);
-      displayRecipeFavourite.removeWhere((el) => el.uuid == recipeId);
+      displayRecipeFavorite.removeWhere((el) => el.uuid == recipeId);
       favorite = 0;
       Fluttertoast.showToast(
         msg: 'Berhasil hapus dari daftar favorit',
@@ -46,19 +53,19 @@ class RecipeDetail with ChangeNotifier {
     }
   }
 
-  Future<void> refreshRecipeFavourite() async {
-    await getRecipeFavourite();
+  Future<void> refreshRecipeFavorite() async {
+    await getRecipeFavorite();
   }
   
-  Future<void> getRecipeFavourite() async {
+  Future<void> getRecipeFavorite() async {
     String url = 'http://$baseurl:$port/api/v1/recipes/favorite'; 
     try {
       http.Response response = await http.get(url).timeout(Duration(seconds: 60));
-      recipeFavoriteModel.RecipeFavoriteModel model = recipeFavoriteModel.RecipeFavoriteModel.fromJson(json.decode(response.body));
-      List<recipeFavoriteModel.RecipeFavoriteData> initialDisplayRecipeFavorite = [];
+      RecipeFavoriteModel model = RecipeFavoriteModel.fromJson(json.decode(response.body));
+      List<RecipeFavoriteData> initialDisplayRecipeFavorite = [];
       model.data.forEach((item) {
         initialDisplayRecipeFavorite.add(
-         recipeFavoriteModel.RecipeFavoriteData(
+         RecipeFavoriteData(
             id: item.id,
             uuid: item.uuid,
             title: item.title,
@@ -71,7 +78,7 @@ class RecipeDetail with ChangeNotifier {
           )
         );
       });
-      displayRecipeFavourite = initialDisplayRecipeFavorite;
+      displayRecipeFavorite = initialDisplayRecipeFavorite;
       notifyListeners();
     } catch(error) {
       print(error); 
@@ -92,12 +99,53 @@ class RecipeDetail with ChangeNotifier {
     }
   }
 
+
   Future<void> detail(String recipeId) async {
     String url = 'http://$baseurl:$port/api/v1/recipes/detail/$recipeId';
     try {
       http.Response response = await http.get(url);
-      recipeDetailModel.RecipeDetailModel model = recipeDetailModel.RecipeDetailModel.fromJson(json.decode(response.body));
-      data = model.data;
+      RecipeDetailModel model = RecipeDetailModel.fromJson(json.decode(response.body));
+      List<RecipeDetailData> initialRecipeDetail = [];
+      List<IngredientsGroupDetail> initialIngredientsGroupDetail = [];
+      List<StepDetailData> initialStepsDetail = [];
+      model.data.recipes.forEach((item) { 
+        initialRecipeDetail.add(RecipeDetailData(
+          uuid: item.uuid,
+          title: item.title,
+          imageurl: item.imageurl,
+          portion: item.portion,
+          duration: item.duration,
+          isfavorite: item.isfavorite,
+          user: item.user
+        ));
+      });      
+      model.data.ingredientsGroup.forEach((item) {
+        initialIngredientsGroupDetail.add(
+          IngredientsGroupDetail(
+            uuid: item.uuid,
+            body: item.body,
+            ingredients: item.ingredients
+          ));
+      });
+      model.data.steps.forEach((item) { 
+        List<StepsDetailImages> initialStepsImagesDetail = [];
+        for (int z = 0; z < 3; z++) {
+          initialStepsImagesDetail.add(
+            StepsDetailImages(
+              uuid: item.stepsImages[z].uuid,
+              body: item.stepsImages[z].body
+            )
+          );
+        }
+        initialStepsDetail.add(StepDetailData(
+          uuid: item.uuid, 
+          body: item.body,
+          stepsImages: initialStepsImagesDetail
+        ));
+      });
+      recipeDetail = initialRecipeDetail;
+      ingredientsGroupDetail = initialIngredientsGroupDetail;
+      stepsDetail = initialStepsDetail;
       favorite = model.data.recipes.first.isfavorite;
       notifyListeners();
     } catch(error) {

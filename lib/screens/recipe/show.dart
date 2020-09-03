@@ -25,7 +25,7 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
     super.initState();
     controller.addListener(() {
       if (controller.position.pixels == controller.position.maxScrollExtent) {
-        Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments as Map<String, String>;
+        Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments;
         Provider.of<RecipeShow>(context, listen: false).getShow(routeArgs['uuid'], 5);
       }
     });
@@ -41,20 +41,17 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
     BuildContext context, 
     String uuid, 
     String title, 
-    String portion,
-    String duration,
-    String userId,
-    String name
+    String userId
   ) {
+    Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments;
+    String categoryId = routeArgs['uuid'];
     Navigator.of(context).pushNamed(
       RecipeDetailScreen.routeName,
       arguments: {
+        'categoryId': categoryId,
         'uuid': uuid,
         'title': title,
-        'portion': portion,
-        'duration':  duration,
-        'userId': userId,
-        'name': name
+        'userId': userId
       },
     );
   }
@@ -67,7 +64,7 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(titleCase(categoryTitle)),
-        actions: <Widget>[
+        actions: [
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () {
@@ -86,34 +83,34 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
           }
           if(snapshot.hasError) {
             return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 150.0,
-                      child: Image.asset('assets/no-network.png')
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 150.0,
+                    child: Image.asset('assets/no-network.png')
+                  ),
+                  SizedBox(height: 15.0),
+                  Text('Koneksi jaringan Anda buruk',
+                    style: TextStyle(
+                      fontSize: 16.0
                     ),
-                    SizedBox(height: 15.0),
-                    Text('Koneksi jaringan Anda buruk',
+                  ),
+                  SizedBox(height: 10.0),
+                  GestureDetector(
+                    child: Text('Coba Ulangi',
                       style: TextStyle(
-                        fontSize: 16.0
+                        fontSize: 16.0,
+                        decoration: TextDecoration.underline
                       ),
                     ),
-                    SizedBox(height: 10.0),
-                    GestureDetector(
-                      child: Text('Coba Ulangi',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          decoration: TextDecoration.underline
-                        ),
-                      ),
-                      onTap: () {
-                        setState((){});
-                      },
-                    ),
-                  ],
-                ),
-              );
+                    onTap: () {
+                      setState((){});
+                    },
+                  ),
+                ],
+              ),
+            );
           }
           return Consumer<RecipeShow>(
             child: Center(
@@ -144,10 +141,7 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
                                   context, 
                                   recipeProvider.getShowItem[i].uuid,
                                   recipeProvider.getShowItem[i].title, 
-                                  recipeProvider.getShowItem[i].portion,
-                                  recipeProvider.getShowItem[i].duration, 
                                   recipeProvider.getShowItem[i].userId,
-                                  recipeProvider.getShowItem[i].name
                                 );
                               },
                               child: ClipRRect(
