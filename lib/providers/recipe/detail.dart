@@ -19,7 +19,6 @@ class RecipeDetail with ChangeNotifier {
   List<IngredientsGroupDetail> get getIngredientsGroupDetail => [...ingredientsGroupDetail];
   List<StepDetailData> get getStepsDetail => [...stepsDetail];
 
-
   List<RecipeFavoriteData> displayRecipeFavorite = [];
 
   bool isRecipeFavorite(String recipeId, int f) => favorite == 1 ? true : false;
@@ -45,7 +44,7 @@ class RecipeDetail with ChangeNotifier {
         backgroundColor: Colors.yellow.shade700,
         textColor: Colors.white
       );
-      if(ModalRoute.of(context).settings.name == "/recipe-detail-favorite") {
+      if(ModalRoute.of(context).settings.name == "/detail-recipe-favorite") {
         Navigator.of(context).pop(true);
         notifyListeners();
       }

@@ -358,7 +358,9 @@ class RecipeEdit extends ChangeNotifier {
         stepsSendToHttp = [];
         removeStepsSendToHttp = [];
         fileImageRecipe = null;
-        Provider.of<RecipeShow>(context, listen: false).getShow(categoryId);
+        if(categoryId != null) {
+          Provider.of<RecipeShow>(context, listen: false).getShow(categoryId);
+        }
         Provider.of<RecipeDetail>(context, listen: false).detail(recipeId);
         Provider.of<RecipeDetail>(context, listen: false).refreshRecipeFavorite();
         notifyListeners();

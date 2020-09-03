@@ -11,7 +11,6 @@ import '../../constants/url.dart';
 import '../../providers/user/user.dart';
 
 class EditProfileScreen extends StatefulWidget {
-
   @override
   _EditProfileScreenState createState() => _EditProfileScreenState();
 }
@@ -96,8 +95,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             animType: AnimType.BOTTOMSLIDE,
             headerAnimationLoop: false,
             dismissOnTouchOutside: false,
-            title: 'Berhasil !',
-            desc: 'Perubahan tersimpan !',
+            title: 'Berhasil ',
+            desc: 'Perubahan tersimpan',
             btnOkOnPress: () => Navigator.of(context).popUntil((route) => route.isFirst),
             btnOkIcon: null,
             btnOkColor: Colors.blue.shade700

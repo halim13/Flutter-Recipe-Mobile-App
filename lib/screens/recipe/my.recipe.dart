@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/screens/recipe/detail.dart';
 import 'package:provider/provider.dart';
 import 'package:quartet/quartet.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../constants/url.dart';
 import '../../providers/recipe/my.recipe.dart';
-import '../../screens/recipe/detail.dart';
 import '../../screens/profile/view.dart';
 
 class MyRecipeScreen extends StatefulWidget {
@@ -45,7 +43,7 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
     String name
   ) {
     Navigator.of(context).pushNamed(
-      RecipeDetailScreen.routeName,
+      'detail-recipe',
       arguments: {
         'uuid': uuid,
         'title': title,

@@ -8,28 +8,32 @@ import '../../providers/auth/auth.dart';
 import '../../providers/recipe/detail.dart';
 import '../../providers/user/user.dart';
 import '../preview.image.dart';
-import './edit.dart';
 
 class RecipeDetailScreen extends StatefulWidget {
-  static const routeName = '/recipe-detail';
-
   @override
   _RecipeDetailScreenState createState() => _RecipeDetailScreenState();
 }
 
 class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
+  String title;
 
   void edit() {
     Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments;
     String recipeId = routeArgs['uuid'];
     String categoryId = routeArgs['categoryId'];
     Navigator.of(context).pushNamed(
-      EditRecipeScreen.routeName,
+      '/edit-recipe',
       arguments: { 
         "recipeId": recipeId,
         "categoryId": categoryId
       }
-    );
+    ).then((_title) {
+      if(_title != null) {
+        setState(() {
+          title = _title;
+        });
+      }
+    });
   }
 
   Widget buildSectionTitle(BuildContext context, String text) {
@@ -59,15 +63,23 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
     );
   }
 
+  @override
+  void didChangeDependencies() {
+    Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments;
+    String _title = routeArgs["title"];
+    if(_title != null) {
+      title = _title;
+    }
+    super.didChangeDependencies();
+  }
   Widget build(BuildContext context) {
     Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments;
     String recipeId = routeArgs["uuid"];
     String userId = routeArgs["userId"];
 
-
     return Scaffold(
       appBar: AppBar(
-        title: Consumer<RecipeDetail>(builder: (BuildContext context, RecipeDetail recipeProvider, Widget child) => Text(titleCase(recipeProvider.getRecipeDetail.first.title ?? "loading"))),
+        title: Text(titleCase(title)),
         actions: [
           Consumer<Auth>(
             builder: (BuildContext context, Auth authProvider, Widget child) => authProvider.isAuth 

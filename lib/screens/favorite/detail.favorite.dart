@@ -7,23 +7,30 @@ import '../../constants/url.dart';
 import '../../providers/auth/auth.dart';
 import '../../providers/recipe/detail.dart';
 import '../preview.image.dart';
-import '../recipe/edit.dart';
 
 class RecipeDetailFavoriteScreen extends StatefulWidget {
-  static const routeName = '/recipe-detail-favorite';
-
   @override
   _RecipeDetailFavoriteScreenState createState() => _RecipeDetailFavoriteScreenState();
 }
 
 class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen> {
+  String title;
 
   void edit() {
-    Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments;
+  Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments;
+  String recipeId = routeArgs['uuid'];
     Navigator.of(context).pushNamed(
-      EditRecipeScreen.routeName,
-      arguments: routeArgs['uuid']
-    );
+      '/edit-recipe',
+      arguments: {
+        "recipeId" : recipeId
+      }
+    ).then((_title) {
+      if(_title != null) {
+        setState(() {
+          title = _title;
+        });
+      }
+    });
   }
 
    Widget buildSectionTitle(BuildContext context, String text) {
@@ -55,11 +62,19 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
 
 
   @override
+  void didChangeDependencies() {
+    Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments;
+    String _title = routeArgs["title"];
+    if(_title != null) {
+      title = _title;
+    }
+    super.didChangeDependencies();
+  }
   Widget build(BuildContext context) {
     Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
-        title: Text(titleCase(routeArgs['title'])),
+        title: Text(titleCase(title)),
         actions: [
           Consumer<Auth>(
             builder: (BuildContext context, Auth authProvider, Widget child) => authProvider.isAuth ? IconButton(
@@ -142,7 +157,7 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
                     margin: EdgeInsets.all(10.0),
                     padding: EdgeInsets.all(10.0),
                     child: Text(
-                      '${routeArgs['title']}',
+                      '${recipeProvider.getRecipeDetail.first.title}',
                       style: TextStyle(
                         fontSize: 19.0,
                       ),
@@ -157,14 +172,14 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
                           children: [
                             Icon(Icons.schedule),
                             SizedBox(width: 6.0),
-                            Text('${routeArgs['duration']} min'),
+                            Text('${recipeProvider.getRecipeDetail.first.duration} min'),
                           ],
                         ),
                         Row(
                           children: [
                             Icon(Icons.fastfood),
                             SizedBox(width: 6.0),
-                            Text('${routeArgs['portion']} Porsi'),
+                            Text('${recipeProvider.getRecipeDetail.first.portion} Porsi'),
                           ],
                         )
                       ],
@@ -186,7 +201,7 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
                             ),
                             children: <TextSpan>[
                               TextSpan(
-                                text: '${routeArgs['name']}',
+                                text: '${recipeProvider.getRecipeDetail.first.user.name}',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16.0

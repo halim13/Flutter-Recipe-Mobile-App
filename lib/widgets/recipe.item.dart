@@ -30,20 +30,14 @@ class RecipeItem extends StatelessWidget {
     BuildContext context, 
     String uuid, 
     String title, 
-    String portion,
-    String duration,
     String userId,
-    String name
   ) {
     Navigator.of(context).pushNamed(
-      RecipeDetailFavoriteScreen.routeName,
+      '/detail-recipe-favorite',
       arguments: {
         'uuid': uuid,
         'title': title,
-        'portion': portion,
-        'duration':  duration,
-        'userId': userId,
-        'name': name
+        'userId': userId,  
       },
     );
   }
@@ -66,10 +60,7 @@ class RecipeItem extends StatelessWidget {
                     context, 
                     uuid,
                     title, 
-                    portion,
-                    duration, 
                     userId,
-                    name
                   );
                 },
                 child: ClipRRect(

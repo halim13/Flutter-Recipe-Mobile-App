@@ -10,17 +10,8 @@ import './providers/recipe/detail.dart';
 import './providers/recipe/edit.dart';
 import './providers/recipe/add.dart';
 import './colors/colors.dart';
-
-import './screens/favorite/detail.favorite.dart';
-import './screens/tabs/tabs.dart';
 import './screens/recipe/categories.dart';
-import './screens/recipe/show.dart';
-import './screens/recipe/detail.dart';
-import './screens/auth/login.dart';
-import './screens/auth/register.dart';
-import './screens/recipe/add.dart';
-import './screens/recipe/edit.dart';
-import './screens/recipe/my.recipe.dart';
+import 'constants/routes.dart';
 
 void main() { 
   Provider.debugCheckInvalidValueType = null;
@@ -80,24 +71,14 @@ class _MyAppState extends State<MyApp> {
             ),
             headline6: TextStyle(
               color: Colors.white,
-              fontSize: 20,
+              fontSize: 20.0,
               fontFamily: 'RobotoCondensed',
               fontWeight: FontWeight.bold,
             )
           ),
         ),
         initialRoute: '/',
-        routes: {
-          '/': (context) => TabsScreen(),
-          LoginScreen.routeName: (context) => LoginScreen(),
-          RegisterScreen.routeName: (context) => RegisterScreen(),
-          ShowRecipeScreen.routeName: (context) =>  ShowRecipeScreen(),
-          MyRecipeScreen.routeName: (context) => MyRecipeScreen(),
-          RecipeDetailScreen.routeName: (context) => RecipeDetailScreen(),
-          RecipeDetailFavoriteScreen.routeName: (context) => RecipeDetailFavoriteScreen(),
-          AddRecipeScreen.routeName: (context) => AddRecipeScreen(),
-          EditRecipeScreen.routeName: (context) => EditRecipeScreen()
-        },
+        routes: appRoutes,
         onUnknownRoute: (settings) {
           return MaterialPageRoute(
             builder: (BuildContext context) => CategoriesScreen(),

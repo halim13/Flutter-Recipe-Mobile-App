@@ -1,8 +1,8 @@
 // import 'package:path/path.dart' as path; // gunakan as path agar tidak terjadi bentrok
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import '../preview.image.dart';
 import '../../providers/auth/auth.dart';
@@ -13,7 +13,6 @@ import '../auth/register.dart';
 
 
 class ProfileScreen extends StatefulWidget {
-  static const routeName = '/profile';
   @override
   ProfileScreenState createState() => ProfileScreenState();
 }
@@ -115,7 +114,7 @@ class ProfileScreenState extends State<ProfileScreen> {
         }
         if(snapshot.hasError) {
           return Consumer<User>(
-            builder: (context, userProvider, child) =>
+            builder: (BuildContext context, User userProvider, Widget child) =>
             Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -148,7 +147,7 @@ class ProfileScreenState extends State<ProfileScreen> {
           );
         }
         return Consumer<User>(
-          builder: (context, userProvider, child) {
+          builder: (BuildContext context, User userProvider, Widget child) {
             return RefreshIndicator(
               onRefresh: () => userProvider.refreshProfile(),
               child: ListView.builder(
@@ -161,7 +160,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                         alignment: Alignment.center,
                         children: [
                           Image(
-                            height: MediaQuery.of(context).size.height / 4,
+                            height: MediaQuery.of(context).size.height / 4.0,
                             fit: BoxFit.cover,
                             image: AssetImage('assets/default-thumbnail-profile.jpg')
                           ),
@@ -180,17 +179,16 @@ class ProfileScreenState extends State<ProfileScreen> {
                                       height: 120.0,
                                       child: GestureDetector(
                                         child: ClipOval(
-                                          child: CachedNetworkImage(
-                                            imageUrl: '$imagesAvatarUrl/${userProvider.getCurrentProfileItem[i].avatar}',
-                                            fit: BoxFit.cover,
-                                            placeholder: (context, url) => Image.asset('assets/default-avatar.png'),
-                                            errorWidget: (context, url, error) => Image.asset('assets/default-avatar.png'),                                      
-                                            fadeOutDuration: Duration(seconds: 1),
-                                            fadeInDuration: Duration(seconds: 1),
-                                          ),
+                                          child: userProvider.getCurrentProfileItem[i].avatar == "" ||  userProvider.getCurrentProfileItem[i].avatar == null
+                                          ? Image.asset('assets/default-avatar.png', fit: BoxFit.cover) 
+                                          : FadeInImage.memoryNetwork(
+                                              fit: BoxFit.cover,
+                                              placeholder: kTransparentImage,
+                                              image: '$imagesAvatarUrl/${userProvider.getCurrentProfileItem[i].avatar}',
+                                            ),
                                         ),
                                         onTap: () {
-                                          Navigator.push(context, MaterialPageRoute(builder: (_) {
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
                                             return PreviewImageScreen(
                                               url: imagesAvatarUrl,
                                               body: userProvider.getCurrentProfileItem[i].avatar

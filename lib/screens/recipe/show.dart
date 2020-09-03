@@ -8,11 +8,8 @@ import '../../models/RecipeShow.dart';
 import '../../helpers/highlight.occurences.dart';
 import '../../providers/recipe/show.dart';
 import '../profile/view.dart';
-import './detail.dart';
 
 class ShowRecipeScreen extends StatefulWidget {
-  static const routeName = '/show-recipe';
-
   @override
   _ShowRecipeScreenState createState() => _ShowRecipeScreenState();
 }
@@ -46,7 +43,7 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
     Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments;
     String categoryId = routeArgs['uuid'];
     Navigator.of(context).pushNamed(
-      RecipeDetailScreen.routeName,
+      '/detail-recipe',
       arguments: {
         'categoryId': categoryId,
         'uuid': uuid,
@@ -316,7 +313,7 @@ class DataSearch extends SearchDelegate<String> {
         return InkWell(
           onTap: () => {
             Navigator.of(context).pushNamed(
-              RecipeDetailScreen.routeName,
+              'detail-recip',
               arguments: {
                 "uuid": results[i].uuid,
                 "title": results[i].title,
@@ -441,7 +438,7 @@ class DataSearch extends SearchDelegate<String> {
           child: ListTile(
             onTap: () {
               Navigator.of(context).pushNamed(
-                RecipeDetailScreen.routeName,
+                'detail-recipe',
                 arguments: {
                   "uuid": recipeProvider.searchSuggestionsItem[i].uuid,
                   "title": recipeProvider.searchSuggestionsItem[i].title,
@@ -482,7 +479,7 @@ class DataSearch extends SearchDelegate<String> {
         child: ListTile(
           onTap: () {
             Navigator.of(context).pushNamed(
-              RecipeDetailScreen.routeName,
+              'detail-recipe',
               arguments: {
                 "uuid": suggestionsList[i].uuid,
                 "title": suggestionsList[i].title,

@@ -3,8 +3,6 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/providers/recipe/detail.dart';
-import 'package:flutter_complete_guide/screens/recipe/detail.dart';
 
 import 'package:provider/provider.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -19,7 +17,6 @@ import '../../constants/url.dart';
 import '../../providers/recipe/edit.dart';
 
 class EditRecipeScreen extends StatefulWidget {
-  static const routeName = '/edit-recipe-screen';
   @override
   _EditRecipeScreenState createState() => _EditRecipeScreenState();
 }
@@ -159,7 +156,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
           title: 'Berhasil',
           desc: 'Perubahan tersimpan',
           btnOkOnPress: () {
-            Navigator.pop(context);
+            Navigator.pop(context, title);
           },
           btnOkIcon: null,
           btnOkColor: Colors.blue.shade700
