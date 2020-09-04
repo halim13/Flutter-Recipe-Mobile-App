@@ -335,7 +335,7 @@ class RecipeAdd with ChangeNotifier {
       }
       request.headers.addAll(headers);
       request.fields.addAll(fields);
-      http.StreamedResponse response = await request.send().timeout(Duration(seconds: 10));
+      http.StreamedResponse response = await request.send().timeout(Duration(seconds: 60));
       if(response.statusCode == 200) {
         ingredientsGroupSendToHttp = [];
         ingredientsSendToHttp = [];

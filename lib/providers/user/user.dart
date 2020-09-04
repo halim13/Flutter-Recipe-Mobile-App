@@ -114,7 +114,7 @@ class User extends ChangeNotifier {
       }
       request.headers.addAll(headers);
       request.fields.addAll(fields);
-      http.StreamedResponse response = await request.send().timeout(Duration(seconds: 10));
+      http.StreamedResponse response = await request.send().timeout(Duration(seconds: 60));
       String responseData = await response.stream.bytesToString();
       final responseDecoded = json.decode(responseData);
       if(responseDecoded["status"] == 200) {
