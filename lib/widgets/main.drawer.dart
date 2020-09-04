@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:package_info/package_info.dart';
 
 import '../providers/auth/auth.dart';
-import '../screens/recipe/add.dart';
 import '../screens/auth/login.dart';
 
 class MainDrawer extends StatefulWidget {
@@ -86,8 +85,8 @@ class _MainDrawerState extends State<MainDrawer> {
           Consumer<Auth>(
             builder: (context, authProvider, child) {
               if(authProvider.isAuth) {
-                return buildListTile('Tulis Resep', Icons.restaurant_menu, () {
-                  Navigator.of(context).pushNamed(AddRecipeScreen.routeName);
+                return buildListTile('Add Recipe', Icons.restaurant_menu, () {
+                  Navigator.of(context).pushNamed('/add-recipe');
                 });
               } else {
                 return FutureBuilder(
@@ -101,8 +100,8 @@ class _MainDrawerState extends State<MainDrawer> {
           Consumer<Auth>(
             builder: (context, authProvider, child) {
               if(authProvider.isAuth) {
-                return buildListTile('Resep Saya', Icons.receipt, () {
-                  Navigator.of(context).pushNamed('my-recipe');
+                return buildListTile('My Recipes', Icons.receipt, () {
+                  Navigator.of(context).pushNamed('/my-recipe');
                 });
               } else {
                 return FutureBuilder(

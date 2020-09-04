@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,7 +15,6 @@ import '../../widgets/text.form.steps.add.dart';
 import '../../providers/recipe/add.dart';
 
 class AddRecipeScreen extends StatefulWidget {
-  static const routeName = '/add-recipe';
   @override
   _AddRecipeState createState() => _AddRecipeState();
 }
@@ -68,11 +68,12 @@ class _AddRecipeState extends State<AddRecipeScreen> {
         node.requestFocus();
         throw new Exception('Title Recipe is required');
       } 
-      // if(recipeProvider.portionController.text == "") {
-      //   FocusNode node = recipeProvider.portionFocusNode;
-      //   node.requestFocus();
-      //   throw new Exception('Untuk berapa porsi ?');
-      // } 
+      if(recipeProvider.portionName == null) {
+        throw new Exception('Portion is required');
+      } 
+      if(recipeProvider.duration == null) {
+         throw new Exception('Duration is required');
+      }
       for (int i = 0; i < recipeProvider.ingredientsGroup.length; i++) {
         TextEditingController ingredientsGroupController = recipeProvider.ingredientsGroup[i].textEditingController;
         if(ingredientsGroupController.text == "") {
@@ -121,14 +122,10 @@ class _AddRecipeState extends State<AddRecipeScreen> {
       String ingredientsGroup = jsonEncode(uniqueIngredientsGroup);
       String ingredients = jsonEncode(uniqueIngredients);
       String steps = jsonEncode(uniqueSteps);
-      setState(() {
-        isInAsyncCall = true;
-      });
+      setState(() => isInAsyncCall = true );
       final response = await recipeProvider.store(title, ingredientsGroup, ingredients, steps, portion);
       if(response["status"] == 200) {
-        setState(() {
-          isInAsyncCall = false;
-        });
+        setState(() => isInAsyncCall = false );
         AwesomeDialog(
           context: context,
           animType: AnimType.BOTTOMSLIDE,
@@ -142,7 +139,24 @@ class _AddRecipeState extends State<AddRecipeScreen> {
           btnOkColor: Colors.blue.shade700
         )..show();
       }
+    } on SocketException catch(_) {
+      setState(() => isInAsyncCall = false );
+      setState(() => Provider.of<RecipeAdd>(context, listen: false).isLoading = false );
+      SnackBar snackbar = SnackBar(
+        backgroundColor: Colors.red[300],
+        content: Text('Connection Bad or Server Unreachable'),
+        action: SnackBarAction(
+          textColor: Colors.white,
+          label: 'Close',
+          onPressed: () {
+            Scaffold.of(context).hideCurrentSnackBar();
+          }
+        ),
+      );
+      Scaffold.of(context).showSnackBar(snackbar);
     } on Exception catch(error) {
+      setState(() => isInAsyncCall = false );
+      setState(() => Provider.of<RecipeAdd>(context, listen: false).isLoading = false );
       String errorSplit = error.toString();
       List<String> errorText = errorSplit.split(":");
       SnackBar snackbar = SnackBar(
@@ -157,16 +171,24 @@ class _AddRecipeState extends State<AddRecipeScreen> {
         ),
       );
       Scaffold.of(context).showSnackBar(snackbar);
-    } catch(error) {
-      print(error); 
-    }
+    } 
   }
 
   @override
   Widget build(BuildContext context) {
+    bool isLoading = Provider.of<RecipeAdd>(context, listen: false).isLoading;
     return Scaffold(
       appBar: AppBar(
         title: Text('Add Recipe'),
+        leading: isLoading 
+        ? IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {},
+          ) 
+        : IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(true)
+        ),
       ),
       body: ModalProgressHUD(
         inAsyncCall: isInAsyncCall,

@@ -37,7 +37,7 @@ Widget textFormIngredientsAdd() {
                               hintStyle: TextStyle(
                                 fontSize: 16.0
                               ),
-                              hintText: "Mis: Bahan utama",
+                              hintText: "Eg: Primary Ingredients",
                             ),
                           ),
                         ),
@@ -80,7 +80,7 @@ Widget textFormIngredientsAdd() {
                                   hintStyle: TextStyle(
                                     fontSize: 16.0
                                   ),
-                                  hintText: 'Mis: 1 kg sapi',
+                                  hintText: 'Eg: 1 kg Beef',
                                 ),
                               )
                             ),

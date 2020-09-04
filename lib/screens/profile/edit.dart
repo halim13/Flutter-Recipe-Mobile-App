@@ -27,7 +27,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     ImageSource imageSource = await showDialog<ImageSource>(context: context, builder: (context) => 
       AlertDialog(
         title: Text(
-          "Pilih sumber gambar",
+          "Select Image Source",
         style: TextStyle(
           color: Colors.black,
           fontWeight: FontWeight.bold, 
@@ -89,30 +89,39 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         form.save();
         final response = await Provider.of<User>(context, listen: false).update(f, name, bio);
         if(response["status"] == 200) {
+          Provider.of<User>(context, listen: false).isLoading = false;
           AwesomeDialog(
             context: context,
             dialogType: DialogType.SUCCES,
             animType: AnimType.BOTTOMSLIDE,
             headerAnimationLoop: false,
             dismissOnTouchOutside: false,
-            title: 'Berhasil ',
-            desc: 'Perubahan tersimpan',
-            btnOkOnPress: () => Navigator.of(context).popUntil((route) => route.isFirst),
+            title: 'Successful ',
+            desc: 'Updated',
+            btnOkOnPress: () => Navigator.of(context).pop(true),
             btnOkIcon: null,
             btnOkColor: Colors.blue.shade700
           )..show();
+        }
       }
     }
-  }
+    bool isLoading = Provider.of<User>(context, listen: false).isLoading;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ubah Profil'),
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back
-          ),
-          onPressed: () => Navigator.pop(context, true),
-        )
+        title: Text('Edit Profile'),
+        leading: isLoading 
+        ? IconButton(
+            icon: Icon(
+              Icons.arrow_back
+            ),
+            onPressed: () {},
+          )
+        : IconButton(
+            icon: Icon(
+              Icons.arrow_back
+            ),
+            onPressed: () => Navigator.pop(context, true),
+          )
       ),
       body: FutureBuilder(
         future: Provider.of<User>(context, listen: false).getCurrentProfile(),
@@ -134,14 +143,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       child: Image.asset('assets/no-network.png')
                     ),
                     SizedBox(height: 15.0),
-                    Text('Koneksi jaringan Anda buruk.',
+                    Text('Bad Connection or Server Unreachable',
                       style: TextStyle(
                         fontSize: 16.0
                       ),
                     ),
                     SizedBox(height: 10.0),
                     GestureDetector(
-                      child: Text('Coba Ulangi',
+                      child: Text('Try Again',
                         style: TextStyle(
                           fontSize: 16.0,
                           decoration: TextDecoration.underline
@@ -262,7 +271,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             },
                             validator: (val) {
                               if(val.length < 1) {
-                                return 'Namanya tidak boleh kosong';
+                                return 'Name is required';
                               }
                               return null;
                             },
@@ -297,10 +306,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             },
                             validator: (val) {
                               if(val.length < 1) {
-                                return 'Email tidak boleh kosong.';
+                                return 'E-mail Address is required';
                               }
                               if(!val.contains('@')) {
-                                return 'Format Email salah.';
+                                return 'Invalid E-mail Address. Eg (johndoe@gmail.com)';
                               }
                               return null;
                             },
@@ -335,7 +344,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             },
                             validator: (val) {
                               if(val.length < 1) {
-                                return 'Bio tidak boleh kosong.';
+                                return 'Bio is required';
                               }
                               return null;
                             },
@@ -361,7 +370,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       )
                                     )
                                   : Text(
-                                      'Simpan Perubahan', 
+                                      'Update', 
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 16.0

@@ -39,13 +39,13 @@ class RegisterScreenState extends State<RegisterScreen> {
     // }
     try {
       if(nameController.text.isEmpty || nameController.text.length < 1) {
-        throw new Exception('Nama tidak boleh kosong');
+        throw new Exception('Name is required');
       }
       if(emailController.text.isEmpty || !emailController.text.contains('@')) {
-        throw new Exception('Format Email Salah. \n Contoh johndoe@gmail.com');
+        throw new Exception('Invalid Email. \n Eg (johndoe@gmail.com)');
       }
       if(passwordController.text.isEmpty || passwordController.text.length < 6) {
-        throw new Exception('Kata Sandi Minimal 6 Karakter');
+        throw new Exception('Password Minimum 6 Characters');
       }
       formKey.currentState.save();
       setState(() {
@@ -67,7 +67,7 @@ class RegisterScreenState extends State<RegisterScreen> {
         content: Text('Pengguna sudah tersedia'),
         action: SnackBarAction(
           textColor: Colors.white,
-          label: 'Tutup',
+          label: 'Close',
           onPressed: () {
             Scaffold.of(context).hideCurrentSnackBar();
           }
@@ -91,7 +91,7 @@ class RegisterScreenState extends State<RegisterScreen> {
         content: Text(errorText[1]),
         action: SnackBarAction(
           textColor: Colors.white,
-          label: 'Tutup',
+          label: 'Close',
           onPressed: () {
             Scaffold.of(context).hideCurrentSnackBar();
           }
@@ -163,9 +163,9 @@ class RegisterScreenState extends State<RegisterScreen> {
   Widget buildEmailTF() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
+      children: [
         Text(
-          'Email',
+          'E-mail Address',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -421,7 +421,7 @@ class RegisterScreenState extends State<RegisterScreen> {
           child: GestureDetector(
             onTap: () => FocusScope.of(context).unfocus(),
             child: Stack(
-              children: <Widget>[
+              children: [
                 Container(
                   height: double.infinity,
                   width: double.infinity,

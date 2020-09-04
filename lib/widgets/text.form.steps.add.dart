@@ -8,7 +8,7 @@ Widget textFormStepsAdd(BuildContext context) {
   void pickImage(int i, int z) async {
     ImageSource imageSource = await showDialog<ImageSource>(context: context, builder: (context) => 
       AlertDialog(
-        title: Text("Pilih sumber gambar",
+        title: Text("Select Image Source",
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold, 
@@ -66,7 +66,7 @@ Widget textFormStepsAdd(BuildContext context) {
                             fontSize: 16.0,
                             fontStyle: FontStyle.italic
                           ),
-                          hintText: "Bagaimana langkah membuatnya?",
+                          hintText: "Sliced Chilies",
                           prefixIcon: Column( 
                             children: [  
                               Text(

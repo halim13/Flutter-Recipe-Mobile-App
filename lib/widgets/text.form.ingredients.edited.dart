@@ -37,7 +37,7 @@ Widget textFormIngredientsEdit(BuildContext context) {
                                 hintStyle: TextStyle(
                                   fontSize: 16.0
                                 ),
-                                hintText: "Mis: Bahan Utama",
+                                hintText: "Eg: Primary Ingredients",
                               ),
                             ),
                           ),
@@ -80,7 +80,7 @@ Widget textFormIngredientsEdit(BuildContext context) {
                                     hintStyle: TextStyle(
                                       fontSize: 16.0
                                     ),
-                                    hintText: 'Mis: 1 kg sapi',
+                                    hintText: 'Eg: 1 kg Beef',
                                   ),
                                 )
                               ),

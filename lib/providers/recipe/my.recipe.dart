@@ -23,7 +23,7 @@ class MyRecipe with ChangeNotifier {
     String userId = extractedUserData["userId"];
     String url = 'http://$baseurl:$port/api/v1/recipes/show/me/$userId?limit=$limit'; 
     try {
-      http.Response response = await http.get(url).timeout(Duration(seconds: 60));
+      http.Response response = await http.get(url).timeout(Duration(seconds: 10));
       RecipeShowModel model = RecipeShowModel.fromJson(json.decode(response.body));
       List<RecipeShowData> initialShow = [];
       model.data.forEach((item) {

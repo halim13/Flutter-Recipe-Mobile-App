@@ -372,6 +372,7 @@ class RecipeEdit extends ChangeNotifier {
       return responseDecoded;
     } catch(error) {
       print(error);
+      throw error;
     }
   }
 

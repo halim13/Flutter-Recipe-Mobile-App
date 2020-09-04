@@ -22,7 +22,7 @@ class RecipeShow with ChangeNotifier {
   Future<void> suggestions() async {
     String url = 'http://$baseurl:$port/api/v1/recipes/search-suggestions';
     try {
-      http.Response response = await http.get(url).timeout(Duration(seconds: 60));
+      http.Response response = await http.get(url).timeout(Duration(seconds: 10));
       SearchSuggestionModel model = SearchSuggestionModel.fromJson(json.decode(response.body));
       List<SearchSuggestionsData> initialSearchSuggestionData = [];
       model.data.forEach((item) { 
@@ -47,7 +47,7 @@ class RecipeShow with ChangeNotifier {
   Future<void> popularViews(String recipeId) async {
     String url = 'http://$baseurl:$port/api/v1/recipes/popular-views/$recipeId';
     try { 
-      await http.get(url).timeout(Duration(seconds: 60));
+      await http.get(url).timeout(Duration(seconds: 10));
       suggestions();
       notifyListeners();
     } catch(error) {
@@ -60,7 +60,7 @@ class RecipeShow with ChangeNotifier {
     limit = limit + 5;
     String url = 'http://$baseurl:$port/api/v1/recipes/show/$categoryId?limit=$limit'; 
     try {
-      http.Response response = await http.get(url).timeout(Duration(seconds: 60));
+      http.Response response = await http.get(url).timeout(Duration(seconds: 10));
       RecipeShowModel model = RecipeShowModel.fromJson(json.decode(response.body));
       List<RecipeShowData> initialShow = [];
       model.data.forEach((item) {

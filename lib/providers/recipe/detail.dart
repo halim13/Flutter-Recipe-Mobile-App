@@ -59,7 +59,7 @@ class RecipeDetail with ChangeNotifier {
   Future<void> getRecipeFavorite() async {
     String url = 'http://$baseurl:$port/api/v1/recipes/favorite'; 
     try {
-      http.Response response = await http.get(url).timeout(Duration(seconds: 60));
+      http.Response response = await http.get(url).timeout(Duration(seconds: 10));
       RecipeFavoriteModel model = RecipeFavoriteModel.fromJson(json.decode(response.body));
       List<RecipeFavoriteData> initialDisplayRecipeFavorite = [];
       model.data.forEach((item) {

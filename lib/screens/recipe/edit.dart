@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -67,10 +68,12 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
         recipeProvider.titleFocusNode.requestFocus();
         throw new Exception('Title Recipe is required');
       }
-      // if(recipeProvider.portionController.text == "") {
-      //   recipeProvider.portionFocusNode.requestFocus();
-      //   throw new Exception('Untuk berapa porsi ?');
-      // }
+      if(recipeProvider.portionName == null) {
+        throw new Exception('Portion is required');
+      } 
+      if(recipeProvider.duration == "0") {
+         throw new Exception('Duration is required');
+      }
       for (int i = 0; i < recipeProvider.ingredientsGroup.length; i++) {
         TextEditingController ingredientsGroupController = recipeProvider.ingredientsGroup[i].textEditingController;
         if(ingredientsGroupController.text == "") {
@@ -162,7 +165,22 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
           btnOkColor: Colors.blue.shade700
         )..show();
       } 
-    } on Exception catch(error) {
+    } on SocketException catch(_) {
+      setState(() => Provider.of<RecipeEdit>(context, listen: false).isLoading = false);
+      SnackBar snackbar = SnackBar(
+        backgroundColor: Colors.red[300],
+        content: Text('Connection Bad or Server Unreachable'),
+        action: SnackBarAction(
+          textColor: Colors.white,
+          label: 'Close',
+          onPressed: () {
+            Scaffold.of(context).hideCurrentSnackBar();
+          }
+        ),
+      );
+      Scaffold.of(context).showSnackBar(snackbar);
+    } on Exception catch(error) { 
+      Provider.of<RecipeEdit>(context, listen: false).isLoading = false;
       String errorSplit = error.toString();
       List<String> errorText = errorSplit.split(":");
       SnackBar snackbar = SnackBar(
@@ -177,25 +195,26 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
         ),
       );
       Scaffold.of(context).showSnackBar(snackbar);
-    } catch(error) {
-      print(error); 
     }
   }
   
   Future<bool> onWillPop() async {
-    return await showDialog(
+    bool isLoading = Provider.of<RecipeEdit>(context, listen: false).isLoading;
+    return isLoading ? Container() : await showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) => AlertDialog(
         title: Text('Cancel ?', style: TextStyle(color: Colors.black)),
-        content: Text('Data has not been Save if you exit'),
+        content: Text('Data is not save if you exit'),
         actions: [
           FlatButton(
             onPressed: () => Navigator.pop(context, false),
             child: Text('No'),
           ),
           FlatButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () { 
+              Navigator.popUntil(context, ModalRoute.withName('/detail-recipe'));
+            },
             child: Text('Yes'),
           ),
         ],
@@ -221,7 +240,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
             );
           }
           if(snapshot.hasError) {
-           return Center(
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -252,7 +271,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
             );
           }
           return Consumer<RecipeEdit>(
-          builder: (BuildContext context, RecipeEdit recipeEdit, Widget child) => ModalProgressHUD(
+            builder: (BuildContext context, RecipeEdit recipeEdit, Widget child) => ModalProgressHUD(
               inAsyncCall: recipeEdit.isLoading,
               opacity: 0.5,
               progressIndicator: Container(),

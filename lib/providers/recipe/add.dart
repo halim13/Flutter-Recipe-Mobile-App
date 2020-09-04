@@ -301,7 +301,7 @@ class RecipeAdd with ChangeNotifier {
     Map<String, Object> extractedUserData = json.decode(prefs.getString('userData'));
     String userId = extractedUserData["userId"];
     Map<String, String> fields = {
-      "duration": duration.toString(),
+      "duration": duration,
       "title": title,
       "ingredientsGroup": ingredientsGroupParam,
       "ingredients": ingredients,
@@ -335,7 +335,7 @@ class RecipeAdd with ChangeNotifier {
       }
       request.headers.addAll(headers);
       request.fields.addAll(fields);
-      http.StreamedResponse response = await request.send().timeout(Duration(seconds: 60));
+      http.StreamedResponse response = await request.send().timeout(Duration(seconds: 10));
       if(response.statusCode == 200) {
         ingredientsGroupSendToHttp = [];
         ingredientsSendToHttp = [];
@@ -345,11 +345,12 @@ class RecipeAdd with ChangeNotifier {
         notifyListeners();
       }
       String responseData = await response.stream.bytesToString();
-      final responseDecoded = json.decode(responseData);   
+      final responseDecoded = json.decode(responseData);  
       notifyListeners();
       return responseDecoded;
     } catch(error) {
       print(error);
+      throw error;
     }
   }
   

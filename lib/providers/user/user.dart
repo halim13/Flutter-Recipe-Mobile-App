@@ -45,7 +45,7 @@ class User extends ChangeNotifier {
     String userId = extractedUserData["userId"];
     String url = 'http://$baseurl:$port/api/v1/accounts/users/profile/$userId'; 
     try {
-      http.Response response = await http.get(url).timeout(Duration(seconds: 60));
+      http.Response response = await http.get(url).timeout(Duration(seconds: 10));
       UserModel model = UserModel.fromJson(json.decode(response.body));
       List<UserData> initialProfile = [];
       model.data.forEach((item) {
@@ -70,7 +70,7 @@ class User extends ChangeNotifier {
   Future view(String userId) async {
     String url = 'http://$baseurl:$port/api/v1/accounts/users/profile/view/$userId';
     try {
-      http.Response response = await http.get(url).timeout(Duration(seconds: 60));
+      http.Response response = await http.get(url).timeout(Duration(seconds: 10));
       UserModel model = UserModel.fromJson(json.decode(response.body));
       List<UserData> initialViewProfile = [];
       model.data.forEach((item) {
@@ -114,7 +114,7 @@ class User extends ChangeNotifier {
       }
       request.headers.addAll(headers);
       request.fields.addAll(fields);
-      http.StreamedResponse response = await request.send().timeout(Duration(seconds: 60));
+      http.StreamedResponse response = await request.send().timeout(Duration(seconds: 10));
       String responseData = await response.stream.bytesToString();
       final responseDecoded = json.decode(responseData);
       if(responseDecoded["status"] == 200) {

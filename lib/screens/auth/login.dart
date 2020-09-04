@@ -37,10 +37,10 @@ class LoginScreenState extends State<LoginScreen> {
     // }
     try {
       if (emailController.text.isEmpty || !emailController.text.contains('@')) {
-        throw new Exception("Format Email Salah. \n Contoh johndoe@gmail.com");
+        throw new Exception("Invalid E-mail Address. \n Eg (johndoe@gmail.com)");
       }
       if (passwordController.text.isEmpty || passwordController.text.length < 6) {
-        throw new Exception("Kata Sandi Minimal 6 Karakter");
+        throw new Exception("Password Minimum 6 Characters");
       }
       formKey.currentState.save();
       setState(() {
@@ -53,7 +53,7 @@ class LoginScreenState extends State<LoginScreen> {
       setState(() {
         loading = false;
       });
-    } on HttpException catch(_) {
+    } on HttpException catch(error) {
       setState(() {
         loading = false;
       });
@@ -63,12 +63,30 @@ class LoginScreenState extends State<LoginScreen> {
       //   backgroundColor: Colors.red.shade700,
       //   textColor: Colors.white
       // );
+      String errorSplit = error.toString();
+      List<String> errorText = errorSplit.split(":");
       SnackBar snackbar = SnackBar(
         backgroundColor: Colors.red[300],
-        content: Text('Pengguna belum terdaftar'),
+        content: Text(errorText[1]),
         action: SnackBarAction(
           textColor: Colors.white,
-          label: 'Tutup',
+          label: 'Close',
+          onPressed: () {
+            Scaffold.of(context).hideCurrentSnackBar();
+          }
+        ),
+      );
+      Scaffold.of(context).showSnackBar(snackbar);
+    } on SocketException catch(_) {
+      setState(() {
+        loading = false;
+      });
+      SnackBar snackbar = SnackBar(
+        backgroundColor: Colors.red[300],
+        content: Text('Connection Bad or Server Unreachable'),
+        action: SnackBarAction(
+          textColor: Colors.white,
+          label: 'Close',
           onPressed: () {
             Scaffold.of(context).hideCurrentSnackBar();
           }
@@ -86,7 +104,7 @@ class LoginScreenState extends State<LoginScreen> {
         content: Text(errorText[1]),
         action: SnackBarAction(
           textColor: Colors.white,
-          label: 'Tutup',
+          label: 'Close',
           onPressed: () {
             Scaffold.of(context).hideCurrentSnackBar();
           }
@@ -105,9 +123,9 @@ class LoginScreenState extends State<LoginScreen> {
   Widget buildEmailTF() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
+      children: [
         Text(
-          'Email',
+          'E-mail Address',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -400,7 +418,7 @@ class LoginScreenState extends State<LoginScreen> {
           child: GestureDetector(
             onTap: () => FocusScope.of(context).unfocus(),
             child: Stack(
-              children: <Widget>[
+              children: [
                 Container(
                   height: double.infinity,
                   width: double.infinity,
@@ -430,7 +448,7 @@ class LoginScreenState extends State<LoginScreen> {
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
+                        children: [
                           Text(
                             'Sign In',
                             style: TextStyle(
