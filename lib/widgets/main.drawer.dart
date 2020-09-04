@@ -4,7 +4,6 @@ import 'package:package_info/package_info.dart';
 
 import '../providers/auth/auth.dart';
 import '../screens/recipe/add.dart';
-import '../screens/recipe/my.recipe.dart';
 import '../screens/auth/login.dart';
 
 class MainDrawer extends StatefulWidget {
@@ -60,7 +59,7 @@ class _MainDrawerState extends State<MainDrawer> {
           Container(
             height: 120.0,
             width: double.infinity,
-            padding: EdgeInsets.all(20),
+            padding: EdgeInsets.all(20.0),
             alignment: Alignment.bottomRight,
             color: Colors.blue.shade700,
             child: Text(
@@ -103,13 +102,12 @@ class _MainDrawerState extends State<MainDrawer> {
             builder: (context, authProvider, child) {
               if(authProvider.isAuth) {
                 return buildListTile('Resep Saya', Icons.receipt, () {
-                  Navigator.of(context).pushNamed(MyRecipeScreen.routeName);
+                  Navigator.of(context).pushNamed('my-recipe');
                 });
               } else {
                 return FutureBuilder(
                   future: authProvider.tryAutoLogin(),
-                  builder: (ctx, snapshot) =>
-                  Container()
+                  builder: (ctx, snapshot) => Container()
                 );
               }
             },

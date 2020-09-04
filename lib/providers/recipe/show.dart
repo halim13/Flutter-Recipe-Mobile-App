@@ -24,8 +24,19 @@ class RecipeShow with ChangeNotifier {
     try {
       http.Response response = await http.get(url).timeout(Duration(seconds: 60));
       SearchSuggestionModel model = SearchSuggestionModel.fromJson(json.decode(response.body));
-      List<SearchSuggestionsData> loadedSearchSuggestions = model.data;
-      searchSuggestions = loadedSearchSuggestions;
+      List<SearchSuggestionsData> initialSearchSuggestionData = [];
+      model.data.forEach((item) { 
+        initialSearchSuggestionData.add(SearchSuggestionsData(
+          uuid: item.uuid, 
+          title: item.title,
+          imageurl: item.imageurl,
+          duration: item.duration,
+          name: item.name,
+          portion: item.portion,
+          userId: item.userId
+        ));
+      });
+      searchSuggestions = initialSearchSuggestionData;
       notifyListeners();
       return searchSuggestions;
     } catch(error) {

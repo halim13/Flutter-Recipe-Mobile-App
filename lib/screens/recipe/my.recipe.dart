@@ -8,8 +8,6 @@ import '../../providers/recipe/my.recipe.dart';
 import '../../screens/profile/view.dart';
 
 class MyRecipeScreen extends StatefulWidget {
-  static const routeName = '/my-recipe';
-
   @override
   _MyRecipeScreenState createState() => _MyRecipeScreenState();
 }
@@ -47,10 +45,7 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
       arguments: {
         'uuid': uuid,
         'title': title,
-        'portion': portion,
-        'duration':  duration,
         'userId': userId,
-        'name': name
       },
     );
   }
@@ -58,7 +53,7 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Resep Saya')
+        title: Text('My Recipes')
       ),
       body: FutureBuilder(
         future: Provider.of<MyRecipe>(context, listen: false).getShow(),
@@ -80,14 +75,14 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
                       child: Image.asset('assets/no-network.png')
                     ),
                     SizedBox(height: 15.0),
-                    Text('Koneksi jaringan Anda buruk.',
+                    Text('Bad Connection or Server Unreachable',
                       style: TextStyle(
                         fontSize: 16.0
                       ),
                     ),
                     SizedBox(height: 10.0),
                     GestureDetector(
-                      child: Text('Coba Ulangi',
+                      child: Text('Try Again',
                         style: TextStyle(
                           fontSize: 16.0,
                           decoration: TextDecoration.underline
@@ -104,7 +99,7 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
           }
           return Consumer<MyRecipe>(
             child: Center(
-              child: Text('Belum ada resep'),
+              child: Text('There is no Recipes yet'),
             ),
             builder: (BuildContext context, MyRecipe recipeProvider, Widget child) => recipeProvider.getShowItem.length <= 0 ? child :
             RefreshIndicator(
@@ -119,7 +114,7 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0)
                     ),
-                    elevation: 4,
+                    elevation: 4.0,
                     margin: EdgeInsets.all(10.0),
                     child: Column(
                       children: [
@@ -193,14 +188,14 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
                                 children: [
                                   Icon(Icons.schedule),
                                   SizedBox(width: 6.0),
-                                  Text('${recipeProvider.getShowItem[i].duration.toString()} min'),
+                                  Text('${recipeProvider.getShowItem[i].duration} min'),
                                 ],
                               ),
                               Row(
                                 children: [
                                   Icon(Icons.fastfood),
                                   SizedBox(width: 6.0),
-                                  Text('${recipeProvider.getShowItem[i].portion} Porsi'),
+                                  Text('${recipeProvider.getShowItem[i].portion} Portion'),
                                 ],
                               ),
                             ],
@@ -222,7 +217,7 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
                                 SizedBox(width: 6),
                                 RichText(
                                   text: TextSpan(
-                                    text: 'Dibuat oleh : ',
+                                    text: 'Recipe by : ',
                                     style: TextStyle(
                                       color: Colors.black, 
                                       fontSize: 16.0

@@ -361,6 +361,7 @@ class RecipeEdit extends ChangeNotifier {
         if(categoryId != null) {
           Provider.of<RecipeShow>(context, listen: false).getShow(categoryId);
         }
+        Provider.of<RecipeShow>(context, listen: false).suggestions();
         Provider.of<RecipeDetail>(context, listen: false).detail(recipeId);
         Provider.of<RecipeDetail>(context, listen: false).refreshRecipeFavorite();
         notifyListeners();

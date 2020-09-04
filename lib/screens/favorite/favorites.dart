@@ -31,14 +31,14 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   child: Image.asset('assets/no-network.png')
                 ),
                 SizedBox(height: 15.0),
-                Text('Koneksi jaringan Anda buruk',
+                Text('Bad Connection or Server Unreachable',
                   style: TextStyle(
                     fontSize: 16.0
                   ),
                 ),
                 SizedBox(height: 10.0),
                 GestureDetector(
-                  child: Text('Coba Ulangi',
+                  child: Text('Try Again',
                     style: TextStyle(
                       fontSize: 16.0,
                       decoration: TextDecoration.underline
@@ -64,7 +64,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        'Belum ada favorit', 
+                        'There is no Favorites yet', 
                         style: TextStyle(
                           fontSize: 15.0
                         ),

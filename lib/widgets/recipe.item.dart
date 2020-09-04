@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../screens/profile/view.dart';
-import '../screens/favorite/detail.favorite.dart';
 import '../constants/url.dart';
 
 class RecipeItem extends StatelessWidget {
@@ -126,7 +125,7 @@ class RecipeItem extends StatelessWidget {
                   children: [
                     Icon(Icons.fastfood),
                     SizedBox(width: 6.0),
-                    Text('$portion Porsi'),
+                    Text('$portion Portion'),
                   ],
                 ),
               ],
@@ -148,7 +147,7 @@ class RecipeItem extends StatelessWidget {
                   SizedBox(width: 6.0),
                   RichText(
                     text: TextSpan(
-                      text: 'Dibuat oleh : ',
+                      text: 'Recipe by : ',
                       style: TextStyle(
                         color: Colors.black, 
                         fontSize: 16.0

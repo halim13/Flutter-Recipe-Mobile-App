@@ -26,7 +26,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
   void changeImageRecipe() async {
     ImageSource imageSource = await showDialog<ImageSource>(context: context, builder: (context) => 
       AlertDialog(
-        title: Text("Pilih sumber gambar",
+        title: Text("Select Image Source",
         style: TextStyle(
           color: Colors.black,
           fontWeight: FontWeight.bold, 
@@ -65,7 +65,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
     try {
       if(recipeProvider.titleController.text == "") {
         recipeProvider.titleFocusNode.requestFocus();
-        throw new Exception('Judul Makanan jangan lupa diisi');
+        throw new Exception('Title Recipe is required');
       }
       // if(recipeProvider.portionController.text == "") {
       //   recipeProvider.portionFocusNode.requestFocus();
@@ -76,14 +76,14 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
         if(ingredientsGroupController.text == "") {
           FocusNode node = recipeProvider.ingredientsGroup[i].focusNode;
           node.requestFocus();
-          throw new Exception('Judul Bahan Makanan tidak boleh kosong');
+          throw new Exception('Title Ingredients Group is required');
         }
         for(int z = 0; z < recipeProvider.ingredientsGroup[i].ingredients.length; z++) {
           TextEditingController ingredientsController = recipeProvider.ingredientsGroup[i].ingredients[z].textEditingController;
           if(ingredientsController.text == "") {
             FocusNode node = recipeProvider.ingredientsGroup[i].ingredients[z].focusNode;
             node.requestFocus();
-            throw new Exception('Bahan Makanan tidak boleh kosong');
+            throw new Exception('Title Ingredients is required');
           }
           recipeProvider.ingredientsGroupSendToHttp.add({
             "uuid": recipeProvider.ingredientsGroup[i].uuid,
@@ -101,7 +101,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
         if(stepsController.text == "") {
           FocusNode node = recipeProvider.steps[i].focusNode;
           node.requestFocus();
-          throw new Exception('Bagaimana cara memasaknya ?');
+          throw new Exception('How to Cook ?');
         }
         recipeProvider.stepsSendToHttp.add({
           "uuid": recipeProvider.steps[i].uuid,
@@ -153,8 +153,8 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
           animType: AnimType.BOTTOMSLIDE,
           headerAnimationLoop: false,
           dismissOnTouchOutside: false,
-          title: 'Berhasil',
-          desc: 'Perubahan tersimpan',
+          title: 'Successful',
+          desc: 'Updated',
           btnOkOnPress: () {
             Navigator.pop(context, title);
           },
@@ -170,7 +170,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
         content: Text(errorText[1]),
         action: SnackBarAction(
           textColor: Colors.white,
-          label: 'Tutup',
+          label: 'Close',
           onPressed: () {
             Scaffold.of(context).hideCurrentSnackBar();
           }
@@ -187,16 +187,16 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: Text('Batal Ubah ?', style: TextStyle(color: Colors.black)),
-        content: Text('Perubahan Data tidak tersimpan Apabila Anda Keluar'),
+        title: Text('Cancel ?', style: TextStyle(color: Colors.black)),
+        content: Text('Data has not been Save if you exit'),
         actions: [
           FlatButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text('Tidak'),
+            child: Text('No'),
           ),
           FlatButton(
             onPressed: () => Navigator.pop(context, true),
-            child: Text('Ya'),
+            child: Text('Yes'),
           ),
         ],
       ),
@@ -208,7 +208,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
     String recipeId = routeArgs["recipeId"];
     return Scaffold(
     appBar: AppBar(
-      title: Text('Ubah Resep'),
+      title: Text('Edit Recipe'),
     ),
     body: WillPopScope(
       onWillPop: onWillPop,
@@ -230,14 +230,14 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                     child: Image.asset('assets/no-network.png')
                   ),
                   SizedBox(height: 15.0),
-                  Text('Koneksi jaringan Anda buruk.',
+                  Text('Bad Connection or Server Unreachable',
                     style: TextStyle(
                       fontSize: 16.0
                     ),
                   ),
                   SizedBox(height: 10.0),
                   GestureDetector(
-                    child: Text('Coba Ulangi',
+                    child: Text('Try Again',
                       style: TextStyle(
                         fontSize: 16.0,
                         decoration: TextDecoration.underline
@@ -303,7 +303,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                   Container(
                     margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
                     child: Text(
-                      'Kamu ingin buat masakan apa ?',
+                      'What are you Cook ?',
                       style: TextStyle(
                         fontSize: 16.0,
                         fontStyle: FontStyle.italic
@@ -339,7 +339,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                   Container(
                     margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
                     child: Text(
-                      'Kategori apa ?',
+                      'What are the Category ?',
                       style: TextStyle(
                         fontSize: 16.0,
                         fontStyle: FontStyle.italic
@@ -355,7 +355,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                             mode: Mode.BOTTOM_SHEET,
                             showSelectedItem: true,
                             items: recipeProvider.categoriesDisplay,
-                            label: "Pilih Kategori",
+                            label: "Select Category",
                             onChanged: (v) {
                               recipeProvider.categoryName = v;
                             },
@@ -368,7 +368,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                   Container(
                     margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
                     child: Text(
-                      'Untuk berapa porsi ?',
+                      'How many Portion ?',
                       style: TextStyle(
                         fontSize: 16.0,
                         fontStyle: FontStyle.italic
@@ -384,7 +384,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                             mode: Mode.BOTTOM_SHEET,
                             showSelectedItem: true,
                             items: recipeProvider.portionsDisplay,
-                            label: "Pilih Porsi",
+                            label: "Select Portion",
                             onChanged: (v) {
                               recipeProvider.portionName = v;
                             },
@@ -423,7 +423,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                   Container(
                     margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0, bottom: 10.0),
                     child: Text(
-                      'Berapa lama memasak ini ?',
+                      'How long to Cook this ?',
                       style: TextStyle(
                         fontSize: 16.0,
                         fontStyle: FontStyle.italic
@@ -448,7 +448,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                   Container(
                     margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
                     child: Text(
-                      'Apa saja bahan - bahan nya ?',
+                      'What are the Ingredients ?',
                       style: TextStyle(
                         fontSize: 16.0,
                         fontStyle: FontStyle.italic
@@ -474,7 +474,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                       builder: (context, recipeProvider, child) {
                         return RaisedButton(
                           child: Text(
-                            'Tambah grup',
+                            'Add Group',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 16.0
@@ -494,7 +494,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                   Container(
                     margin: EdgeInsets.only(left: 18.0, top: 18.0, right: 18.0),
                     child: Text(
-                      'Bagaimana Memasak nya ?',
+                      'How to Cook ?',
                       style: TextStyle(
                         fontSize: 16.0,
                         fontStyle: FontStyle.italic
@@ -514,7 +514,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                     child: Consumer<RecipeEdit>(
                       builder: (context, recipeProvider, child) {
                         return RaisedButton(
-                          child: Text('Tambah langkah', 
+                          child: Text('Add Steps', 
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 16.0
@@ -558,7 +558,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                                   onPressed: () {},
                                 ) : RaisedButton(
                                     child: Text(
-                                      'Simpan Perubahan',
+                                      'Update',
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 16.0

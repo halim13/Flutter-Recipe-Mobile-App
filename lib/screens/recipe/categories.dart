@@ -41,14 +41,14 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   child: Image.asset('assets/no-network.png')
                 ),
                 SizedBox(height: 15.0),
-                Text('Koneksi jaringan Anda buruk.',
+                Text('Bad Connection or Server Unreachable',
                   style: TextStyle(
                     fontSize: 16.0
                   ),
                 ),
                 SizedBox(height: 10.0),
                 GestureDetector(
-                  child: Text('Coba Ulangi',
+                  child: Text('Try Again',
                     style: TextStyle(
                       fontSize: 16.0,
                       decoration: TextDecoration.underline
@@ -64,7 +64,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         }
         return Consumer<Categories>(
           child: Center(
-            child: Text('Belum ada kategori.')
+            child: Text('There is no Categories yet')
           ),
           builder: (context, categoryProvider, child) => 
           categoryProvider.items.length <= 0

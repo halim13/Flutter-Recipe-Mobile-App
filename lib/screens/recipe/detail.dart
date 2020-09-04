@@ -122,14 +122,14 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                     child: Image.asset('assets/no-network.png')
                   ),
                   SizedBox(height: 15.0),
-                  Text('Koneksi jaringan Anda buruk.',
+                  Text('Bad Connection or Server Unreachable',
                     style: TextStyle(
                       fontSize: 16.0
                     ),
                   ),
                   SizedBox(height: 10.0),
                   GestureDetector(
-                    child: Text('Coba Ulangi',
+                    child: Text('Try Again',
                       style: TextStyle(
                         fontSize: 16.0,
                         decoration: TextDecoration.underline
@@ -193,7 +193,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                           children: [
                             Icon(Icons.fastfood),
                             SizedBox(width: 6.0),
-                            Text('${recipeProvider.getRecipeDetail.first.portion} Porsi'),
+                            Text('${recipeProvider.getRecipeDetail.first.portion} Portion'),
                           ],
                         )
                       ],
@@ -208,7 +208,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                         SizedBox(width: 6),
                         RichText(
                           text: TextSpan(
-                            text: 'Dibuat oleh : ',
+                            text: 'Recipe by : ',
                             style: TextStyle(
                               color: Colors.black, 
                               fontSize: 16.0
@@ -228,7 +228,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                     ),
                   ),
                   Center(
-                    child: buildSectionTitle(context, 'Bahan - bahan')
+                    child: buildSectionTitle(context, 'Ingredients')
                   ),
                   buildContainer(
                     ListView.separated(
@@ -272,7 +272,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                     ),
                   ),
                   Center(
-                    child: buildSectionTitle(context, 'Langkah Memasak')
+                    child: buildSectionTitle(context, 'How to Cook')
                   ),
                   buildContainer(
                     ListView.separated(
@@ -341,17 +341,19 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       ),
       floatingActionButton: Consumer<Auth>( 
         builder: (BuildContext context, Auth authProvider, Widget child) {
-          return authProvider.isAuth ? Consumer<RecipeDetail>(
-            builder: (context, recipeProvider, ch) {
-              return FloatingActionButton(
-                elevation: 0.0,
-                backgroundColor: Colors.yellow.shade700,
-                foregroundColor: Colors.black,
-                child: Icon(recipeProvider.isRecipeFavorite(recipeId, recipeProvider.favorite) ? Icons.star : Icons.star_border),
-                onPressed: () => recipeProvider.toggleFavorite(recipeId, recipeProvider.favorite, context)
-              );
-            },
-          ) : FutureBuilder(
+          return authProvider.isAuth 
+          ? Consumer<RecipeDetail>(
+              builder: (context, recipeProvider, ch) {
+                return FloatingActionButton(
+                  elevation: 0.0,
+                  backgroundColor: Colors.yellow.shade700,
+                  foregroundColor: Colors.black,
+                  child: Icon(recipeProvider.isRecipeFavorite(recipeId, recipeProvider.favorite) ? Icons.star : Icons.star_border),
+                  onPressed: () => recipeProvider.toggleFavorite(recipeId, recipeProvider.favorite, context)
+                );
+              },
+            ) 
+          : FutureBuilder(
             future: authProvider.tryAutoLogin(),
             builder: (ctx, snapshot) => Container()
           );

@@ -88,14 +88,14 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
                     child: Image.asset('assets/no-network.png')
                   ),
                   SizedBox(height: 15.0),
-                  Text('Koneksi jaringan Anda buruk',
+                  Text('Bad Connection or Server Unreachable',
                     style: TextStyle(
                       fontSize: 16.0
                     ),
                   ),
                   SizedBox(height: 10.0),
                   GestureDetector(
-                    child: Text('Coba Ulangi',
+                    child: Text('Try Again',
                       style: TextStyle(
                         fontSize: 16.0,
                         decoration: TextDecoration.underline
@@ -111,7 +111,7 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
           }
           return Consumer<RecipeShow>(
             child: Center(
-              child: Text('Belum ada resep'),
+              child: Text('There is no Recipes yet'),
             ),
             builder: (BuildContext context, RecipeShow recipeProvider, Widget child) => recipeProvider.getShowItem.length <= 0 ? child :
             RefreshIndicator(
@@ -204,7 +204,7 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
                                 children: [
                                   Icon(Icons.fastfood),
                                   SizedBox(width: 6.0),
-                                  Text('${recipeProvider.getShowItem[i].portion} Porsi'),
+                                  Text('${recipeProvider.getShowItem[i].portion} Portion'),
                                 ],
                               ),
                             ],
@@ -226,7 +226,7 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
                                 SizedBox(width: 6.0),
                                 RichText(
                                   text: TextSpan(
-                                    text: 'Dibuat oleh : ',
+                                    text: 'Recipe by : ',
                                     style: TextStyle(
                                       color: Colors.black, 
                                       fontSize: 16.0
@@ -313,14 +313,11 @@ class DataSearch extends SearchDelegate<String> {
         return InkWell(
           onTap: () => {
             Navigator.of(context).pushNamed(
-              'detail-recip',
+              '/detail-recipe',
               arguments: {
                 "uuid": results[i].uuid,
                 "title": results[i].title,
-                "portion": results[i].portion,
-                "duration":  results[i].duration,
                 "userId": results[i].userId,
-                "name": results[i].name
               }
             )
           },
@@ -387,7 +384,7 @@ class DataSearch extends SearchDelegate<String> {
                         children: [
                           Icon(Icons.fastfood),
                           SizedBox(width: 6.0),
-                          Text('${results[i].portion}'),
+                          Text('${results[i].portion} Portion'),
                         ],
                       ),
                     ],
@@ -402,7 +399,7 @@ class DataSearch extends SearchDelegate<String> {
                       SizedBox(width: 6),
                       RichText(
                         text: TextSpan(
-                          text: 'Dibuat oleh : ',
+                          text: 'Recipe by : ',
                           style: TextStyle(
                             color: Colors.black, 
                             fontSize: 16.0
@@ -438,14 +435,11 @@ class DataSearch extends SearchDelegate<String> {
           child: ListTile(
             onTap: () {
               Navigator.of(context).pushNamed(
-                'detail-recipe',
+                '/detail-recipe',
                 arguments: {
                   "uuid": recipeProvider.searchSuggestionsItem[i].uuid,
                   "title": recipeProvider.searchSuggestionsItem[i].title,
-                  "portion": recipeProvider.searchSuggestionsItem[i].portion,
-                  "duration":  recipeProvider.searchSuggestionsItem[i].duration,
                   "userId": recipeProvider.searchSuggestionsItem[i].userId,
-                  "name": recipeProvider.searchSuggestionsItem[i].name
                 }
               );
               recipeProvider.popularViews(recipeProvider.searchSuggestionsItem[i].uuid);
@@ -479,14 +473,11 @@ class DataSearch extends SearchDelegate<String> {
         child: ListTile(
           onTap: () {
             Navigator.of(context).pushNamed(
-              'detail-recipe',
+              '/detail-recipe',
               arguments: {
                 "uuid": suggestionsList[i].uuid,
                 "title": suggestionsList[i].title,
-                "portion": suggestionsList[i].portion,
-                "duration":  suggestionsList[i].duration,
                 "userId": suggestionsList[i].userId,
-                "name": suggestionsList[i].name
               }
             );
             recipeProvider.popularViews(suggestionsList[i].uuid);

@@ -108,14 +108,14 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
                     child: Image.asset('assets/no-network.png')
                   ),
                   SizedBox(height: 15.0),
-                  Text('Koneksi jaringan Anda buruk',
+                  Text('Bad Connection or Server Unreachable',
                     style: TextStyle(
                       fontSize: 16.0
                     ),
                   ),
                   SizedBox(height: 10.0),
                   GestureDetector(
-                    child: Text('Coba Ulangi',
+                    child: Text('Try Again',
                       style: TextStyle(
                         fontSize: 16.0,
                         decoration: TextDecoration.underline
@@ -179,7 +179,7 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
                           children: [
                             Icon(Icons.fastfood),
                             SizedBox(width: 6.0),
-                            Text('${recipeProvider.getRecipeDetail.first.portion} Porsi'),
+                            Text('${recipeProvider.getRecipeDetail.first.portion} Portion'),
                           ],
                         )
                       ],
@@ -194,7 +194,7 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
                         SizedBox(width: 6.0),
                         RichText(
                           text: TextSpan(
-                            text: 'Dibuat oleh : ',
+                            text: 'Recipe by : ',
                             style: TextStyle(
                               color: Colors.black, 
                               fontSize: 16.0
@@ -214,7 +214,7 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
                     ),
                   ),
                   Center(
-                    child: buildSectionTitle(context, 'Bahan - bahan')
+                    child: buildSectionTitle(context, 'Ingredients')
                   ),
                   buildContainer(
                     ListView.separated(
@@ -240,26 +240,26 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
                               shrinkWrap: true,
                               physics: NeverScrollableScrollPhysics(),
                               children: List.generate(recipeProvider.getIngredientsGroupDetail[i].ingredients.length, (z) => Container(
-                                  child: Container(
-                                    margin: EdgeInsets.only(left: 10.0),
-                                    child: Text('- ${recipeProvider.getIngredientsGroupDetail[i].ingredients[z].body}',
-                                      style: TextStyle(
-                                        fontSize: 16.0,
-                                        height: 1.75
-                                      ) 
-                                    )
+                                child: Container(
+                                  margin: EdgeInsets.only(left: 10.0),
+                                  child: Text('- ${recipeProvider.getIngredientsGroupDetail[i].ingredients[z].body}',
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      height: 1.75
+                                    ) 
                                   )
                                 )
                               )
-                            ),
-                          ],
-                        )
+                            )
+                          ),
+                        ],
                       )
-                    ),
+                    )
                   ),
-                  Center(
-                    child: buildSectionTitle(context, 'Langkah Memasak')
-                  ),
+                ),
+                Center(
+                  child: buildSectionTitle(context, 'How to Cook')
+                ),
                   buildContainer(
                     ListView.separated(
                       shrinkWrap: true,

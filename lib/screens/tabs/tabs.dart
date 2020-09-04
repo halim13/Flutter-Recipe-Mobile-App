@@ -32,7 +32,7 @@ class TabsScreenState extends State<TabsScreen> {
       },
       {
         'page': ProfileScreen(),
-        'title': 'Profil',
+        'title': 'Profile',
       },
     ];
     super.initState();
@@ -93,7 +93,7 @@ class TabsScreenState extends State<TabsScreen> {
           ),
           BottomNavyBarItem(
             icon: Icon(Icons.account_circle),
-            title: Text('Profil'),
+            title: Text('Profile'),
             activeColor: Colors.blue.shade700,
           ),
         ],
