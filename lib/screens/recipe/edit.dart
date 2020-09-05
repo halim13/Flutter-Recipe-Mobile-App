@@ -60,7 +60,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
     }
   }
 
-  void save(BuildContext context) async {
+  void save(BuildContext context, [int isPublished = 0]) async {
     RecipeEdit recipeProvider = Provider.of<RecipeEdit>(context, listen: false);
     recipeProvider.titleFocusNode.unfocus();
     try {
@@ -125,7 +125,6 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
       List<Map<String, Object>> uniqueSteps = recipeProvider.stepsSendToHttp.where((item) => seenSteps.add(item["uuid"])).toList();
       List<Map<String, Object>> uniqueRemoveSteps = recipeProvider.removeStepsSendToHttp.where((item) => seenRemoveSteps.add(item["uuid"])).toList();
       String title = recipeProvider.titleController.text;
-      String portion = recipeProvider.portionController.text;
       String ingredientsGroup = jsonEncode(uniqueIngredientsGroup);
       String removeIngredientsGroup = jsonEncode(uniqueRemoveIngredientsGroup);
       String ingredients = jsonEncode(uniqueIngredients);
@@ -146,8 +145,8 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
         removeIngredients, 
         steps, 
         removeSteps, 
-        portion, 
-        categoryName
+        categoryName,
+        isPublished
       );
       if(response["status"] == 200) {
         AwesomeDialog(
@@ -157,7 +156,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
           headerAnimationLoop: false,
           dismissOnTouchOutside: false,
           title: 'Successful',
-          desc: 'Updated',
+          desc: Provider.of<RecipeEdit>(context, listen: false).data.recipes.first.isPublished == 1 ? 'Updated' : 'Published',
           btnOkOnPress: () {
             Navigator.pop(context, title);
           },
@@ -583,7 +582,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                       margin: EdgeInsets.all(10.0),
                       padding: EdgeInsets.all(10.0),
                         child: Consumer<RecipeEdit>(
-                          builder: (context, recipeProvider, child) {
+                          builder: (BuildContext context, RecipeEdit recipeProvider, Widget child) {
                             return Container(
                                 height: 48.0,
                                 child: recipeProvider.isLoading ? RaisedButton(
@@ -603,9 +602,26 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                                   elevation: 0.0,
                                   color: Colors.blue.shade700,
                                   onPressed: () {},
-                                ) : RaisedButton(
+                                ) : recipeProvider.data.recipes.first.isPublished == 1 
+                                  ? RaisedButton(
+                                      child: Text(
+                                        'Update',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16.0
+                                        ),
+                                      ) ,
+                                      shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      side: BorderSide(color: Colors.transparent)
+                                    ),
+                                    elevation: 0.0,
+                                    color: Colors.blue.shade700,
+                                    onPressed: () => save(context),  
+                                  )
+                                :  RaisedButton(
                                     child: Text(
-                                      'Update',
+                                      'Publish',
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 16.0
@@ -617,7 +633,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                                   ),
                                   elevation: 0.0,
                                   color: Colors.blue.shade700,
-                                  onPressed: () => save(context),  
+                                  onPressed: () => save(context, 1),  
                                 )
                               );
                             }

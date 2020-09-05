@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/models/RecipeDraft.dart';
 import 'package:uuid/uuid.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,12 +15,9 @@ import '../../constants/url.dart';
 import '../../models/Recipe.dart';
 import './detail.dart';
 import './show.dart';
-import './my.draft.dart';
 
-class RecipeEdit extends ChangeNotifier {
+class MyDraft extends ChangeNotifier {
 
-  // RecipeEdit({ RecipeDetail recipeDetail}) : _recipeDetail = recipeDetail;
-  // RecipeDetail _recipeDetail;
   Data data;
   File fileImageRecipe;
   String foodCountryName;
@@ -47,9 +45,11 @@ class RecipeEdit extends ChangeNotifier {
   List<Map<String, Object>> stepsSendToHttp = [];
   List<Map<String, Object>> removeStepsSendToHttp = [];
   
+  List<RecipeDraftModelData> recipesDraft = [];
   List<IngredientsGroup> ingredientsGroup = [];
   List<Steps> steps = [];
 
+  List<RecipeDraftModelData> get getRecipesDraftItem => [...recipesDraft];
   List<Recipes> get getRecipes => [...data.recipes];
   List<IngredientsGroup> get getIngredientsGroup => [...data.ingredientsGroup];
   List<Steps> get getSteps => [...data.steps];
@@ -157,7 +157,7 @@ class RecipeEdit extends ChangeNotifier {
     String uuid4 = uuid.v4(); 
     if(steps.length >= 10) {
       SnackBar snackbar = SnackBar(
-        backgroundColor: Colors.yellow[300],
+        backgroundColor: Colors.red[300],
         content: Text('Maximum 10 Steps'),
         action: SnackBarAction(
           textColor: Colors.white,
@@ -316,8 +316,8 @@ class RecipeEdit extends ChangeNotifier {
     String removeIngredients, 
     String stepsParam, 
     String removeSteps, 
-    String categoryName,
-    int isPublished
+    String portion, 
+    String categoryName
   ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
@@ -334,11 +334,10 @@ class RecipeEdit extends ChangeNotifier {
       "portion": portionName,
       "categoryName": categoryName,
       "foodCountryName": foodCountryName,
-      "userId": userId,
-      "isPublished": isPublished.toString()
+      "userId": userId
     };
     Map<String, String> headers = {"Content-Type": "application/json"};
-    String url = 'http://$baseurl:$port/api/v1/recipes/update/$recipeId';
+    String url = 'http://$baseurl:$port/api/v1/recipes/update-draft/$recipeId';
     isLoading = true;
     notifyListeners();
     try {
@@ -376,7 +375,6 @@ class RecipeEdit extends ChangeNotifier {
           Provider.of<RecipeShow>(context, listen: false).getShow(categoryId);
         }
         Provider.of<RecipeShow>(context, listen: false).suggestions();
-        Provider.of<MyDraft>(context, listen: false).getRecipesDraft();
         Provider.of<RecipeDetail>(context, listen: false).detail(recipeId);
         Provider.of<RecipeDetail>(context, listen: false).refreshRecipeFavorite();
         notifyListeners();
@@ -385,6 +383,44 @@ class RecipeEdit extends ChangeNotifier {
       final responseDecoded = jsonDecode(responseData);   
       notifyListeners();  
       return responseDecoded;
+    } catch(error) {
+      print(error);
+      throw error;
+    }
+  }
+
+   Future<void> refreshRecipesDraft() async {
+    await getRecipesDraft();
+  }
+
+  Future<void> getRecipesDraft([int limit = 0]) async {
+    limit = limit + 5;
+    String url = 'http://$baseurl:$port/api/v1/recipes/show-draft'; 
+    try {
+      http.Response response = await http.get(url).timeout(Duration(seconds: 10));
+      RecipeDraftModel model = RecipeDraftModel.fromJson(json.decode(response.body));
+      List<RecipeDraftModelData> initialRecipesDraft = [];
+      model.data.forEach((item) {
+        initialRecipesDraft.add(RecipeDraftModelData(
+          uuid: item.uuid,
+          title: item.title,
+          imageurl: item.imageurl,
+          duration: item.duration,
+          portion: item.portion,
+          user: RecipeDraftModelDataUser(
+            uuid: item.user.uuid,
+            name: item.user.name
+          ),
+          category: RecipeDraftModelDataCategory(
+            title: item.category.title
+          ),
+          country: RecipeDraftModelDataCountry(
+            name: item.country.name
+          )
+        ));
+      });
+      recipesDraft = initialRecipesDraft;
+      notifyListeners();
     } catch(error) {
       print(error);
       throw error;

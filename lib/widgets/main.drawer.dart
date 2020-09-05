@@ -111,6 +111,20 @@ class _MainDrawerState extends State<MainDrawer> {
               }
             },
           ),
+           Consumer<Auth>(
+            builder: (context, authProvider, child) {
+              if(authProvider.isAuth) {
+                return buildListTile('My Drafts', Icons.drafts, () {
+                  Navigator.of(context).pushNamed('/my-draft');
+                });
+              } else {
+                return FutureBuilder(
+                  future: authProvider.tryAutoLogin(),
+                  builder: (ctx, snapshot) => Container()
+                );
+              }
+            },
+          ),
           Consumer<Auth>(
             builder: (context, auth, child) {
               if(auth.isAuth) {
@@ -128,9 +142,6 @@ class _MainDrawerState extends State<MainDrawer> {
               }
             },
           ),
-          // buildListTile('Meals', Icons.restaurant, () {
-          //   Navigator.of(context).pushReplacementNamed('/');
-          // }),
           // buildListTile('Filter', Icons.settings, () {
           //   Navigator.of(context).pushReplacementNamed(FiltersScreen.routeName);
           // }),

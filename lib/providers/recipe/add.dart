@@ -23,11 +23,12 @@ class RecipeAdd with ChangeNotifier {
   ScrollController ingredientsScrollController = ScrollController();
   ScrollController stepsScrollController = ScrollController();
   bool isLoading = false;
+  bool isLoadingDraft = false;
   File fileImageRecipe;
   String filenameImageRecipe;
   String categoryName;
   String foodCountryName;
-  String portionName;
+  String portionName = "1";
   List categoriesDisplay = [""];
   List foodCountriesDisplay = [""];
   List<String> portionsDisplay = ["1", "2", "3", "4", "5", "6", "7", "8"];
@@ -158,11 +159,11 @@ class RecipeAdd with ChangeNotifier {
     String uuidv4Ingredients = uuid.v4();
     if(ingredientsGroup.length >= 10) {
       SnackBar snackbar = SnackBar(
-        backgroundColor: Colors.red[300],
-        content: Text('Oops! Sudah Mencapai Batas Maksimal'),
+        backgroundColor: Colors.yellow[300],
+        content: Text('Maximum Ingredients Group'),
         action: SnackBarAction(
           textColor: Colors.white,
-          label: 'Tutup',
+          label: 'Close',
           onPressed: () {
             Scaffold.of(context).hideCurrentSnackBar();
           }
@@ -200,11 +201,11 @@ class RecipeAdd with ChangeNotifier {
     String uuidv4 = uuid.v4();
     if(ingredientsGroup[i].ingredients.length >= 10) {
       SnackBar snackbar = SnackBar(
-        backgroundColor: Colors.red[300],
-        content: Text('Oops! Sudah Mencapai Batas Maksimal'),
+        backgroundColor: Colors.yellow[300],
+        content: Text('Maximum 10 Ingredients'),
         action: SnackBarAction(
           textColor: Colors.white,
-          label: 'Tutup',
+          label: 'Close',
           onPressed: () {
             Scaffold.of(context).hideCurrentSnackBar();
           }
@@ -235,10 +236,10 @@ class RecipeAdd with ChangeNotifier {
     if(steps.length >= 10) {
       SnackBar snackbar = SnackBar(
         backgroundColor: Colors.red[300],
-        content: Text('Oops! Sudah Mencapai Batas Maksimal'),
+        content: Text('Maximum 10 Steps'),
         action: SnackBarAction(
           textColor: Colors.white,
-          label: 'Tutup',
+          label: 'Close',
           onPressed: () {
             Scaffold.of(context).hideCurrentSnackBar();
           }
@@ -312,8 +313,8 @@ class RecipeAdd with ChangeNotifier {
     String title, 
     String ingredientsGroupParam, 
     String ingredients, 
-    String stepsParam, 
-    String portion
+    String stepsParam,
+    int isPublished
   ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, Object> extractedUserData = json.decode(prefs.getString('userData'));
@@ -327,12 +328,18 @@ class RecipeAdd with ChangeNotifier {
       "steps": stepsParam,
       "categoryName": categoryName,
       "foodCountryName": foodCountryName,
-      "userId": userId
+      "userId": userId,
+      "isPublished": isPublished.toString()
     };
     Map<String, String> headers = {"Content-Type": "application/json"};
     String url = 'http://$baseurl:$port/api/v1/recipes/store'; 
-    isLoading = true;
-    notifyListeners();
+    if(isPublished == 1) {
+      isLoading = true;
+      notifyListeners();
+    } else {
+      isLoadingDraft = true;
+      notifyListeners();
+    }
     try {
       http.MultipartRequest request = http.MultipartRequest('POST', Uri.parse(url));
        for (int i = 0; i < steps.length; i++) {
@@ -359,7 +366,13 @@ class RecipeAdd with ChangeNotifier {
         ingredientsGroupSendToHttp = [];
         ingredientsSendToHttp = [];
         stepsSendToHttp = [];
-        isLoading = false;
+        if(isPublished == 1) {
+          isLoading = false;
+          notifyListeners();
+        } else {
+          isLoadingDraft = false;
+          notifyListeners();
+        }
         initState();
         notifyListeners();
       }
@@ -372,5 +385,7 @@ class RecipeAdd with ChangeNotifier {
       throw error;
     }
   }
+
+  
   
 }

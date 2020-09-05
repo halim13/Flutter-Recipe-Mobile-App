@@ -4,15 +4,15 @@ import 'package:quartet/quartet.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../constants/url.dart';
-import '../../providers/recipe/my.recipe.dart';
+import '../../providers/recipe/my.draft.dart';
 import '../../screens/profile/view.dart';
 
-class MyRecipeScreen extends StatefulWidget {
+class MyDraftScreen extends StatefulWidget {
   @override
-  _MyRecipeScreenState createState() => _MyRecipeScreenState();
+  _MyDraftScreenState createState() => _MyDraftScreenState();
 }
 
-class _MyRecipeScreenState extends State<MyRecipeScreen> {
+class _MyDraftScreenState extends State<MyDraftScreen> {
   ScrollController controller = ScrollController();
 
   @override
@@ -20,7 +20,7 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
     super.initState();
     controller.addListener(() {
       if (controller.position.pixels == controller.position.maxScrollExtent) {
-        Provider.of<MyRecipe>(context, listen: false).getShow(5);
+        Provider.of<MyDraft>(context, listen: false).getRecipesDraft(5);
       }
     });
   }
@@ -34,8 +34,8 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
   void selectRecipe(
     BuildContext context, 
     String uuid, 
-    String title, 
-    String userId,
+    String title,
+    String userId
   ) {
     Navigator.of(context).pushNamed(
       '/detail-recipe',
@@ -50,10 +50,10 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Recipes')
+        title: Text('My Drafts')
       ),
       body: FutureBuilder(
-        future: Provider.of<MyRecipe>(context, listen: false).getShow(),
+        future: Provider.of<MyDraft>(context, listen: false).getRecipesDraft(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if(snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -61,9 +61,7 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
             );
           }
           if(snapshot.hasError) {
-            return Consumer<MyRecipe>(
-            builder: (context, userProvider, child) =>
-              Center(
+            return  Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -91,21 +89,20 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
                     ),
                   ],
                 ),
-              ),
-            );
+              );
           }
-          return Consumer<MyRecipe>(
+          return Consumer<MyDraft>(
             child: Center(
-              child: Text('There is no Recipes yet'),
+              child: Text('There is no Drafts yet'),
             ),
-            builder: (BuildContext context, MyRecipe recipeProvider, Widget child) => recipeProvider.getShowItem.length <= 0 ? child :
+            builder: (BuildContext context, MyDraft recipeProvider, Widget child) => recipeProvider.getRecipesDraftItem.length <= 0 ? child :
             RefreshIndicator(
-              onRefresh: () => recipeProvider.refreshRecipe(),
+              onRefresh: () => recipeProvider.refreshRecipesDraft(),
               child: ListView.builder(
               controller: controller,
-              itemCount: recipeProvider.getShowItem.length,
+              itemCount: recipeProvider.getRecipesDraftItem.length,
               itemBuilder: (context, i) {
-                if(i == recipeProvider.getShowItem.length) 
+                if(i == recipeProvider.getRecipesDraftItem.length) 
                   return CircularProgressIndicator();
                   return Card(
                     shape: RoundedRectangleBorder(
@@ -121,9 +118,9 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
                               onTap: () {
                                 selectRecipe(
                                   context, 
-                                  recipeProvider.getShowItem[i].uuid,
-                                  recipeProvider.getShowItem[i].title, 
-                                  recipeProvider.getShowItem[i].user.uuid,
+                                  recipeProvider.getRecipesDraftItem[i].uuid,
+                                  recipeProvider.getRecipesDraftItem[i].title, 
+                                  recipeProvider.getRecipesDraftItem[i].user.uuid
                                 );
                               },
                               child: ClipRRect(
@@ -132,7 +129,7 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
                                   topRight: Radius.circular(15.0),
                                 ),
                                 child: CachedNetworkImage(
-                                  imageUrl: '$imagesRecipesUrl/${recipeProvider.getShowItem[i].imageurl}',
+                                  imageUrl: '$imagesRecipesUrl/${recipeProvider.getRecipesDraftItem[i].imageurl}',
                                   imageBuilder: (context, imageProvider) => Container(
                                     width: double.infinity,
                                     height: 250.0,
@@ -161,7 +158,7 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
                                   horizontal: 20.0,
                                 ),
                                 child: Text(
-                                  titleCase(recipeProvider.getShowItem[i].title),
+                                  titleCase(recipeProvider.getRecipesDraftItem[i].title),
                                   style: TextStyle(
                                     fontSize: 26.0,
                                     color: Colors.white,
@@ -182,14 +179,14 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
                                 children: [
                                   Icon(Icons.schedule),
                                   SizedBox(width: 6.0),
-                                  Text('${recipeProvider.getShowItem[i].duration} min'),
+                                  Text('${recipeProvider.getRecipesDraftItem[i].duration} min'),
                                 ],
                               ),
                               Row(
                                 children: [
                                   Icon(Icons.fastfood),
                                   SizedBox(width: 6.0),
-                                  Text('${recipeProvider.getShowItem[i].portion} Portion'),
+                                  Text('${recipeProvider.getRecipesDraftItem[i].portion} Portion'),
                                 ],
                               ),
                             ],
@@ -199,7 +196,7 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => ViewProfileScreen(recipeProvider.getShowItem[i].user.uuid, recipeProvider.getShowItem[i].user.name)),
+                              MaterialPageRoute(builder: (context) => ViewProfileScreen(recipeProvider.getRecipesDraftItem[i].user.uuid, recipeProvider.getRecipesDraftItem[i].user.name)),
                             );
                           },
                           child: Container(
@@ -211,7 +208,7 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
                                   children: [
                                     Icon(Icons.flag),
                                     SizedBox(width: 6.0),
-                                    Text(recipeProvider.getShowItem[i].country.name),
+                                    Text(recipeProvider.getRecipesDraftItem[i].country.name),
                                   ],
                                 ),
                                 Row(
@@ -227,7 +224,7 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
                                         ),
                                         children: <TextSpan>[
                                           TextSpan(
-                                            text: '${recipeProvider.getShowItem[i].user.name}',
+                                            text: '${recipeProvider.getRecipesDraftItem[i].user.name}',
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 16.0

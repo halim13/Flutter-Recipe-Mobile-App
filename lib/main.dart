@@ -5,6 +5,7 @@ import './providers/auth/auth.dart';
 import './providers/category/categories.dart';
 import './providers/user/user.dart';
 import './providers/recipe/my.recipe.dart';
+import './providers/recipe/my.draft.dart';
 import './providers/recipe/show.dart';
 import './providers/recipe/detail.dart';
 import './providers/recipe/edit.dart';
@@ -39,6 +40,9 @@ class _MyAppState extends State<MyApp> {
         ),
         ChangeNotifierProvider.value(
           value: MyRecipe(),
+        ),
+        ChangeNotifierProvider.value(
+          value: MyDraft(),
         ),
         ChangeNotifierProvider.value(
           value: RecipeEdit(),

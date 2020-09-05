@@ -59,7 +59,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
     }
   }
 
-  void save(BuildContext context) async {
+  void save(BuildContext context, [int isPublished = 1]) async {
     RecipeAdd recipeProvider = Provider.of<RecipeAdd>(context, listen: false);
     recipeProvider.titleFocusNode.unfocus();
     try {       
@@ -115,12 +115,11 @@ class _AddRecipeState extends State<AddRecipeScreen> {
       List<Map<String, dynamic>> uniqueIngredients = recipeProvider.ingredientsSendToHttp.where((item) => seenIngredients.add(item["uuid"])).toList();
       List<Map<String, dynamic>> uniqueSteps = recipeProvider.stepsSendToHttp.where((item) => seenSteps.add(item["uuid"])).toList();
       String title = recipeProvider.titleController.text;
-      String portion = recipeProvider.portionController.text;
       String ingredientsGroup = jsonEncode(uniqueIngredientsGroup);
       String ingredients = jsonEncode(uniqueIngredients);
       String steps = jsonEncode(uniqueSteps);
       setState(() => isInAsyncCall = true );
-      final response = await recipeProvider.store(title, ingredientsGroup, ingredients, steps, portion);
+      final response = await recipeProvider.store(title, ingredientsGroup, ingredients, steps, isPublished);
       if(response["status"] == 200) {
         setState(() => isInAsyncCall = false );
         AwesomeDialog(
@@ -138,7 +137,11 @@ class _AddRecipeState extends State<AddRecipeScreen> {
       }
     } on SocketException catch(_) {
       setState(() => isInAsyncCall = false );
-      setState(() => Provider.of<RecipeAdd>(context, listen: false).isLoading = false );
+      if(isPublished == 1) {
+        setState(() => Provider.of<RecipeAdd>(context, listen: false).isLoading = false );
+      } else {
+        setState(() => Provider.of<RecipeAdd>(context, listen: false).isLoadingDraft = false );
+      }
       SnackBar snackbar = SnackBar(
         backgroundColor: Colors.red[300],
         content: Text('Connection Bad or Server Unreachable'),
@@ -153,7 +156,11 @@ class _AddRecipeState extends State<AddRecipeScreen> {
       Scaffold.of(context).showSnackBar(snackbar);
     } on Exception catch(error) {
       setState(() => isInAsyncCall = false );
-      setState(() => Provider.of<RecipeAdd>(context, listen: false).isLoading = false );
+      if(isPublished == 1) {
+        setState(() => Provider.of<RecipeAdd>(context, listen: false).isLoading = false );
+      } else {
+        setState(() => Provider.of<RecipeAdd>(context, listen: false).isLoadingDraft = false );
+      }
       String errorSplit = error.toString();
       List<String> errorText = errorSplit.split(":");
       SnackBar snackbar = SnackBar(
@@ -174,10 +181,11 @@ class _AddRecipeState extends State<AddRecipeScreen> {
   @override
   Widget build(BuildContext context) {
     bool isLoading = Provider.of<RecipeAdd>(context, listen: false).isLoading;
+    bool isLoadingDraft = Provider.of<RecipeAdd>(context, listen: false).isLoadingDraft;
     return Scaffold(
       appBar: AppBar(
         title: Text('Add Recipe'),
-        leading: isLoading 
+        leading: isLoading || isLoadingDraft
         ? IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {},
@@ -339,7 +347,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
                           onChanged: (v) {
                             recipeProvider.portionName = v;
                           },
-                          selectedItem: "1"
+                          selectedItem: recipeProvider.portionName
                         ),
                       )
                     ]
@@ -518,6 +526,52 @@ class _AddRecipeState extends State<AddRecipeScreen> {
                         elevation: 0.0,
                         color: Colors.blue.shade700,
                         onPressed: () => save(context),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 10.0, right: 10.0),
+                padding: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
+                width: double.infinity,
+                child: Consumer<RecipeAdd>(
+                  builder: (BuildContext context, RecipeAdd recipeProvider, Widget child) {
+                    return Container(
+                      height: 48.0,
+                      child: recipeProvider.isLoadingDraft ? 
+                      RaisedButton(
+                        child: Center(
+                          child: SizedBox(
+                            height: 30.0,
+                            width: 30.0,
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          )
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                          side: BorderSide(color: Colors.white)
+                        ),
+                        elevation: 0.0,
+                        color: Colors.blue.shade700,
+                        onPressed: () {},
+                      )
+                      : RaisedButton(
+                        child: Text('Save to Draft', 
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0
+                          ),
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                          side: BorderSide(color: Colors.transparent)
+                        ),
+                        elevation: 0.0,
+                        color: Colors.blue.shade700,
+                        onPressed: () => save(context, 0),
                       ),
                     );
                   },
