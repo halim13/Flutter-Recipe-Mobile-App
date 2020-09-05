@@ -202,27 +202,38 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   Container(
                     margin: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 30.0),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Icon(Icons.people),
-                        SizedBox(width: 6),
-                        RichText(
-                          text: TextSpan(
-                            text: 'Recipe by : ',
-                            style: TextStyle(
-                              color: Colors.black, 
-                              fontSize: 16.0
-                            ),
-                            children: <TextSpan>[
-                              TextSpan(
-                                text: '${recipeProvider.getRecipeDetail.first.user.name}',
+                        Row(
+                          children: [
+                            Icon(Icons.flag),
+                            SizedBox(width: 6.0),
+                            Text(recipeProvider.getRecipeDetail.first.country.name),
+                          ]
+                        ),
+                        Row(
+                          children: [
+                            Icon(Icons.people),
+                            SizedBox(width: 6.0),
+                            RichText(
+                              text: TextSpan(
+                                text: 'Recipe by : ',
                                 style: TextStyle(
-                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black, 
                                   fontSize: 16.0
                                 ),
-                              )
-                            ]
-                          ),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: '${recipeProvider.getRecipeDetail.first.user.name}',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16.0
+                                    ),
+                                  )
+                                ]
+                              ),
+                            )
+                          ]
                         )
                       ],
                     ),

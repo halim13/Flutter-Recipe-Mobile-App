@@ -118,7 +118,16 @@ class RecipeDetail with ChangeNotifier {
           portion: item.portion,
           duration: item.duration,
           isfavorite: item.isfavorite,
-          user: item.user
+          user: RecipeDetailDataUser(
+            uuid: item.user.uuid,
+            name: item.user.name
+          ),
+          category: RecipeDetailDataCategory(
+            title: item.category.title
+          ), 
+          country: RecipeDetailDataCountry(
+            name: item.country.name
+          )
         ));
       });      
       model.data.ingredientsGroup.forEach((item) {

@@ -2,7 +2,7 @@ class RecipeDetailModel {
   int status;
   bool error;
   String message;
-  RecipeDetailDatas data;
+  RecipeDetailModelData data;
 
   RecipeDetailModel({
     this.status,
@@ -15,22 +15,22 @@ class RecipeDetailModel {
     status: json["status"] == null ? null : json["status"],
     error: json["error"] == null ? null : json["error"],
     message: json["message"] == null ? null : json["message"],
-    data: json["data"] == null ? null : RecipeDetailDatas.fromJson(json["data"]),
+    data: json["data"] == null ? null : RecipeDetailModelData.fromJson(json["data"]),
   );
 }
 
-class RecipeDetailDatas {
+class RecipeDetailModelData {
   List<RecipeDetailData> recipes;
   List<IngredientsGroupDetail> ingredientsGroup;
   List<StepDetailData> steps;
 
-  RecipeDetailDatas({
+  RecipeDetailModelData({
     this.recipes,
     this.ingredientsGroup,
     this.steps,
   });
 
-  factory RecipeDetailDatas.fromJson(Map<String, dynamic> json) => RecipeDetailDatas(
+  factory RecipeDetailModelData.fromJson(Map<String, dynamic> json) => RecipeDetailModelData(
     recipes: json["recipes"] == null ? null : List<RecipeDetailData>.from(json["recipes"].map((x) => RecipeDetailData.fromJson(x))),
     ingredientsGroup: json["ingredientsGroup"] == null ? null : List<IngredientsGroupDetail>.from(json["ingredientsGroup"].map((x) => IngredientsGroupDetail.fromJson(x))),
     steps: json["steps"] == null ? null : List<StepDetailData>.from(json["steps"].map((x) => StepDetailData.fromJson(x))),
@@ -44,7 +44,9 @@ class RecipeDetailData {
   String portion;
   String duration;
   int isfavorite;
-  User user;
+  RecipeDetailDataUser user;
+  RecipeDetailDataCategory category;
+  RecipeDetailDataCountry country;
 
   RecipeDetailData({
     this.uuid,
@@ -53,7 +55,9 @@ class RecipeDetailData {
     this.portion, 
     this.duration,
     this.isfavorite,
-    this.user
+    this.user,
+    this.category, 
+    this.country
   });
 
   factory RecipeDetailData.fromJson(Map<String, dynamic> json) => RecipeDetailData(
@@ -63,7 +67,9 @@ class RecipeDetailData {
     portion: json["portion"] == null ? null : json["portion"],
     duration: json["duration"] == null ? null : json["duration"],
     isfavorite: json["isfavorite"] == null ? null : json["isfavorite"],
-    user: User.fromJson(json["user"])
+    user: RecipeDetailDataUser.fromJson(json["user"]),
+    category: RecipeDetailDataCategory.fromJson(json["category"]),
+    country: RecipeDetailDataCountry.fromJson(json["country"])
   );
 }
 
@@ -132,17 +138,41 @@ class StepsDetailImages {
   );
 }
 
+class RecipeDetailDataCategory {
+  RecipeDetailDataCategory({
+    this.title,
+  });
 
-class User {
+  String title;
+
+  factory RecipeDetailDataCategory.fromJson(Map<String, dynamic> json) => RecipeDetailDataCategory(
+    title: json["title"],
+  );
+}
+
+class RecipeDetailDataCountry {
+  RecipeDetailDataCountry({
+    this.name,
+  });
+
+  String name;
+
+  factory RecipeDetailDataCountry.fromJson(Map<String, dynamic> json) => RecipeDetailDataCountry(
+    name: json["name"],
+  );
+}
+
+
+class RecipeDetailDataUser {
   String uuid;
   String name;
 
-  User({
+  RecipeDetailDataUser({
     this.uuid,
     this.name,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) => User(
+  factory RecipeDetailDataUser.fromJson(Map<String, dynamic> json) => RecipeDetailDataUser(
     uuid: json["uuid"],
     name: json["name"],
   );
