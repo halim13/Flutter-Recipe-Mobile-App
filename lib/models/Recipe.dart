@@ -47,7 +47,9 @@ class Recipes {
   String imageUrl;
   String portion;
   String categoryName;
+  String foodCountryName;
   List<CategoryList> categoryList;
+  List<FoodCountryList> foodCountriesList;
 
   Recipes({
     this.id,
@@ -57,7 +59,9 @@ class Recipes {
     this.imageUrl,
     this.portion,
     this.categoryName,
+    this.foodCountryName,
     this.categoryList,
+    this.foodCountriesList
   });
 
   factory Recipes.fromJson(Map<String, dynamic> json) => Recipes(
@@ -68,7 +72,9 @@ class Recipes {
     imageUrl: json["imageUrl"] == null ? null : json["imageUrl"],
     portion: json["portion"] == null ? null : json["portion"],
     categoryName: json["category_name"] == null ? null : json["category_name"],
+    foodCountryName: json["food_country_name"] == null ? null : json["food_country_name"],
     categoryList: List<CategoryList>.from(json["category_list"].map((x) => CategoryList.fromJson(x))),
+    foodCountriesList: List<FoodCountryList>.from(json["food_country_list"].map((x) => FoodCountryList.fromJson(x))),
   );
 }
 
@@ -93,6 +99,24 @@ class CategoryList {
     title: json["title"] == null ? null : json["title"],
     color: json["color"] == null ? null : json["color"],
     cover: json["cover"] == null ? null : json["cover"]
+  );
+}
+
+class FoodCountryList {
+  int id;
+  String uuid;
+  String name;
+  
+  FoodCountryList({
+    this.id,
+    this.uuid,
+    this.name,
+  });
+  
+  factory FoodCountryList.fromJson(Map<String, dynamic> json) => FoodCountryList(
+    id: json["id"] == null ? null : json["id"],
+    uuid: json["uuid"] == null ? null : json["uuid"],
+    name: json["name"] == null ? null : json["name"],
   );
 }
 

@@ -37,15 +37,12 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
     String title, 
     String portion,
     String duration,
-    String userId,
-    String name
   ) {
     Navigator.of(context).pushNamed(
-      'detail-recipe',
+      '/detail-recipe',
       arguments: {
         'uuid': uuid,
         'title': title,
-        'userId': userId,
       },
     );
   }
@@ -128,8 +125,6 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
                                   recipeProvider.getShowItem[i].title, 
                                   recipeProvider.getShowItem[i].portion,
                                   recipeProvider.getShowItem[i].duration, 
-                                  recipeProvider.getShowItem[i].userId,
-                                  recipeProvider.getShowItem[i].name
                                 );
                               },
                               child: ClipRRect(
@@ -205,34 +200,45 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => ViewProfileScreen(recipeProvider.getShowItem[i].userId, recipeProvider.getShowItem[i].name)),
+                              MaterialPageRoute(builder: (context) => ViewProfileScreen(recipeProvider.getShowItem[i].user.uuid, recipeProvider.getShowItem[i].user.name)),
                             );
                           },
                           child: Container(
-                            padding: EdgeInsets.only(top: 0.0, left: 0.0, right: 20.0, bottom: 15.0),
+                            padding: EdgeInsets.only(top: 0.0, left: 20.0, right: 20.0, bottom: 15.0),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Icon(Icons.people),
-                                SizedBox(width: 6),
-                                RichText(
-                                  text: TextSpan(
-                                    text: 'Recipe by : ',
-                                    style: TextStyle(
-                                      color: Colors.black, 
-                                      fontSize: 16.0
-                                    ),
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        text: '${recipeProvider.getShowItem[i].name}',
+                                Row(
+                                  children: [
+                                    Icon(Icons.flag),
+                                    SizedBox(width: 6.0),
+                                    Text(recipeProvider.getShowItem[i].country.name),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(Icons.people),
+                                    SizedBox(width: 6.0),
+                                    RichText(
+                                      text: TextSpan(
+                                        text: 'Recipe by : ',
                                         style: TextStyle(
-                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black, 
                                           fontSize: 16.0
                                         ),
-                                      )
-                                    ]
-                                  ),
-                                )
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                            text: '${recipeProvider.getShowItem[i].user.name}',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16.0
+                                            ),
+                                          )
+                                        ]
+                                      ),
+                                    )
+                                  ]
+                                ),
                               ],
                             ),
                           ),

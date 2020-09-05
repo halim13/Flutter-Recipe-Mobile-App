@@ -119,7 +119,7 @@ class StepDetailData {
 
 class StepsDetailImages {
   String uuid;
-  String body;
+  dynamic body;
 
   StepsDetailImages({
     this.uuid,

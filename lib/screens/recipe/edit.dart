@@ -385,6 +385,34 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                     )
                   ),
                   Container(
+                    margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0, bottom: 5.0),
+                    child: Text(
+                      'Where this food come from ?',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontStyle: FontStyle.italic
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 18.0, top: 15.0, right: 18.0),
+                    child: Column(
+                      children: [
+                        Consumer<RecipeEdit>(
+                          builder: (BuildContext context, RecipeEdit recipeProvider, Widget child) => DropdownSearch(
+                            mode: Mode.BOTTOM_SHEET,
+                            items: recipeProvider.foodCountriesDisplay,
+                            label: "Select Food Countries",
+                            onChanged: (v) {
+                              recipeProvider.foodCountryName = v;
+                            },
+                            selectedItem: recipeProvider.foodCountryName
+                          ),
+                        )
+                      ]
+                    )
+                  ),
+                  Container(
                     margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
                     child: Text(
                       'How many Portion ?',

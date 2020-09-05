@@ -1,5 +1,26 @@
 import 'package:flutter/material.dart';
 
+class FoodCountriesModel with ChangeNotifier {
+  int status;
+  bool error;
+  String message;
+  List<FoodCountriesData> data;
+
+  FoodCountriesModel({
+    this.status,
+    this.error,
+    this.message,
+    this.data,
+  });
+
+  factory FoodCountriesModel.fromJson(Map<String, dynamic> json) => FoodCountriesModel(
+    status: json["status"] == null ? null : json["status"],
+    error: json["error"] == null ? null : json["error"],
+    message: json["message"] == null ? null : json["message"],
+    data: json["data"] == null ? null : List<FoodCountriesData>.from(json["data"].map((x) => FoodCountriesData.fromJson(x))),
+  );
+}
+
 class CategoryModel with ChangeNotifier {
   int status;
   bool error;
@@ -59,6 +80,24 @@ class CategoryData with ChangeNotifier {
     title: json["title"] == null ? null : json["title"],
     color: json["color"] == null ? null : json["color"],
     cover: json["cover"] == null ? null : json["cover"]
+  );
+}
+
+class FoodCountriesData with ChangeNotifier {
+  int id;
+  String uuid;
+  String name;
+
+  FoodCountriesData({
+    this.id, 
+    this.uuid, 
+    this.name
+  });
+
+  factory FoodCountriesData.fromJson(Map<String, dynamic> json) => FoodCountriesData(
+    id: json["id"] == null ? null : json["id"],
+    uuid: json["uuid"] == null ? null : json["uuid"],
+    name: json["name"] == null ? null : json["name"],
   );
 }
 

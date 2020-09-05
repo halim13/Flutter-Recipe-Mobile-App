@@ -9,11 +9,11 @@ import '../../constants/connection.dart';
 
 class RecipeShow with ChangeNotifier {
 
-  List<SearchSuggestionsData> searchSuggestions = [];
-  List<SearchSuggestionsData> get searchSuggestionsItem => [...searchSuggestions];
+  List<SearchSuggestionModelData> searchSuggestions = [];
+  List<SearchSuggestionModelData> get getSearchSuggestionsItem => [...searchSuggestions];
 
-  List<RecipeShowData> show = [];
-  List<RecipeShowData> get getShowItem => [...show];
+  List<RecipeShowModelData> show = [];
+  List<RecipeShowModelData> get getShowItem => [...show];
   
   Future<void> refreshRecipe(String recipeId) async {
     await getShow(recipeId);
@@ -24,16 +24,24 @@ class RecipeShow with ChangeNotifier {
     try {
       http.Response response = await http.get(url).timeout(Duration(seconds: 10));
       SearchSuggestionModel model = SearchSuggestionModel.fromJson(json.decode(response.body));
-      List<SearchSuggestionsData> initialSearchSuggestionData = [];
+      List<SearchSuggestionModelData> initialSearchSuggestionData = [];
       model.data.forEach((item) { 
-        initialSearchSuggestionData.add(SearchSuggestionsData(
+        initialSearchSuggestionData.add(SearchSuggestionModelData(
           uuid: item.uuid, 
           title: item.title,
           imageurl: item.imageurl,
           duration: item.duration,
-          name: item.name,
           portion: item.portion,
-          userId: item.userId
+           user: SearchSuggestionModelDataUser(
+            uuid: item.user.uuid,
+            name: item.user.name
+          ),
+          category: SearchSuggestionModelDataCategory(
+            title: item.category.title
+          ),
+          country: SearchSuggestionModelDataCountry(
+            name: item.country.name
+          )
         ));
       });
       searchSuggestions = initialSearchSuggestionData;
@@ -62,16 +70,24 @@ class RecipeShow with ChangeNotifier {
     try {
       http.Response response = await http.get(url).timeout(Duration(seconds: 10));
       RecipeShowModel model = RecipeShowModel.fromJson(json.decode(response.body));
-      List<RecipeShowData> initialShow = [];
+      List<RecipeShowModelData> initialShow = [];
       model.data.forEach((item) {
-        initialShow.add(RecipeShowData(
+        initialShow.add(RecipeShowModelData(
           uuid: item.uuid,
           title: item.title,
           imageurl: item.imageurl,
           duration: item.duration,
-          name: item.name, 
-          userId: item.userId,
-          portion: item.portion
+          portion: item.portion,
+          user: RecipeShowModelDataUser(
+            uuid: item.user.uuid,
+            name: item.user.name
+          ),
+          category: RecipeShowModelDataCategory(
+            title: item.category.title
+          ),
+          country: RecipeShowModelDataCountry(
+            name: item.country.name
+          )
         ));
       });
       show = initialShow;

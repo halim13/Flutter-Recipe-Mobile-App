@@ -54,7 +54,7 @@ class _MyAppState extends State<MyApp> {
         ),
       ],
       child: MaterialApp(
-        title: 'Flutter Recipe',
+        title: 'Chumbuckets Recipes',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           appBarTheme: AppBarTheme(elevation: 0.0),

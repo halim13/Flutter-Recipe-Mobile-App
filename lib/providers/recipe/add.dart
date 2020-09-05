@@ -26,8 +26,10 @@ class RecipeAdd with ChangeNotifier {
   File fileImageRecipe;
   String filenameImageRecipe;
   String categoryName;
+  String foodCountryName;
   String portionName;
   List categoriesDisplay = [""];
+  List foodCountriesDisplay = [""];
   List<String> portionsDisplay = ["1", "2", "3", "4", "5", "6", "7", "8"];
   String duration;
   TextEditingController titleController = TextEditingController();
@@ -42,6 +44,7 @@ class RecipeAdd with ChangeNotifier {
   
   initState() {
     allCategories();
+    allFoodCountries();
     Uuid uuid = Uuid();
     String ingredientUuidv4 = uuid.v4();
     String ingredientPerGroupUuidv4 = uuid.v4();
@@ -120,14 +123,29 @@ class RecipeAdd with ChangeNotifier {
     try {
       http.Response response = await http.get(url);
       CategoryModel model = CategoryModel.fromJson(json.decode(response.body));
-      List initialCategoriesDisplay = [];
+      List<String> initialCategoriesDisplay = [];
       model.data.forEach((item) { 
-        initialCategoriesDisplay.add(
-          item.title
-        );
+        initialCategoriesDisplay.add(item.title);
       });
       categoriesDisplay = initialCategoriesDisplay;
       categoryName = categoriesDisplay.first;
+      notifyListeners();
+    } catch(error) {
+      print(error);
+    }
+  }
+
+  Future allFoodCountries() async {
+    String url = 'http://$baseurl:$port/api/v1/categories/food-countries'; 
+    try {
+      http.Response response = await http.get(url);
+      FoodCountriesModel model = FoodCountriesModel.fromJson(json.decode(response.body));
+      List<String> initialFoodCountriesDisplay = [];
+      model.data.forEach((item) { 
+        initialFoodCountriesDisplay.add(item.name);
+      });
+      foodCountriesDisplay = initialFoodCountriesDisplay;
+      foodCountryName = foodCountriesDisplay.first;
       notifyListeners();
     } catch(error) {
       print(error);
@@ -308,6 +326,7 @@ class RecipeAdd with ChangeNotifier {
       "portion": portionName,
       "steps": stepsParam,
       "categoryName": categoryName,
+      "foodCountryName": foodCountryName,
       "userId": userId
     };
     Map<String, String> headers = {"Content-Type": "application/json"};

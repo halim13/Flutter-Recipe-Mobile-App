@@ -21,6 +21,7 @@ class RecipeEdit extends ChangeNotifier {
   // RecipeDetail _recipeDetail;
   Data data;
   File fileImageRecipe;
+  String foodCountryName;
   String categoryName;
   String portionName;
   String getFileImageRecipe;
@@ -35,6 +36,7 @@ class RecipeEdit extends ChangeNotifier {
   TextEditingController titleController = TextEditingController();
   TextEditingController portionController = TextEditingController();
   List<String> categoriesDisplay = [""];
+  List<String> foodCountriesDisplay = [""];
   List<String> portionsDisplay = ["1", "2", "3", "4", "5", "6", "7", "8"];
    
   List<Map<String, Object>> ingredientsGroupSendToHttp = [];
@@ -230,16 +232,25 @@ class RecipeEdit extends ChangeNotifier {
       RecipeModel model = RecipeModel.fromJson(json.decode(response.body));
       data = model.data;
       List<CategoryList> categories = data.recipes.first.categoryList;
+      List<FoodCountryList> foodCountries = data.recipes.first.foodCountriesList;
+      List<String> initialFoodCountriesDisplay = [];
       List<String> initialCategoriesDisplay = [];
-      getFileImageRecipe = data.recipes.first.imageUrl;
-      categories.forEach((element) {
+      categories.forEach((item) {
         initialCategoriesDisplay.add(
-          element.title,
+          item.title,
         );
       });
+      foodCountries.forEach((item) {
+        initialFoodCountriesDisplay.add(
+          item.name
+        );
+      });
+      getFileImageRecipe = data.recipes.first.imageUrl;
       categoryName = data.recipes.first.categoryName;
+      foodCountryName = data.recipes.first.foodCountryName;
       portionName = data.recipes.first.portion;
       categoriesDisplay = initialCategoriesDisplay;
+      foodCountriesDisplay = initialFoodCountriesDisplay;
       duration = data.recipes.first.duration;
       titleController.text = data.recipes.first.title;
       portionController.text = data.recipes.first.portion;
@@ -321,6 +332,7 @@ class RecipeEdit extends ChangeNotifier {
       "removeSteps": removeSteps,
       "portion": portionName,
       "categoryName": categoryName,
+      "foodCountryName": foodCountryName,
       "userId": userId
     };
     Map<String, String> headers = {"Content-Type": "application/json"};

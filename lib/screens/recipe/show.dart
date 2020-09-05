@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/models/SearchSuggestion.dart';
 import 'package:provider/provider.dart';
 import 'package:quartet/quartet.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -65,7 +66,10 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () {
-              showSearch(context: context, delegate: DataSearch());
+              showSearch(
+                context: context, 
+                delegate: DataSearch(categoryId)
+              );
             }
           )
         ],
@@ -138,7 +142,7 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
                                   context, 
                                   recipeProvider.getShowItem[i].uuid,
                                   recipeProvider.getShowItem[i].title, 
-                                  recipeProvider.getShowItem[i].userId,
+                                  recipeProvider.getShowItem[i].user.uuid,
                                 );
                               },
                               child: ClipRRect(
@@ -214,33 +218,44 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => ViewProfileScreen(recipeProvider.getShowItem[i].userId, recipeProvider.getShowItem[i].name)),
+                              MaterialPageRoute(builder: (context) => ViewProfileScreen(recipeProvider.getShowItem[i].user.uuid, recipeProvider.getShowItem[i].user.name)),
                             );
                           },
                           child: Container(
-                            padding: EdgeInsets.only(top: 0.0, left: 0.0, right: 20.0, bottom: 15.0),
+                            padding: EdgeInsets.only(top: 0.0, left: 20.0, right: 20.0, bottom: 15.0),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Icon(Icons.people),
-                                SizedBox(width: 6.0),
-                                RichText(
-                                  text: TextSpan(
-                                    text: 'Recipe by : ',
-                                    style: TextStyle(
-                                      color: Colors.black, 
-                                      fontSize: 16.0
-                                    ),
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        text: '${recipeProvider.getShowItem[i].name}',
+                                Row(
+                                  children: [
+                                    Icon(Icons.flag),
+                                    SizedBox(width: 6.0),
+                                    Text(recipeProvider.getShowItem[i].country.name),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(Icons.people),
+                                    SizedBox(width: 6.0),
+                                    RichText(
+                                      text: TextSpan(
+                                        text: 'Recipe by : ',
                                         style: TextStyle(
-                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black, 
                                           fontSize: 16.0
                                         ),
-                                      )
-                                    ]
-                                  ),
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                            text: '${recipeProvider.getShowItem[i].user.name}',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16.0
+                                            ),
+                                          )
+                                        ]
+                                      ),
+                                    )
+                                  ]
                                 )
                               ],
                             ),
@@ -260,6 +275,9 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
 }
 
 class DataSearch extends SearchDelegate<String> {
+  DataSearch(this.categoryId);
+
+  String categoryId;
 
   ThemeData appBarTheme(BuildContext context) {
     ThemeData theme = Theme.of(context);
@@ -305,8 +323,8 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    RecipeShow recipeProvider = Provider.of<RecipeShow>(context);
-    List<RecipeShowData> results = recipeProvider.getShowItem.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
+    RecipeShow recipeProvider = Provider.of<RecipeShow>(context, listen: false);
+    List<RecipeShowModelData> results = recipeProvider.getShowItem.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
     return ListView.builder(
       itemCount: results.length,
       itemBuilder: (context, i) {
@@ -317,7 +335,7 @@ class DataSearch extends SearchDelegate<String> {
               arguments: {
                 "uuid": results[i].uuid,
                 "title": results[i].title,
-                "userId": results[i].userId,
+                "userId": results[i].user.uuid,
               }
             )
           },
@@ -391,29 +409,40 @@ class DataSearch extends SearchDelegate<String> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.only(top: 0.0, left: 0.0, right: 20.0, bottom: 15.0),
+                  padding: EdgeInsets.only(top: 0.0, left: 20.0, right: 20.0, bottom: 15.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(Icons.people),
-                      SizedBox(width: 6),
-                      RichText(
-                        text: TextSpan(
-                          text: 'Recipe by : ',
-                          style: TextStyle(
-                            color: Colors.black, 
-                            fontSize: 16.0
-                          ),
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: '${results[i].name}',
+                      Row(
+                        children: [
+                          Icon(Icons.flag),
+                          SizedBox(width: 6.0),
+                          Text(results[i].country.name),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(Icons.people),
+                          SizedBox(width: 6),
+                          RichText(
+                            text: TextSpan(
+                              text: 'Recipe by : ',
                               style: TextStyle(
-                                fontWeight: FontWeight.bold,
+                                color: Colors.black, 
                                 fontSize: 16.0
                               ),
-                            )
-                          ]
-                        ),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: '${results[i].user.name}',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16.0
+                                  ),
+                                )
+                              ]
+                            ),
+                          )
+                        ]
                       )
                     ],
                   ),
@@ -427,27 +456,28 @@ class DataSearch extends SearchDelegate<String> {
   }
   @override
   Widget buildSuggestions(BuildContext context) {
-    RecipeShow recipeProvider = Provider.of<RecipeShow>(context);
+    RecipeShow recipeProvider = Provider.of<RecipeShow>(context, listen: false);
     if(query.isEmpty) {
       return ListView.builder(
-        itemCount: recipeProvider.searchSuggestionsItem.length,
+        itemCount: recipeProvider.getSearchSuggestionsItem.length,
         itemBuilder: (context, i) => Card(
           child: ListTile(
             onTap: () {
               Navigator.of(context).pushNamed(
                 '/detail-recipe',
                 arguments: {
-                  "uuid": recipeProvider.searchSuggestionsItem[i].uuid,
-                  "title": recipeProvider.searchSuggestionsItem[i].title,
-                  "userId": recipeProvider.searchSuggestionsItem[i].userId,
+                  'categoryId': categoryId,
+                  'uuid': recipeProvider.getSearchSuggestionsItem[i].uuid,
+                  'title': recipeProvider.getSearchSuggestionsItem[i].title,
+                  'userId': recipeProvider.getSearchSuggestionsItem[i].user.uuid,
                 }
               );
-              recipeProvider.popularViews(recipeProvider.searchSuggestionsItem[i].uuid);
+              recipeProvider.popularViews(recipeProvider.getSearchSuggestionsItem[i].uuid);
             },
             leading: CachedNetworkImage(
               width: 50.0,
               height: 50.0,
-              imageUrl: '$imagesRecipesUrl/${recipeProvider.searchSuggestionsItem[i].imageurl}',
+              imageUrl: '$imagesRecipesUrl/${recipeProvider.getSearchSuggestionsItem[i].imageurl}',
               placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
               errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
               fadeOutDuration: Duration(seconds: 1),
@@ -455,7 +485,7 @@ class DataSearch extends SearchDelegate<String> {
             ),
             title: RichText(
               text: TextSpan(
-                children: highlightOccurrences(recipeProvider.searchSuggestionsItem[i].title, query),
+                children: highlightOccurrences(recipeProvider.getSearchSuggestionsItem[i].title, query),
                 style: TextStyle(
                   color: Colors.grey,
                   fontWeight: FontWeight.bold
@@ -466,7 +496,8 @@ class DataSearch extends SearchDelegate<String> {
         ),
       );
     }
-    List<RecipeShowData> suggestionsList = recipeProvider.getShowItem.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
+    List<SearchSuggestionModelData> suggestionsList = recipeProvider.getSearchSuggestionsItem.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
+
     return ListView.builder(
       itemCount: suggestionsList.length,
       itemBuilder: (context, i) => Card(
@@ -475,9 +506,10 @@ class DataSearch extends SearchDelegate<String> {
             Navigator.of(context).pushNamed(
               '/detail-recipe',
               arguments: {
-                "uuid": suggestionsList[i].uuid,
-                "title": suggestionsList[i].title,
-                "userId": suggestionsList[i].userId,
+                'categoryId': categoryId,
+                'uuid': suggestionsList[i].uuid,
+                'title': suggestionsList[i].title,
+                'userId': suggestionsList[i].user.uuid,
               }
             );
             recipeProvider.popularViews(suggestionsList[i].uuid);

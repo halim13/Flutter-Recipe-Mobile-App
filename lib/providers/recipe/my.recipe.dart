@@ -9,8 +9,8 @@ import '../../models/RecipeShow.dart';
 
 class MyRecipe with ChangeNotifier {
 
-  List<RecipeShowData> show = [];
-  List<RecipeShowData> get getShowItem => [...show];
+  List<RecipeShowModelData> show = [];
+  List<RecipeShowModelData> get getShowItem => [...show];
 
   Future<void> refreshRecipe() async {
     await getShow();
@@ -25,16 +25,24 @@ class MyRecipe with ChangeNotifier {
     try {
       http.Response response = await http.get(url).timeout(Duration(seconds: 10));
       RecipeShowModel model = RecipeShowModel.fromJson(json.decode(response.body));
-      List<RecipeShowData> initialShow = [];
+      List<RecipeShowModelData> initialShow = [];
       model.data.forEach((item) {
-        initialShow.add(RecipeShowData(
+        initialShow.add(RecipeShowModelData(
           uuid: item.uuid,
           title: item.title,
           imageurl: item.imageurl,
           duration: item.duration,
-          name: item.name, 
-          userId: item.userId,
-          portion: item.portion
+          portion: item.portion,
+          user: RecipeShowModelDataUser(
+            uuid: item.user.uuid,
+            name: item.user.name
+          ),
+          category: RecipeShowModelDataCategory(
+            title: item.category.title
+          ),
+          country: RecipeShowModelDataCountry(
+            name: item.country.name
+          )
         ));
       });
       show = initialShow;
