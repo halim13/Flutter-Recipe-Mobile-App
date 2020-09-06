@@ -187,30 +187,61 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 30.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Icon(Icons.people),
-                        SizedBox(width: 6.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.flag),
+                                SizedBox(width: 6.0),
+                                Text(recipeProvider.getRecipeDetail.first.country.name),
+                              ],
+                            ),
+                            Row(
+                              children: [ 
+                               RichText(
+                                text: TextSpan(
+                                  text: 'Recipe by : ',
+                                  style: TextStyle(
+                                    color: Colors.black, 
+                                  ),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: '${recipeProvider.getRecipeDetail.first.user.name}',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0
+                                      ),
+                                    )
+                                  ]
+                                ),
+                              ),
+                              ]
+                            )
+                          ],
+                        ),
+                        SizedBox(height: 10.0),
                         RichText(
                           text: TextSpan(
-                            text: 'Recipe by : ',
-                            style: TextStyle(
-                              color: Colors.black, 
-                              fontSize: 16.0
-                            ),
-                            children: <TextSpan>[
-                              TextSpan(
-                                text: '${recipeProvider.getRecipeDetail.first.user.name}',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16.0
-                                ),
-                              )
-                            ]
+                          text: 'Category : ',
+                          style: TextStyle(
+                            color: Colors.black, 
                           ),
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: '${recipeProvider.getRecipeDetail.first.category.title}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.0
+                              ),
+                            )
+                          ]
+                        ),
                         )
-                      ],
+                      ]
                     ),
                   ),
                   Center(

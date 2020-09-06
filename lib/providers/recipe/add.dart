@@ -159,7 +159,7 @@ class RecipeAdd with ChangeNotifier {
     String uuidv4Ingredients = uuid.v4();
     if(ingredientsGroup.length >= 10) {
       SnackBar snackbar = SnackBar(
-        backgroundColor: Colors.yellow[300],
+        backgroundColor: Colors.red[300],
         content: Text('Maximum Ingredients Group'),
         action: SnackBarAction(
           textColor: Colors.white,
@@ -201,7 +201,7 @@ class RecipeAdd with ChangeNotifier {
     String uuidv4 = uuid.v4();
     if(ingredientsGroup[i].ingredients.length >= 10) {
       SnackBar snackbar = SnackBar(
-        backgroundColor: Colors.yellow[300],
+        backgroundColor: Colors.red[300],
         content: Text('Maximum 10 Ingredients'),
         action: SnackBarAction(
           textColor: Colors.white,

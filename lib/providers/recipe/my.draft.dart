@@ -395,7 +395,7 @@ class MyDraft extends ChangeNotifier {
 
   Future<void> getRecipesDraft([int limit = 0]) async {
     limit = limit + 5;
-    String url = 'http://$baseurl:$port/api/v1/recipes/show-draft'; 
+    String url = 'http://$baseurl:$port/api/v1/recipes/show-draft?limit=$limit'; 
     try {
       http.Response response = await http.get(url).timeout(Duration(seconds: 10));
       RecipeDraftModel model = RecipeDraftModel.fromJson(json.decode(response.body));

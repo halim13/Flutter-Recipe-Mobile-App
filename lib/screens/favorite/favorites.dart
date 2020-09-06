@@ -85,14 +85,15 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
               itemCount: recipeProvider.displayRecipeFavorite.length,
                 itemBuilder: (context, i) {
                   return RecipeItem(
-                    id: recipeProvider.displayRecipeFavorite[i].id,
                     uuid: recipeProvider.displayRecipeFavorite[i].uuid,
                     title: recipeProvider.displayRecipeFavorite[i].title,
                     duration: recipeProvider.displayRecipeFavorite[i].duration,
                     imageUrl: recipeProvider.displayRecipeFavorite[i].imageUrl,
-                    userId: recipeProvider.displayRecipeFavorite[i].userId,
                     portion: recipeProvider.displayRecipeFavorite[i].portion,
-                    name: recipeProvider.displayRecipeFavorite[i].name
+                    categoryTitle: recipeProvider.displayRecipeFavorite[i].category.title,
+                    username: recipeProvider.displayRecipeFavorite[i].user.name,
+                    userId: recipeProvider.displayRecipeFavorite[i].user.uuid,
+                    countryName: recipeProvider.displayRecipeFavorite[i].country.name,
                   );
                 }
               ),

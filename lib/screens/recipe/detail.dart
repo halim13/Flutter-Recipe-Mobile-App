@@ -201,41 +201,61 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0, bottom: 30.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [ 
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Icon(Icons.flag),
-                            SizedBox(width: 6.0),
-                            Text(recipeProvider.getRecipeDetail.first.country.name),
-                          ]
+                            Row(
+                              children: [
+                                Icon(Icons.flag),
+                                SizedBox(width: 6.0),
+                                Text(recipeProvider.getRecipeDetail.first.country.name),
+                              ]
+                            ),
+                            Row(
+                              children: [
+                                RichText(
+                                  text: TextSpan(
+                                    text: 'Recipe by : ',
+                                    style: TextStyle(
+                                      color: Colors.black, 
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: '${recipeProvider.getRecipeDetail.first.user.name}',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16.0
+                                        ),
+                                      )
+                                    ]
+                                  ),
+                                )
+                              ]
+                            )
+                          ],
                         ),
-                        Row(
-                          children: [
-                            Icon(Icons.people),
-                            SizedBox(width: 6.0),
-                            RichText(
-                              text: TextSpan(
-                                text: 'Recipe by : ',
+                        SizedBox(height: 10.0),                          
+                        RichText(
+                          text: TextSpan(
+                            text: 'Category : ',
+                            style: TextStyle(
+                              color: Colors.black, 
+                            ),
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: '${recipeProvider.getRecipeDetail.first.category.title}',
                                 style: TextStyle(
-                                  color: Colors.black, 
+                                  fontWeight: FontWeight.bold,
                                   fontSize: 16.0
                                 ),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                    text: '${recipeProvider.getRecipeDetail.first.user.name}',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16.0
-                                    ),
-                                  )
-                                ]
-                              ),
-                            )
-                          ]
+                              )
+                            ]
+                          ),
                         )
-                      ],
+                      ]
                     ),
                   ),
                   Center(

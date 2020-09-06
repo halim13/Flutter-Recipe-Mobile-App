@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/providers/recipe/my.recipe.dart';
 import 'package:uuid/uuid.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,9 +26,11 @@ class RecipeEdit extends ChangeNotifier {
   String foodCountryName;
   String categoryName;
   String portionName;
+  String msg;
   String getFileImageRecipe;
   String filenameImageRecipe;
   bool isLoading = false;
+  bool isLoadingDraft = false;
   String duration;
   ScrollController ingredientsScrollController = ScrollController();
   ScrollController stepsScrollController = ScrollController();
@@ -76,7 +79,7 @@ class RecipeEdit extends ChangeNotifier {
     String uuidv4Ingredients = uuid.v4();
     if(ingredientsGroup.length >= 10) {
       SnackBar snackbar = SnackBar(
-        backgroundColor: Colors.yellow[300],
+        backgroundColor: Colors.red[300],
         content: Text('Maximum 10 Ingredients Group'),
         action: SnackBarAction(
           textColor: Colors.white,
@@ -119,7 +122,7 @@ class RecipeEdit extends ChangeNotifier {
     String uuidv4 = uuid.v4();
     if(ingredientsGroup[i].ingredients.length >= 10) {
       SnackBar snackbar = SnackBar(
-        backgroundColor: Colors.yellow[300],
+        backgroundColor: Colors.red[300],
         content: Text('Maximum 10 Ingredients'),
         action: SnackBarAction(
           textColor: Colors.white,
@@ -157,7 +160,7 @@ class RecipeEdit extends ChangeNotifier {
     String uuid4 = uuid.v4(); 
     if(steps.length >= 10) {
       SnackBar snackbar = SnackBar(
-        backgroundColor: Colors.yellow[300],
+        backgroundColor: Colors.red[300],
         content: Text('Maximum 10 Steps'),
         action: SnackBarAction(
           textColor: Colors.white,
@@ -339,8 +342,13 @@ class RecipeEdit extends ChangeNotifier {
     };
     Map<String, String> headers = {"Content-Type": "application/json"};
     String url = 'http://$baseurl:$port/api/v1/recipes/update/$recipeId';
-    isLoading = true;
-    notifyListeners();
+    if(isPublished == 0) {
+      isLoadingDraft = true;
+      notifyListeners();
+    } else {
+      isLoading = true;
+      notifyListeners();
+    }
     try {
       http.MultipartRequest request = http.MultipartRequest('PUT', Uri.parse(url));
       for (int i = 0; i < steps.length; i++) {
@@ -364,7 +372,13 @@ class RecipeEdit extends ChangeNotifier {
       request.fields.addAll(fields);
       http.StreamedResponse response = await request.send().timeout(Duration(seconds: 60));
       if(response.statusCode == 200) {
-        isLoading = false;
+        if(isPublished == 0) {
+          isLoadingDraft = false;
+          notifyListeners();
+        } else {
+          isLoading = false;
+          notifyListeners();
+        }
         ingredientsGroupSendToHttp = [];
         removeIngredientsGroupSendToHttp = [];
         ingredientsSendToHttp = [];
@@ -375,8 +389,9 @@ class RecipeEdit extends ChangeNotifier {
         if(categoryId != null) {
           Provider.of<RecipeShow>(context, listen: false).getShow(categoryId);
         }
-        Provider.of<RecipeShow>(context, listen: false).suggestions();
+        Provider.of<MyRecipe>(context, listen: false).getShow();
         Provider.of<MyDraft>(context, listen: false).getRecipesDraft();
+        Provider.of<RecipeShow>(context, listen: false).suggestions();
         Provider.of<RecipeDetail>(context, listen: false).detail(recipeId);
         Provider.of<RecipeDetail>(context, listen: false).refreshRecipeFavorite();
         notifyListeners();

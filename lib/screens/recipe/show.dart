@@ -223,39 +223,59 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
                           },
                           child: Container(
                             padding: EdgeInsets.only(top: 0.0, left: 20.0, right: 20.0, bottom: 15.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            child: Column( 
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                Row(
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Icon(Icons.flag),
-                                    SizedBox(width: 6.0),
-                                    Text(recipeProvider.getShowItem[i].country.name),
-                                  ],
+                                  Row(
+                                    children: [
+                                      Icon(Icons.flag),
+                                      SizedBox(width: 6.0),
+                                      Text(recipeProvider.getShowItem[i].country.name),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      RichText(
+                                        text: TextSpan(
+                                          text: 'Recipe by : ',
+                                          style: TextStyle(
+                                            color: Colors.black, 
+                                          ),
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                              text: '${recipeProvider.getShowItem[i].user.name}',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16.0
+                                              ),
+                                            )
+                                          ]
+                                        ),
+                                      )
+                                    ]
+                                  )
+                                  ]
                                 ),
-                                Row(
-                                  children: [
-                                    Icon(Icons.people),
-                                    SizedBox(width: 6.0),
-                                    RichText(
-                                      text: TextSpan(
-                                        text: 'Recipe by : ',
+                                SizedBox(height: 10.0),
+                                RichText(
+                                  text: TextSpan(
+                                    text: 'Category : ',
+                                    style: TextStyle(
+                                      color: Colors.black, 
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: '${recipeProvider.getShowItem[i].category.title}',
                                         style: TextStyle(
-                                          color: Colors.black, 
+                                          fontWeight: FontWeight.bold,
                                           fontSize: 16.0
                                         ),
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                            text: '${recipeProvider.getShowItem[i].user.name}',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16.0
-                                            ),
-                                          )
-                                        ]
-                                      ),
-                                    )
-                                  ]
+                                      )
+                                    ]
+                                  ),
                                 )
                               ],
                             ),
@@ -410,39 +430,59 @@ class DataSearch extends SearchDelegate<String> {
                 ),
                 Container(
                   padding: EdgeInsets.only(top: 0.0, left: 20.0, right: 20.0, bottom: 15.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Column( 
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Row(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Icon(Icons.flag),
-                          SizedBox(width: 6.0),
-                          Text(results[i].country.name),
-                        ],
+                        Row(
+                          children: [
+                            Icon(Icons.flag),
+                            SizedBox(width: 6.0),
+                            Text(results[i].country.name),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            RichText(
+                              text: TextSpan(
+                                text: 'Recipe by : ',
+                                style: TextStyle(
+                                  color: Colors.black, 
+                                ),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: '${results[i].user.name}',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16.0
+                                    ),
+                                  )
+                                ]
+                              ),
+                            )
+                          ]
+                        )
+                        ]
                       ),
-                      Row(
-                        children: [
-                          Icon(Icons.people),
-                          SizedBox(width: 6),
-                          RichText(
-                            text: TextSpan(
-                              text: 'Recipe by : ',
+                      SizedBox(height: 10.0),
+                      RichText(
+                        text: TextSpan(
+                          text: 'Category : ',
+                          style: TextStyle(
+                            color: Colors.black, 
+                          ),
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: '${results[i].category.title}',
                               style: TextStyle(
-                                color: Colors.black, 
+                                fontWeight: FontWeight.bold,
                                 fontSize: 16.0
                               ),
-                              children: <TextSpan>[
-                                TextSpan(
-                                  text: '${results[i].user.name}',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16.0
-                                  ),
-                                )
-                              ]
-                            ),
-                          )
-                        ]
+                            )
+                          ]
+                        ),
                       )
                     ],
                   ),

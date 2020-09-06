@@ -4,7 +4,7 @@ class RecipeFavoriteModel with ChangeNotifier {
   int status;
   bool error;
   String message;
-  List<RecipeFavoriteData> data;
+  List<RecipeFavoriteModelData> data;
 
   RecipeFavoriteModel({
     this.status,
@@ -17,43 +17,82 @@ class RecipeFavoriteModel with ChangeNotifier {
     status: json["status"] == null ? null : json["status"],
     error: json["error"] == null ? null : json["error"],
     message: json["message"] == null ? null : json["message"],
-    data: json["data"] == null ? null : List<RecipeFavoriteData>.from(json["data"].map((x) => RecipeFavoriteData.fromJson(x))),
+    data: json["data"] == null ? null : List<RecipeFavoriteModelData>.from(json["data"].map((x) => RecipeFavoriteModelData.fromJson(x))),
   );
 
 }
 
-class RecipeFavoriteData with ChangeNotifier {
-  int id;
+class RecipeFavoriteModelData with ChangeNotifier {
   String uuid;
   String title;
+  String imageUrl;
   String duration;
   String portion;
-  String name;
   int isfavorite;
-  String userId;
-  String imageUrl;
+  RecipeFavoriteModelDataUser user;
+  RecipeFavoriteModelDataCategory category;
+  RecipeFavoriteModelDataCountry country;
 
-  RecipeFavoriteData({
-    this.id,
+  RecipeFavoriteModelData({
     this.uuid,
     this.title,
     this.imageUrl,
     this.duration,
     this.isfavorite,
     this.portion,
-    this.userId,
-    this.name,
+    this.user,
+    this.category,
+    this.country
   });
 
-  factory RecipeFavoriteData.fromJson(Map<String, dynamic> json) => RecipeFavoriteData(
-    id: json["id"] == null ? null : json["id"],
+  factory RecipeFavoriteModelData.fromJson(Map<String, dynamic> json) => RecipeFavoriteModelData(
     uuid: json["uuid"] == null ? null : json["uuid"],
     title: json["title"] == null ? null : json["title"],
+    imageUrl: json["imageUrl"] == null ? null : json["imageUrl"],
     duration: json["duration"] == null ? null : json["duration"],
     portion:  json["portion"] == null ? null : json["portion"],
     isfavorite: json["isfavorite"] == null ? null : json["isfavorite"],
-    imageUrl: json["imageUrl"] == null ? null : json["imageUrl"],
-    userId: json["user_id"] == null ? null : json["user_id"],
-    name: json["name"] == null ? null : json["name"]
+    user: RecipeFavoriteModelDataUser.fromJson(json["user"]),
+    category: RecipeFavoriteModelDataCategory.fromJson(json["category"]),
+    country: RecipeFavoriteModelDataCountry.fromJson(json["country"]),
+  );
+}
+
+class RecipeFavoriteModelDataCategory {
+  RecipeFavoriteModelDataCategory({
+    this.title,
+  });
+
+  String title;
+
+  factory RecipeFavoriteModelDataCategory.fromJson(Map<String, dynamic> json) => RecipeFavoriteModelDataCategory(
+    title: json["title"],
+  );
+}
+
+class RecipeFavoriteModelDataCountry {
+  RecipeFavoriteModelDataCountry({
+    this.name,
+  });
+
+  String name;
+
+  factory RecipeFavoriteModelDataCountry.fromJson(Map<String, dynamic> json) => RecipeFavoriteModelDataCountry(
+    name: json["name"],
+  );
+}
+
+class RecipeFavoriteModelDataUser {
+  RecipeFavoriteModelDataUser({
+    this.uuid,
+    this.name,
+  });
+
+  String uuid;
+  String name;
+
+  factory RecipeFavoriteModelDataUser.fromJson(Map<String, dynamic> json) => RecipeFavoriteModelDataUser(
+    uuid: json["uuid"],
+    name: json["name"],
   );
 }

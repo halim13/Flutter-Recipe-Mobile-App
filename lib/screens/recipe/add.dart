@@ -120,7 +120,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
       String steps = jsonEncode(uniqueSteps);
       setState(() => isInAsyncCall = true );
       final response = await recipeProvider.store(title, ingredientsGroup, ingredients, steps, isPublished);
-      if(response["status"] == 200) {
+     if(response["status"] == 200) {
         setState(() => isInAsyncCall = false );
         AwesomeDialog(
           context: context,
@@ -129,7 +129,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
           dismissOnTouchOutside: false,
           dialogType: response["data"] == "ALERTDEMO" ? DialogType.INFO : DialogType.SUCCES,
           title: response["data"] == "ALERTDEMO" ? 'Info' : 'Successful',
-          desc: response["data"] == "ALERTDEMO" ? 'for DEMO \n Account is not Allow more 2 Recipes' : 'Recipe Created',
+          desc: response["data"] == "ALERTDEMO" ? 'for DEMO \n Account is not Allow more 2 Recipes' : isPublished == 1 ? 'Recipe Created' : 'Saved to Draft',
           btnOkOnPress: () => Navigator.of(context).pop(),
           btnOkIcon: null,
           btnOkColor: Colors.blue.shade700

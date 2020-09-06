@@ -22,7 +22,7 @@ class RecipeDetail with ChangeNotifier {
   List<IngredientsGroupDetail> get getIngredientsGroupDetail => [...ingredientsGroupDetail];
   List<StepDetailData> get getStepsDetail => [...stepsDetail];
 
-  List<RecipeFavoriteData> displayRecipeFavorite = [];
+  List<RecipeFavoriteModelData> displayRecipeFavorite = [];
 
   bool isRecipeFavorite(String recipeId, int f) => favorite == 1 ? true : false;
 
@@ -64,19 +64,26 @@ class RecipeDetail with ChangeNotifier {
     try {
       http.Response response = await http.get(url).timeout(Duration(seconds: 10));
       RecipeFavoriteModel model = RecipeFavoriteModel.fromJson(json.decode(response.body));
-      List<RecipeFavoriteData> initialDisplayRecipeFavorite = [];
+      List<RecipeFavoriteModelData> initialDisplayRecipeFavorite = [];
       model.data.forEach((item) {
         initialDisplayRecipeFavorite.add(
-         RecipeFavoriteData(
-            id: item.id,
+         RecipeFavoriteModelData(
             uuid: item.uuid,
             title: item.title,
             imageUrl: item.imageUrl,
-            portion: item.portion,
             duration: item.duration,
+            portion: item.portion,
             isfavorite: item.isfavorite,
-            userId: item.userId,
-            name: item.name
+            user: RecipeFavoriteModelDataUser(
+              uuid: item.user.uuid,
+              name: item.user.name
+            ),
+            category: RecipeFavoriteModelDataCategory(
+              title: item.category.title
+            ), 
+            country: RecipeFavoriteModelDataCountry(
+              name: item.country.name
+            )
           )
         );
       });

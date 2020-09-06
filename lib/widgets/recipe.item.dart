@@ -11,8 +11,10 @@ class RecipeItem extends StatelessWidget {
   final String imageUrl;
   final String portion;
   final String duration;
+  final String categoryTitle;
+  final String username;
   final String userId;
-  final String name;
+  final String countryName;
 
   RecipeItem({
     this.id,
@@ -21,8 +23,10 @@ class RecipeItem extends StatelessWidget {
     this.imageUrl,
     this.portion,
     this.duration,
+    this.categoryTitle,
+    this.username,
     this.userId,
-    this.name
+    this.countryName
   });
 
  void selectRecipe(
@@ -135,35 +139,66 @@ class RecipeItem extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ViewProfileScreen(userId, name)),
+                MaterialPageRoute(builder: (context) => ViewProfileScreen(userId, username)),
               );
             },
             child: Container(
-              padding: EdgeInsets.only(top: 0.0, left: 0.0, right: 20.0, bottom: 15.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+              padding: EdgeInsets.only(top: 0.0, left: 20.0, right: 20.0, bottom: 15.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Icon(Icons.people),
-                  SizedBox(width: 6.0),
-                  RichText(
-                    text: TextSpan(
-                      text: 'Recipe by : ',
-                      style: TextStyle(
-                        color: Colors.black, 
-                        fontSize: 16.0
-                      ),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: '$name',
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.flag),
+                        SizedBox(width: 6.0),
+                        Text(countryName),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                      RichText(
+                        text: TextSpan(
+                          text: 'Recipe by : ',
                           style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.0
+                            color: Colors.black, 
                           ),
-                        )
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: '$username',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.0
+                              ),
+                            )
+                          ]
+                        ),
+                      ),
                       ]
+                    )
+                  ],
+                ),
+                SizedBox(height: 10.0),
+                RichText(
+                  text: TextSpan(
+                    text: 'Category : ',
+                    style: TextStyle(
+                      color: Colors.black, 
+                    ),
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: '$categoryTitle',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0
+                        ),
+                      )
+                    ]
                     ),
                   )
-                ],
+                ]
               ),
             ),
           ),

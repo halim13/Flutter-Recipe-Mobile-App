@@ -62,6 +62,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
 
   void save(BuildContext context, [int isPublished = 0]) async {
     RecipeEdit recipeProvider = Provider.of<RecipeEdit>(context, listen: false);
+    String msg = Provider.of<RecipeEdit>(context, listen: false).msg;
     recipeProvider.titleFocusNode.unfocus();
     try {
       if(recipeProvider.titleController.text == "") {
@@ -111,6 +112,19 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
           "item": stepsController.text
         });
       }
+      switch (isPublished) {
+        case 2:
+          msg = 'Updated';
+          isPublished = 1;
+        break;
+        case 1:
+          msg = 'Published';
+        break;
+        case 0:
+          msg = 'Saved to Draft';
+        break;
+        default:
+      }
       String categoryName = recipeProvider.categoryName;
       Set<dynamic> seenIngredientsGroup = Set();
       Set<dynamic> seenRemoveIngredientsGroup = Set();
@@ -156,7 +170,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
           headerAnimationLoop: false,
           dismissOnTouchOutside: false,
           title: 'Successful',
-          desc: Provider.of<RecipeEdit>(context, listen: false).data.recipes.first.isPublished == 1 ? 'Updated' : 'Published',
+          desc: msg,
           btnOkOnPress: () {
             Navigator.pop(context, title);
           },
@@ -577,7 +591,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                       }
                     ),
                   ),
-                    Container(
+                  Container(
                       width: double.infinity,
                       margin: EdgeInsets.all(10.0),
                       padding: EdgeInsets.all(10.0),
@@ -617,7 +631,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                                     ),
                                     elevation: 0.0,
                                     color: Colors.blue.shade700,
-                                    onPressed: () => save(context),  
+                                    onPressed: () => save(context, 2),  
                                   )
                                 :  RaisedButton(
                                     child: Text(
@@ -637,6 +651,49 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                                 )
                               );
                             }
+                          ),
+                        ),
+                        Container(
+                          width: double.infinity,
+                          margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 0.0, bottom: 10.0),
+                          padding: EdgeInsets.all(10.0),
+                          child: Consumer<RecipeEdit>(
+                           builder: (BuildContext context, RecipeEdit recipeProvider, Widget child) =>Container(
+                              height: 48.0,
+                              child: recipeProvider.isLoadingDraft ? RaisedButton(
+                                    child: Center(
+                                      child: SizedBox(
+                                        height: 30.0,
+                                        width: 30.0,
+                                        child: CircularProgressIndicator(
+                                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                        ),
+                                      )
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      side: BorderSide(color: Colors.transparent)
+                                    ),
+                                    elevation: 0.0,
+                                    color: Colors.blue.shade700,
+                                    onPressed: () {},
+                                  ) : RaisedButton(
+                                  child: Text(
+                                    'Save to Draft',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16.0
+                                    ),
+                                  ) ,
+                                  shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  side: BorderSide(color: Colors.transparent)
+                                ),
+                                elevation: 0.0,
+                                color: Colors.blue.shade700,
+                                onPressed: () => save(context, 0),  
+                              )
+                            ),
                           ),
                         )
                       ],
