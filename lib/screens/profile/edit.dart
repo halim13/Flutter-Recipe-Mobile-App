@@ -51,7 +51,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       ],
     ));
     if (imageSource != null) {
-      File _file = File(await ImagePicker().getImage(source: imageSource).then((pickedFile) => pickedFile.path));
+      File _file = File(await ImagePicker().getImage(
+        source: imageSource,
+        maxHeight: 480, 
+        maxWidth: 640
+      ).then((pickedFile) => pickedFile.path));
       if (_file != null) {
         setState(() {
           f = _file;
@@ -59,11 +63,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         File cropped = await ImageCropper.cropImage(
           sourcePath: f.path,
           androidUiSettings: AndroidUiSettings(
-          toolbarTitle: 'Crop It',
-          toolbarColor: Colors.blueGrey[900],
-          toolbarWidgetColor: Colors.white,
-          initAspectRatio: CropAspectRatioPreset.original,
-          lockAspectRatio: false),
+            toolbarTitle: 'Crop It',
+            toolbarColor: Colors.blueGrey[900],
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false
+          ),
           iosUiSettings: IOSUiSettings(
             minimumAspectRatio: 1.0,
           )
@@ -197,8 +202,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                         fit: BoxFit.cover,
                                         placeholder: (context, url) => Image.asset("assets/default-avatar.png"),
                                         errorWidget: (context, url, error) => Image.asset("assets/default-avatar.png"),
-                                        fadeOutDuration: Duration(seconds: 1),
-                                        fadeInDuration: Duration(seconds: 1),
                                       )
                                     : FadeInImage(
                                       fit: BoxFit.cover,

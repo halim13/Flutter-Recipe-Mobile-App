@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 import 'package:provider/provider.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -55,7 +56,11 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
     );
     if(imageSource != null) {
       RecipeEdit recipe = Provider.of<RecipeEdit>(context, listen: false);
-      PickedFile pickedFile = await ImagePicker().getImage(source: imageSource);
+      PickedFile pickedFile = await ImagePicker().getImage(
+        source: imageSource,
+        maxHeight: 480, 
+        maxWidth: 640
+      );
       recipe.changeImageRecipe(pickedFile);
     }
   }

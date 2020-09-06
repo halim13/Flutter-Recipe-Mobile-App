@@ -54,7 +54,11 @@ class _AddRecipeState extends State<AddRecipeScreen> {
     );
     if(imageSource != null) {
       RecipeAdd recipeProvider = Provider.of<RecipeAdd>(context, listen: false);
-      PickedFile pickedFile = await ImagePicker().getImage(source: imageSource);
+      PickedFile pickedFile = await ImagePicker().getImage(
+        source: imageSource,
+        maxHeight: 480, 
+        maxWidth: 640
+      );
       recipeProvider.changeImageRecipe(pickedFile);
     }
   }
@@ -129,7 +133,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
           dismissOnTouchOutside: false,
           dialogType: response["data"] == "ALERTDEMO" ? DialogType.INFO : DialogType.SUCCES,
           title: response["data"] == "ALERTDEMO" ? 'Info' : 'Successful',
-          desc: response["data"] == "ALERTDEMO" ? 'for DEMO \n Account is not Allow more 2 Recipes' : isPublished == 1 ? 'Recipe Created' : 'Saved to Draft',
+          desc: response["data"] == "ALERTDEMO" ? 'for DEMO \n Account is not Allow more 6 Recipes' : isPublished == 1 ? 'Recipe Created' : 'Saved to Draft',
           btnOkOnPress: () => Navigator.of(context).pop(),
           btnOkIcon: null,
           btnOkColor: Colors.blue.shade700

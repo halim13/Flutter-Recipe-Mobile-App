@@ -361,6 +361,7 @@ class _RecipeDetailFavoriteScreenState extends State<RecipeDetailFavoriteScreen>
           return authProvider.isAuth ? Consumer<RecipeDetail>(
             builder: (context, recipeProvider, ch) {
               return FloatingActionButton(
+                heroTag: UniqueKey(),
                 elevation: 0.0,
                 backgroundColor: Colors.yellow.shade700,
                 foregroundColor: Colors.black,

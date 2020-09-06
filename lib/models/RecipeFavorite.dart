@@ -25,7 +25,7 @@ class RecipeFavoriteModel with ChangeNotifier {
 class RecipeFavoriteModelData with ChangeNotifier {
   String uuid;
   String title;
-  String imageUrl;
+  String imageurl;
   String duration;
   String portion;
   int isfavorite;
@@ -36,7 +36,7 @@ class RecipeFavoriteModelData with ChangeNotifier {
   RecipeFavoriteModelData({
     this.uuid,
     this.title,
-    this.imageUrl,
+    this.imageurl,
     this.duration,
     this.isfavorite,
     this.portion,
@@ -48,7 +48,7 @@ class RecipeFavoriteModelData with ChangeNotifier {
   factory RecipeFavoriteModelData.fromJson(Map<String, dynamic> json) => RecipeFavoriteModelData(
     uuid: json["uuid"] == null ? null : json["uuid"],
     title: json["title"] == null ? null : json["title"],
-    imageUrl: json["imageUrl"] == null ? null : json["imageUrl"],
+    imageurl: json["imageurl"] == null ? null : json["imageurl"],
     duration: json["duration"] == null ? null : json["duration"],
     portion:  json["portion"] == null ? null : json["portion"],
     isfavorite: json["isfavorite"] == null ? null : json["isfavorite"],

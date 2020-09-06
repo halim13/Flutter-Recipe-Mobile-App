@@ -88,7 +88,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     uuid: recipeProvider.displayRecipeFavorite[i].uuid,
                     title: recipeProvider.displayRecipeFavorite[i].title,
                     duration: recipeProvider.displayRecipeFavorite[i].duration,
-                    imageUrl: recipeProvider.displayRecipeFavorite[i].imageUrl,
+                    imageurl: recipeProvider.displayRecipeFavorite[i].imageurl,
                     portion: recipeProvider.displayRecipeFavorite[i].portion,
                     categoryTitle: recipeProvider.displayRecipeFavorite[i].category.title,
                     username: recipeProvider.displayRecipeFavorite[i].user.name,

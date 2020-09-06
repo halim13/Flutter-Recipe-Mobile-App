@@ -5,10 +5,9 @@ import '../screens/profile/view.dart';
 import '../constants/url.dart';
 
 class RecipeItem extends StatelessWidget {
-  final int id;
   final String uuid;
   final String title;
-  final String imageUrl;
+  final String imageurl;
   final String portion;
   final String duration;
   final String categoryTitle;
@@ -17,10 +16,9 @@ class RecipeItem extends StatelessWidget {
   final String countryName;
 
   RecipeItem({
-    this.id,
     this.uuid,
     this.title,
-    this.imageUrl,
+    this.imageurl,
     this.portion,
     this.duration,
     this.categoryTitle,
@@ -72,7 +70,7 @@ class RecipeItem extends StatelessWidget {
                     topRight: Radius.circular(15.0),
                   ),
                   child: CachedNetworkImage(
-                    imageUrl: '$imagesRecipesUrl/$imageUrl',
+                    imageUrl: '$imagesRecipesUrl/$imageurl',
                     imageBuilder: (context, imageProvider) => Container(
                       width: double.infinity,
                       height: 250.0,

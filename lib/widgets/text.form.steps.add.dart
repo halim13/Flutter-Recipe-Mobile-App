@@ -36,7 +36,11 @@ Widget textFormStepsAdd(BuildContext context) {
       );
       if(imageSource != null) {
         RecipeAdd recipeProvider = Provider.of<RecipeAdd>(context, listen: false);
-        PickedFile pickedFile = await ImagePicker().getImage(source: imageSource);
+        PickedFile pickedFile = await ImagePicker().getImage(
+          source: imageSource,
+          maxHeight: 480, 
+          maxWidth: 640
+        );
         recipeProvider.stepsImage(i, z, pickedFile);
       }
     }

@@ -163,8 +163,6 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                       ),
                       placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
                       errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
-                      fadeOutDuration: Duration(seconds: 1),
-                      fadeInDuration: Duration(seconds: 1),
                     ) 
                   ),
                   Container(
@@ -352,8 +350,6 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                                       imageUrl: '$imagesStepsUrl/${recipeProvider.getStepsDetail[i].stepsImages[z].body}',
                                       placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
                                       errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
-                                      fadeOutDuration: Duration(seconds: 1),
-                                      fadeInDuration: Duration(seconds: 1),
                                     )
                                   ),
                                 ),
@@ -376,6 +372,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
           ? Consumer<RecipeDetail>(
               builder: (context, recipeProvider, ch) {
                 return FloatingActionButton(
+                  heroTag: UniqueKey(),
                   elevation: 0.0,
                   backgroundColor: Colors.yellow.shade700,
                   foregroundColor: Colors.black,

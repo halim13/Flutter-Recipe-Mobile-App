@@ -29,7 +29,7 @@ class RecipeDetail with ChangeNotifier {
       updateToFavorite(recipeId, 1);
       favorite = 1;
       Fluttertoast.showToast(
-        msg: 'Berhasil menambahkan ke daftar favorit',
+        msg: 'Added to Favorite list',
         toastLength: Toast.LENGTH_LONG,
         backgroundColor: Colors.yellow.shade700,
         textColor: Colors.white
@@ -40,7 +40,7 @@ class RecipeDetail with ChangeNotifier {
       displayRecipeFavorite.removeWhere((el) => el.uuid == recipeId);
       favorite = 0;
       Fluttertoast.showToast(
-        msg: 'Berhasil hapus dari daftar favorit',
+        msg: 'Removed to Favorite list',
         toastLength: Toast.LENGTH_LONG,
         backgroundColor: Colors.yellow.shade700,
         textColor: Colors.white
@@ -68,7 +68,7 @@ class RecipeDetail with ChangeNotifier {
          RecipeFavoriteModelData(
             uuid: item.uuid,
             title: item.title,
-            imageUrl: item.imageUrl,
+            imageurl: item.imageurl,
             duration: item.duration,
             portion: item.portion,
             isfavorite: item.isfavorite,

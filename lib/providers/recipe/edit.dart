@@ -277,19 +277,19 @@ class RecipeEdit extends ChangeNotifier {
           final checkUuid = getSteps[k].images.asMap().containsKey(j) ? getSteps[k].images[j].uuid : uuid.v4();
           initialStepsImages.add(StepsImages(
             uuid: checkUuid,
-            body: getSteps[k].images.asMap().containsKey(j) ? CachedNetworkImage(
-              imageUrl: '$imagesStepsUrl/${getSteps[k].images[j].body}',
-              placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
-              errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
-              fadeOutDuration: Duration(seconds: 1),
-              fadeInDuration: Duration(seconds: 1),
-            ) : CachedNetworkImage(
-              imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
-              placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
-              errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
-              fadeOutDuration: Duration(seconds: 1),
-              fadeInDuration: Duration(seconds: 1),
-            )
+            body: getSteps[k].images.asMap().containsKey(j) 
+            ? 
+              CachedNetworkImage(
+                imageUrl: '$imagesStepsUrl/${getSteps[k].images[j].body}',
+                placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+                errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+              ) 
+            : 
+              CachedNetworkImage(
+                imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
+                placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+                errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+              )
           ));
         }
         initialSteps.add(Steps(
