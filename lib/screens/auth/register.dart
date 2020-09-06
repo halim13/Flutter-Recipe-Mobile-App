@@ -53,7 +53,7 @@ class RegisterScreenState extends State<RegisterScreen> {
       });
       final response = await Provider.of<Auth>(context, listen: false).register(name, email, password);
       if(response["status"] == 200) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => TabsScreen()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => TabsScreen()));
       }
       setState(() {
         loading = false;
@@ -64,7 +64,7 @@ class RegisterScreenState extends State<RegisterScreen> {
       });
       SnackBar snackbar = SnackBar(
         backgroundColor: Colors.red[300],
-        content: Text('Pengguna sudah tersedia'),
+        content: Text('User already exists'),
         action: SnackBarAction(
           textColor: Colors.white,
           label: 'Close',

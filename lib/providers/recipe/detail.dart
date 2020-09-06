@@ -2,13 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:uuid/uuid.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
 import '../../constants/connection.dart';
-import '../../constants/url.dart';
 import '../../models/RecipeDetail.dart';
 import '../../models/RecipeFavorite.dart';
 
@@ -150,25 +148,25 @@ class RecipeDetail with ChangeNotifier {
         Uuid uuid = Uuid();
         for (int z = 0; z < 3; z++) {
           final checkUuid = model.data.steps[i].stepsImages.asMap().containsKey(z) ? model.data.steps[i].stepsImages[z].uuid : uuid.v4();
-          initialStepsImagesDetail.add(
-            StepsDetailImages(
+          initialStepsImagesDetail.add(StepsDetailImages(
               uuid: checkUuid,
               body: model.data.steps[i].stepsImages.asMap().containsKey(z) 
-              ? CachedNetworkImage(
-                imageUrl: '$imagesStepsUrl/${model.data.steps[i].stepsImages[z].body}',
-                placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
-                errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
-                fadeOutDuration: Duration(seconds: 1),
-                fadeInDuration: Duration(seconds: 1),
-              ) : CachedNetworkImage(
-                imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
-                placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
-                errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
-                fadeOutDuration: Duration(seconds: 1),
-                fadeInDuration: Duration(seconds: 1),
-              )
-            )
-          );
+              ? '${model.data.steps[i].stepsImages[z].body}'
+              : 'default-thumbnail.jpg'
+              // ? CachedNetworkImage(
+              //   imageUrl: '$imagesStepsUrl/${model.data.steps[i].stepsImages[z].body}',
+              //   placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+              //   errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+              //   fadeOutDuration: Duration(seconds: 1),
+              //   fadeInDuration: Duration(seconds: 1),
+              // ) : CachedNetworkImage(
+              //   imageUrl: '$imagesStepsUrl/default-thumbnail.jpg',
+              //   placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+              //   errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+              //   fadeOutDuration: Duration(seconds: 1),
+              //   fadeInDuration: Duration(seconds: 1),
+              // )
+          ));
         }
         initialStepsDetail.add(StepDetailData(
           uuid: model.data.steps[i].uuid, 

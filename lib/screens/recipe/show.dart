@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/models/SearchSuggestion.dart';
 import 'package:provider/provider.dart';
 import 'package:quartet/quartet.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -536,8 +535,7 @@ class DataSearch extends SearchDelegate<String> {
         ),
       );
     }
-    List<SearchSuggestionModelData> suggestionsList = recipeProvider.getSearchSuggestionsItem.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
-
+    List<RecipeShowModelData> suggestionsList = recipeProvider.getShowItem.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
     return ListView.builder(
       itemCount: suggestionsList.length,
       itemBuilder: (context, i) => Card(
