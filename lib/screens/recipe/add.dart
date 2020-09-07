@@ -201,8 +201,8 @@ class _AddRecipeState extends State<AddRecipeScreen> {
       ),
       body: ModalProgressHUD(
         inAsyncCall: isInAsyncCall,
-        opacity: 0.5,
         progressIndicator: Container(),
+        opacity: 0.5,
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -213,20 +213,21 @@ class _AddRecipeState extends State<AddRecipeScreen> {
                 alignment: Alignment.center,
                 children: [
                   Consumer<RecipeAdd>(
-                    builder: (context, value, child) {
+                    builder: (BuildContext context, RecipeAdd recipeProvider, Widget child) {
                     return SizedBox(
-                        width: double.infinity,
-                        child: value.fileImageRecipe == null ? Column(
+                      width: double.infinity,
+                      child: recipeProvider.fileImageRecipe == null 
+                      ? Column(
                           children: [ 
                             Image.asset('assets/default-thumbnail.jpg')
                           ]
                         )
-                        : Image.file(
-                        value.fileImageRecipe,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: 300.0,
-                      ),
+                      : Image.file(
+                          recipeProvider.fileImageRecipe,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: 300.0,
+                        ),
                       );
                     }, 
                   ),

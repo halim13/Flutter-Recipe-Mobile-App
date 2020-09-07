@@ -5,10 +5,10 @@ import 'dart:io';
 // import 'package:path/path.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 import '../../constants/connection.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Auth with ChangeNotifier {
   String _token;
@@ -23,6 +23,7 @@ class Auth with ChangeNotifier {
   bool get isAuth {
     return token != null;
   }
+
   String get token {
     if (_expiryDate != null && _expiryDate.isAfter(DateTime.now()) && _token != null) {
       return _token;
@@ -32,10 +33,11 @@ class Auth with ChangeNotifier {
 
   Future<void> auth(String token) async {
     String url = 'http://$baseurl:$port/api/v1/accounts';  
+    Map<String, String> headers = {
+      "x-auth-token": token
+    };
     try {
-      http.Response response = await http.get(url, headers: {
-        "x-auth-token" : token 
-      });
+      http.Response response = await http.get(url, headers: headers);
       final responseData = json.decode(response.body);
       _token = token;
       userId = responseData["data"]["uuid"];
@@ -85,7 +87,8 @@ class Auth with ChangeNotifier {
   Future register(String name, String email, String password) async {
     String url = 'http://$baseurl:$port/api/v1/accounts/register'; 
     try {
-      http.Response response = await http.post(url, body: {
+      http.Response response = await http.post(url, 
+      body: {
         "name": name,
         "email": email,
         "password": password
@@ -107,7 +110,7 @@ class Auth with ChangeNotifier {
       return false;
     }
     Map<String, Object> extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;
-    DateTime  expiryDate = DateTime.parse(extractedUserData['expiryDate']);
+    DateTime expiryDate = DateTime.parse(extractedUserData['expiryDate']);
     if (expiryDate.isBefore(DateTime.now())) {
       return false;
     }

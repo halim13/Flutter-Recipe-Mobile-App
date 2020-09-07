@@ -1,26 +1,34 @@
-// import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
-// import '../widgets/category_item.dart';
-// import '../providers/categories.dart';
+import 'package:flutter/material.dart';
 
-// class CategoriesGrid extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {  
-//     final categoriesData = Provider.of<Categories>(context, listen: false);
-//     final categories = categoriesData.categories;
-//     return GridView.builder(
-//       padding: const EdgeInsets.all(25),
-//       itemCount: categories.length,
-//       itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
-//         value: categories[i],
-//         child: CategoryItem(),
-//       ),
-//       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-//         maxCrossAxisExtent: 200,
-//         childAspectRatio: 3 / 2,
-//         crossAxisSpacing: 20,
-//         mainAxisSpacing: 20,
-//       )
-//     );
-//   }
-// }
+import './category.item.dart';
+import '../models/Category.dart';
+
+
+class CategoryGrid extends StatelessWidget {
+  final List<CategoryData> getCategoriesItems;
+
+  CategoryGrid({
+    this.getCategoriesItems
+  });
+  
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+      itemCount: getCategoriesItems.length,
+      padding: EdgeInsets.all(25.0),
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 200.0,
+        childAspectRatio: 3.0 / 2.0,
+        crossAxisSpacing: 20.0,
+        mainAxisSpacing: 20.0,
+      ), 
+      itemBuilder: (context, i) {
+        return CategoryItem(
+          uuid: getCategoriesItems[i].uuid,
+          title: getCategoriesItems[i].title,
+          cover: getCategoriesItems[i].cover,
+        );
+      }
+    );
+  }
+}

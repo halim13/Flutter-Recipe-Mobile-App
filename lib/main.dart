@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import './constants/routes.dart';
+import './colors/colors.dart';
 
 import './providers/auth/auth.dart';
 import './providers/category/categories.dart';
@@ -12,7 +13,7 @@ import './providers/recipe/show.dart';
 import './providers/recipe/detail.dart';
 import './providers/recipe/edit.dart';
 import './providers/recipe/add.dart';
-import './colors/colors.dart';
+
 import './screens/tabs/tabs.dart';
 
 void main() { 
