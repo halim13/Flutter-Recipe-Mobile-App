@@ -22,8 +22,8 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
     Navigator.of(context).pushNamed(
       '/edit-recipe',
       arguments: { 
-        "recipeId": recipeId,
-        "categoryId": categoryId
+        'recipeId': recipeId,
+        'categoryId': categoryId
       }
     ).then((_title) {
       if(_title != null) {
@@ -37,7 +37,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
   @override
   void didChangeDependencies() {
     Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments;
-    String _title = routeArgs["title"];
+    String _title = routeArgs['title'];
     if(_title != null) {
       title = _title;
     }
@@ -45,8 +45,8 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
   }
   Widget build(BuildContext context) {
     Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments;
-    String recipeId = routeArgs["uuid"];
-    String userId = routeArgs["userId"];
+    String recipeId = routeArgs['uuid'];
+    String userId = routeArgs['userId'];
 
     return Scaffold(
       appBar: AppBar(

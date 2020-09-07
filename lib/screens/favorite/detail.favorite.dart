@@ -6,7 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../../constants/url.dart';
 import '../../providers/auth/auth.dart';
 import '../../providers/recipe/detail.dart';
-import '../preview.image.dart';
+import '../../helpers/preview.image.dart';
 
 class RecipeDetailFavoriteScreen extends StatefulWidget {
   @override

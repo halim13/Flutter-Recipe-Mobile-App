@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-import '../preview.image.dart';
+import '../../helpers/preview.image.dart';
 import '../../providers/auth/auth.dart';
 import '../../providers/user/user.dart';
 import '../../constants/url.dart';

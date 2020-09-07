@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../constants/url.dart';
 
 import '../models/RecipeDetail.dart';
-import '../screens/preview.image.dart';
+import '../helpers/preview.image.dart';
 
 class DetailRecipeItem extends StatelessWidget {
   final String imageurl;

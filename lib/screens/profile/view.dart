@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import '../preview.image.dart';
+import '../../helpers/preview.image.dart';
 import '../../constants/url.dart';
 import '../../providers/user/user.dart';
 
