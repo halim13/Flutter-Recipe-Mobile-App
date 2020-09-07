@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import './constants/routes.dart';
+
 import './providers/auth/auth.dart';
 import './providers/category/categories.dart';
 import './providers/user/user.dart';
@@ -11,8 +13,7 @@ import './providers/recipe/detail.dart';
 import './providers/recipe/edit.dart';
 import './providers/recipe/add.dart';
 import './colors/colors.dart';
-import './screens/recipe/categories.dart';
-import 'constants/routes.dart';
+import './screens/tabs/tabs.dart';
 
 void main() { 
   Provider.debugCheckInvalidValueType = null;
@@ -85,7 +86,7 @@ class _MyAppState extends State<MyApp> {
         routes: appRoutes,
         onUnknownRoute: (settings) {
           return MaterialPageRoute(
-            builder: (BuildContext context) => CategoriesScreen(),
+            builder: (BuildContext context) => TabsScreen(),
           );
         },
       ),

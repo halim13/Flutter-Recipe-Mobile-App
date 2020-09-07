@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../screens/profile/view.dart';
 import '../constants/url.dart';
 
-class RecipeItem extends StatelessWidget {
+class FavoriteItem extends StatelessWidget {
   final String uuid;
   final String title;
   final String imageurl;
@@ -15,7 +15,7 @@ class RecipeItem extends StatelessWidget {
   final String userId;
   final String countryName;
 
-  RecipeItem({
+  FavoriteItem({
     this.uuid,
     this.title,
     this.imageurl,
@@ -27,7 +27,7 @@ class RecipeItem extends StatelessWidget {
     this.countryName
   });
 
- void selectRecipe(
+  void detailRecipeFavorite(
     BuildContext context, 
     String uuid, 
     String title, 
@@ -57,7 +57,7 @@ class RecipeItem extends StatelessWidget {
             children: [
               InkWell(
                 onTap: () {
-                  selectRecipe(
+                  detailRecipeFavorite(
                     context, 
                     uuid,
                     title, 
@@ -83,8 +83,6 @@ class RecipeItem extends StatelessWidget {
                     ),
                     placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
                     errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
-                    fadeOutDuration: Duration(seconds: 1),
-                    fadeInDuration: Duration(seconds: 1),
                   ),
                 ),
               ),
@@ -188,12 +186,12 @@ class RecipeItem extends StatelessWidget {
                     children: <TextSpan>[
                       TextSpan(
                         text: '$categoryTitle',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0
-                        ),
-                      )
-                    ]
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0
+                          ),
+                        )
+                      ] 
                     ),
                   )
                 ]

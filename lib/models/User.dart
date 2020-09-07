@@ -48,7 +48,7 @@ class UserData with ChangeNotifier{
     avatar: json["avatar"],
     name: json["name"],
     email: json["email"],
-    bio: json["bio"] == null ? "tidak ada bio" : json["bio"],
+    bio: json["bio"] == null ? "-" : json["bio"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
   );

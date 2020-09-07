@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/recipe/detail.dart';
-import '../../widgets/recipe.item.dart';
+import '../../widgets/favourites.item.dart';
 
 class FavoritesScreen extends StatefulWidget {
 
@@ -15,7 +15,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: Provider.of<RecipeDetail>(context, listen: false).getRecipeFavorite(),
-      builder: (context, snapshot) {
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
         if(snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: CircularProgressIndicator(),
@@ -75,7 +75,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
               ],
             ),
           ),
-          builder: (context, recipeProvider, child) {
+          builder: (BuildContext context, RecipeDetail recipeProvider, Widget child) {
             if(recipeProvider.displayRecipeFavorite.length <= 0) {
               return child;
             }
@@ -84,7 +84,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
               child: ListView.builder(
               itemCount: recipeProvider.displayRecipeFavorite.length,
                 itemBuilder: (context, i) {
-                  return RecipeItem(
+                  return FavoriteItem(
                     uuid: recipeProvider.displayRecipeFavorite[i].uuid,
                     title: recipeProvider.displayRecipeFavorite[i].title,
                     duration: recipeProvider.displayRecipeFavorite[i].duration,
