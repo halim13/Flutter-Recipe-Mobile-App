@@ -1,5 +1,6 @@
 // import 'package:path/path.dart' as path; // gunakan as path agar tidak terjadi bentrok
 
+import 'package:chumbucket_recipes/helpers/connectivity.service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -18,6 +19,26 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class ProfileScreenState extends State<ProfileScreen> {
+  Widget showError() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 150.0,
+            child: Image.asset('assets/no-network.png')
+          ),
+          SizedBox(height: 15.0),
+          Text('Bad Connection or Server Unreachable',
+            style: TextStyle(
+              fontSize: 16.0
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<Auth>(
@@ -62,8 +83,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                         borderRadius: BorderRadius.circular(30.0),
                       ),
                       color: Colors.white,
-                      child: Text(
-                        'Login',
+                      child: Text('Login',
                         style: TextStyle(
                           color: Colors.blue.shade700,
                           letterSpacing: 1.5,
@@ -83,8 +103,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                         borderRadius: BorderRadius.circular(30.0),
                       ),
                       color: Colors.white,
-                      child: Text(
-                        'Register',
+                      child: Text('Register',
                         style: TextStyle(
                           color: Colors.blue.shade700,
                           letterSpacing: 1.5,
@@ -113,38 +132,7 @@ class ProfileScreenState extends State<ProfileScreen> {
           );
         }
         if(snapshot.hasError) {
-          return Consumer<User>(
-            builder: (BuildContext context, User userProvider, Widget child) =>
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 150.0,
-                    child: Image.asset('assets/no-network.png')
-                  ),
-                  SizedBox(height: 15.0),
-                  Text('Koneksi jaringan Anda buruk.',
-                    style: TextStyle(
-                      fontSize: 16.0
-                    ),
-                  ),
-                  SizedBox(height: 10.0),
-                  GestureDetector(
-                    child: Text('Coba Ulangi',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        decoration: TextDecoration.underline
-                      ),
-                    ),
-                    onTap: () {
-                      setState((){});
-                    },
-                  ),
-                ],
-              ),
-            ),
-          );
+          return showError();
         }
         return Consumer<User>(
           builder: (BuildContext context, User userProvider, Widget child) {
@@ -153,70 +141,72 @@ class ProfileScreenState extends State<ProfileScreen> {
               child: ListView.builder(
               itemCount: userProvider.getCurrentProfileItem.length,
               itemBuilder: (context, i) {
-                  return Column(
-                    children: [
-                      Stack(
-                        overflow: Overflow.visible,
-                        alignment: Alignment.center,
-                        children: [
-                          Image(
-                            height: MediaQuery.of(context).size.height / 4.0,
-                            fit: BoxFit.cover,
-                            image: AssetImage('assets/default-thumbnail-profile.jpg')
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(top: 80.0),
-                            width: 120.0,
-                            height: 120.0,
-                            child: Column(
-                              children: [
-                                Stack(
-                                  overflow: Overflow.visible,
-                                  alignment: Alignment.center,
-                                  children: [
-                                    Container(
-                                      width: 120.0,
-                                      height: 120.0,
-                                      child: GestureDetector(
-                                        child: ClipOval(
-                                          child: userProvider.getCurrentProfileItem[i].avatar == "" ||  userProvider.getCurrentProfileItem[i].avatar == null
-                                          ? Image.asset('assets/default-avatar.png', fit: BoxFit.cover) 
-                                          : FadeInImage.memoryNetwork(
-                                              fit: BoxFit.cover,
-                                              placeholder: kTransparentImage,
-                                              image: '$imagesAvatarUrl/${userProvider.getCurrentProfileItem[i].avatar}',
-                                            ),
+                  return ConnectivityService(
+                    widget: Column(
+                      children: [
+                        Stack(
+                          overflow: Overflow.visible,
+                          alignment: Alignment.center,
+                          children: [
+                            Image(
+                              height: MediaQuery.of(context).size.height / 4.0,
+                              fit: BoxFit.cover,
+                              image: AssetImage('assets/default-thumbnail-profile.jpg')
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(top: 80.0),
+                              width: 120.0,
+                              height: 120.0,
+                              child: Column(
+                                children: [
+                                  Stack(
+                                    overflow: Overflow.visible,
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Container(
+                                        width: 120.0,
+                                        height: 120.0,
+                                        child: GestureDetector(
+                                          child: ClipOval(
+                                            child: userProvider.getCurrentProfileItem[i].avatar == "" ||  userProvider.getCurrentProfileItem[i].avatar == null
+                                            ? Image.asset('assets/default-avatar.png', fit: BoxFit.cover) 
+                                            : FadeInImage.memoryNetwork(
+                                                fit: BoxFit.cover,
+                                                placeholder: kTransparentImage,
+                                                image: '$imagesAvatarUrl/${userProvider.getCurrentProfileItem[i].avatar}',
+                                              ),
+                                          ),
+                                          onTap: () {
+                                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+                                              return PreviewImageScreen(
+                                                url: imagesAvatarUrl,
+                                                body: userProvider.getCurrentProfileItem[i].avatar
+                                              );
+                                            }));
+                                          },
                                         ),
-                                        onTap: () {
-                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
-                                            return PreviewImageScreen(
-                                              url: imagesAvatarUrl,
-                                              body: userProvider.getCurrentProfileItem[i].avatar
-                                            );
-                                          }));
-                                        },
                                       ),
-                                    ),
-                                  ]
-                                ),
-                              ],
+                                    ]
+                                  ),
+                                ],
+                              )
                             )
-                          )
-                        ],
-                      ),
-                      ListTile(
-                        title: Text('Name'),
-                        subtitle: Text(userProvider.getCurrentProfileItem[i].name)
-                      ),
-                      ListTile(
-                        title: Text('E-mail Address'),
-                        subtitle: Text(userProvider.getCurrentProfileItem[i].email)
-                      ),
-                      ListTile(
-                        title: Text('Bio'),
-                        subtitle: Text(userProvider.getCurrentProfileItem[i].bio)
-                      ),                        
-                    ],
+                          ],
+                        ),
+                        ListTile(
+                          title: Text('Name'),
+                          subtitle: Text(userProvider.getCurrentProfileItem[i].name)
+                        ),
+                        ListTile(
+                          title: Text('E-mail Address'),
+                          subtitle: Text(userProvider.getCurrentProfileItem[i].email)
+                        ),
+                        ListTile(
+                          title: Text('Bio'),
+                          subtitle: Text(userProvider.getCurrentProfileItem[i].bio)
+                        ),                        
+                      ],
+                    ),
                   );
                 },
               ),

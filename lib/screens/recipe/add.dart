@@ -274,18 +274,6 @@ class _AddRecipeState extends State<AddRecipeScreen> {
               fontSize: 16.0
             ),
           ),
-          SizedBox(height: 10.0),
-          GestureDetector(
-            child: Text('Try Again',
-              style: TextStyle(
-                fontSize: 16.0,
-                decoration: TextDecoration.underline
-              ),
-            ),
-            onTap: () {
-              setState((){});
-            },
-          ),
         ],
       ),
     );

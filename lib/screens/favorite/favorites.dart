@@ -1,5 +1,10 @@
+import 'dart:async';
+
+import 'package:chumbucket_recipes/helpers/connectivity.service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:connectivity/connectivity.dart';
 
 import '../../providers/recipe/detail.dart';
 import '../../widgets/favourites.item.dart';
@@ -11,6 +16,29 @@ class FavoritesScreen extends StatefulWidget {
 }
 
 class _FavoritesScreenState extends State<FavoritesScreen> {
+
+  Widget showError() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 150.0,
+            child: Image.asset('assets/no-network.png')
+          ),
+          SizedBox(height: 15.0),
+          Text('Bad Connection or Server Unreachable',
+            style: TextStyle(
+              fontSize: 16.0
+            ),
+          ),               
+        ],
+      ),
+    );
+  }
+
+  
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -22,35 +50,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           );
         }
         if(snapshot.hasError) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 150.0,
-                  child: Image.asset('assets/no-network.png')
-                ),
-                SizedBox(height: 15.0),
-                Text('Bad Connection or Server Unreachable',
-                  style: TextStyle(
-                    fontSize: 16.0
-                  ),
-                ),
-                SizedBox(height: 10.0),
-                GestureDetector(
-                  child: Text('Try Again',
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      decoration: TextDecoration.underline
-                    ),
-                  ),
-                  onTap: () {
-                    setState((){});
-                  },
-                ),
-              ],
-            ),
-          );
+          return showError();
         }
         return Consumer<RecipeDetail>(
           child: RefreshIndicator(
@@ -84,7 +84,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
               child: ListView.builder(
               itemCount: recipeProvider.displayRecipeFavorite.length,
                 itemBuilder: (context, i) {
-                  return FavoriteItem(
+                  return ConnectivityService(
+                    widget: FavoriteItem(
                     uuid: recipeProvider.displayRecipeFavorite[i].uuid,
                     title: recipeProvider.displayRecipeFavorite[i].title,
                     duration: recipeProvider.displayRecipeFavorite[i].duration,
@@ -94,6 +95,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     username: recipeProvider.displayRecipeFavorite[i].user.name,
                     userId: recipeProvider.displayRecipeFavorite[i].user.uuid,
                     countryName: recipeProvider.displayRecipeFavorite[i].country.name,
+                  )
                   );
                 }
               ),

@@ -31,18 +31,6 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               fontSize: 16.0
             ),
           ),
-          SizedBox(height: 10.0),
-          GestureDetector(
-            child: Text('Try Again',
-              style: TextStyle(
-                fontSize: 16.0,
-                decoration: TextDecoration.underline
-              ),
-            ),
-            onTap: () {
-              setState((){});
-            },
-          ),
         ],
       ),
     );
