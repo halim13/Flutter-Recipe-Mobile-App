@@ -117,7 +117,7 @@ class User extends ChangeNotifier {
       http.StreamedResponse response = await request.send().timeout(Duration(seconds: 60));
       String responseData = await response.stream.bytesToString();
       final responseDecoded = json.decode(responseData);
-      if(responseDecoded["status"] == 200) {
+      if(responseDecoded["status"] == HttpStatus.ok) {
         refreshProfile();
         isLoading = false;
         notifyListeners();

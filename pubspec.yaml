@@ -1,5 +1,5 @@
-name: flutter_complete_guide
-description: A new Flutter project.
+name: chumbucket_recipes
+description: Food Recipes.
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -33,8 +33,9 @@ dev_dependencies:
   quartet: ^0.1.1
   awesome_dialog: ^1.2.0
   package_info: ^0.4.3
-  progress_dialog: ^1.2.4
+  connectivity_widget: ^0.1.7
   modal_progress_hud: ^0.1.3
+  connectivity: ^0.4.9+2
   flutter_cache_manager: ^1.4.1
   cached_network_image: ^2.2.0+1
   flutter_image_compress: ^0.7.0

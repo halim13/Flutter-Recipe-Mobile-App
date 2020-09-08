@@ -29,8 +29,8 @@ class RecipeAdd with ChangeNotifier {
   String categoryName;
   String foodCountryName;
   String portionName = "1";
-  List categoriesDisplay = [""];
-  List foodCountriesDisplay = [""];
+  List<String> categoriesDisplay = [""];
+  List<String> foodCountriesDisplay = [""];
   List<String> portionsDisplay = ["1", "2", "3", "4", "5", "6", "7", "8"];
   String duration;
   TextEditingController titleController = TextEditingController();
@@ -362,7 +362,7 @@ class RecipeAdd with ChangeNotifier {
       request.headers.addAll(headers);
       request.fields.addAll(fields);
       http.StreamedResponse response = await request.send().timeout(Duration(seconds: 60));
-      if(response.statusCode == 200) {
+      if(response.statusCode == HttpStatus.ok) {
         ingredientsGroupSendToHttp = [];
         ingredientsSendToHttp = [];
         stepsSendToHttp = [];

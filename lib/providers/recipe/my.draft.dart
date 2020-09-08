@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/models/RecipeDraft.dart';
+
 import 'package:uuid/uuid.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,6 +13,7 @@ import 'package:http/http.dart' as http;
 import '../../constants/connection.dart';
 import '../../constants/url.dart';
 import '../../models/Recipe.dart';
+import '../../models/RecipeDraft.dart';
 import './detail.dart';
 import './show.dart';
 
@@ -362,7 +363,7 @@ class MyDraft extends ChangeNotifier {
       request.headers.addAll(headers);
       request.fields.addAll(fields);
       http.StreamedResponse response = await request.send().timeout(Duration(seconds: 60));
-      if(response.statusCode == 200) {
+      if(response.statusCode == HttpStatus.ok) {
         isLoading = false;
         ingredientsGroupSendToHttp = [];
         removeIngredientsGroupSendToHttp = [];

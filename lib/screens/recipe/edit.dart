@@ -64,6 +64,18 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
     }
   }
 
+  Widget title(String title) {
+    return Container(
+      margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0, bottom: 20.0),
+      child: Text(title,
+        style: TextStyle(
+          fontSize: 16.0,
+          fontStyle: FontStyle.italic
+        ),
+      ),
+    );
+  }
+
   void save(BuildContext context, [int isPublished = 0]) async {
     RecipeEdit recipeProvider = Provider.of<RecipeEdit>(context, listen: false);
     String msg = Provider.of<RecipeEdit>(context, listen: false).msg;
@@ -306,19 +318,21 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                           return SizedBox(
                             width: double.infinity,
                             height: 300.0,
-                            child: recipeProvider.fileImageRecipe == null ? CachedNetworkImage(
-                            imageUrl: '$imagesRecipesUrl/${recipeProvider.getFileImageRecipe}',
-                            imageBuilder: (context, imageProvider) => Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.cover,
+                            child: recipeProvider.fileImageRecipe == null 
+                            ? CachedNetworkImage(
+                                imageUrl: '$imagesRecipesUrl/${recipeProvider.getFileImageRecipe}',
+                                imageBuilder: (context, imageProvider) => Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
-                            errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
-                            ) : Image.file(
+                                placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+                                errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+                              ) 
+                            : Image.file(
                               recipeProvider.fileImageRecipe,
                               fit: BoxFit.cover,
                               width: double.infinity,
@@ -336,16 +350,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                       )
                     ]
                   ),
-                  Container(
-                    margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
-                    child: Text(
-                      'What are you Cook ?',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        fontStyle: FontStyle.italic
-                      ),
-                    ),
-                  ),
+                  title('What are you Cook ?'),
                   Consumer<RecipeEdit>(
                     builder: (context, recipeProvider, child) {
                       return Form(
@@ -372,16 +377,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                       );
                     }
                   ),
-                  Container(
-                    margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
-                    child: Text(
-                      'What are the Category ?',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        fontStyle: FontStyle.italic
-                      ),
-                    ),
-                  ),
+                  title('What are the Category ?'),
                   Container(
                     margin: EdgeInsets.only(left: 18.0, top: 15.0, right: 18.0),
                     child: Column(
@@ -389,11 +385,10 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                         Consumer<RecipeEdit>(
                           builder: (BuildContext context, RecipeEdit recipeProvider, Widget child) => DropdownSearch(
                             mode: Mode.BOTTOM_SHEET,
-                            showSelectedItem: true,
                             items: recipeProvider.categoriesDisplay,
-                            label: "Select Category",
-                            onChanged: (v) {
-                              recipeProvider.categoryName = v;
+                            label: "Category",
+                            onChanged: (value) {
+                              recipeProvider.categoryName = value;
                             },
                             selectedItem: recipeProvider.categoryName
                           ),
@@ -401,16 +396,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                       ]
                     )
                   ),
-                  Container(
-                    margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0, bottom: 5.0),
-                    child: Text(
-                      'Where this food come from ?',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        fontStyle: FontStyle.italic
-                      ),
-                    ),
-                  ),
+                  title('Where this food come from ?'),
                   Container(
                     margin: EdgeInsets.only(left: 18.0, top: 15.0, right: 18.0),
                     child: Column(
@@ -419,7 +405,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                           builder: (BuildContext context, RecipeEdit recipeProvider, Widget child) => DropdownSearch(
                             mode: Mode.BOTTOM_SHEET,
                             items: recipeProvider.foodCountriesDisplay,
-                            label: "Select Food Countries",
+                            label: "Country",
                             onChanged: (v) {
                               recipeProvider.foodCountryName = v;
                             },
@@ -429,16 +415,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                       ]
                     )
                   ),
-                  Container(
-                    margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
-                    child: Text(
-                      'How many Portion ?',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        fontStyle: FontStyle.italic
-                      ),
-                    ),
-                  ),
+                  title('How many Portion ?'),
                   Container(
                     margin: EdgeInsets.only(left: 18.0, top: 15.0, right: 18.0),
                     child: Column(
@@ -448,7 +425,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                             mode: Mode.BOTTOM_SHEET,
                             showSelectedItem: true,
                             items: recipeProvider.portionsDisplay,
-                            label: "Select Portion",
+                            label: "Portion",
                             onChanged: (v) {
                               recipeProvider.portionName = v;
                             },
@@ -458,42 +435,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                       ]
                     )
                   ),
-                  // Consumer<RecipeEdit>(
-                  //   builder: (context, recipeProvider, child) {
-                  //     return Form(
-                  //       child: Container(
-                  //         width: double.infinity,
-                  //         margin: EdgeInsets.only(left: 18.0, right: 18.0),
-                  //         child: TextFormField(
-                  //           focusNode: recipeProvider.portionFocusNode,
-                  //           controller: recipeProvider.portionController,
-                  //           keyboardType: TextInputType.text,
-                  //           decoration: InputDecoration(
-                  //             enabledBorder: UnderlineInputBorder(
-                  //               borderSide: BorderSide(color: Colors.grey),
-                  //             ),
-                  //             focusedBorder: UnderlineInputBorder(
-                  //               borderSide: BorderSide(color: Colors.grey),
-                  //             ) 
-                  //           ),
-                  //           onSaved: (val) {
-                  //             recipeProvider.portionController.text = val;
-                  //           },
-                  //         ),
-                  //       ),
-                  //     );
-                  //   }
-                  // ),
-                  Container(
-                    margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0, bottom: 10.0),
-                    child: Text(
-                      'How long to Cook this ?',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        fontStyle: FontStyle.italic
-                      ),
-                    ),
-                  ),
+                  title('How long to Cook this ?'),
                   Container(
                     height: 220.0,
                     child: Consumer<RecipeEdit>(
@@ -509,16 +451,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                       }
                     )
                   ),
-                  Container(
-                    margin: EdgeInsets.only(left: 18.0, top: 20.0, right: 18.0),
-                    child: Text(
-                      'What are the Ingredients ?',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        fontStyle: FontStyle.italic
-                      ),
-                    ),
-                  ),
+                  title('What are the Ingredients ?'),
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -555,16 +488,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                       },
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(left: 18.0, top: 18.0, right: 18.0),
-                    child: Text(
-                      'How to Cook ?',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        fontStyle: FontStyle.italic
-                      ),
-                    ),
-                  ),
+                  title('How to Cook ?'),
                   Container(
                     margin: EdgeInsets.all(10.0),
                     padding: EdgeInsets.all(10.0),
@@ -596,9 +520,9 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                     ),
                   ),
                   Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.all(10.0),
-                      padding: EdgeInsets.all(10.0),
+                    width: double.infinity,
+                    margin: EdgeInsets.all(10.0),
+                    padding: EdgeInsets.all(10.0),
                         child: Consumer<RecipeEdit>(
                           builder: (BuildContext context, RecipeEdit recipeProvider, Widget child) {
                             return Container(

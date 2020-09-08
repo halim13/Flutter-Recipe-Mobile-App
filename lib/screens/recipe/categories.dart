@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/category/categories.dart';
@@ -10,8 +13,57 @@ class CategoriesScreen extends StatefulWidget {
 }
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
+  Connectivity connectivity;
+  StreamSubscription<ConnectivityResult> subscription;
+
+  Widget showError() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 150.0,
+            child: Image.asset('assets/no-network.png')
+          ),
+          SizedBox(height: 15.0),
+          Text('Bad Connection or Server Unreachable',
+            style: TextStyle(
+              fontSize: 16.0
+            ),
+          ),
+          SizedBox(height: 10.0),
+          GestureDetector(
+            child: Text('Try Again',
+              style: TextStyle(
+                fontSize: 16.0,
+                decoration: TextDecoration.underline
+              ),
+            ),
+            onTap: () {
+              setState((){});
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
+  void initState() {
+    super.initState();
+    connectivity = Connectivity();
+    subscription = connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
+      if(result == ConnectivityResult.wifi || result == ConnectivityResult.mobile || result == ConnectivityResult.none) {
+        setState(() {});
+      }
+    });
+  }
+
+  @override 
+  void dispose() {
+    subscription.cancel();
+    super.dispose();
+  }
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: Provider.of<Categories>(context, listen: false).getCategories(),
@@ -22,35 +74,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           );
         }
         if(snapshot.hasError) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 150.0,
-                  child: Image.asset('assets/no-network.png')
-                ),
-                SizedBox(height: 15.0),
-                Text('Bad Connection or Server Unreachable',
-                  style: TextStyle(
-                    fontSize: 16.0
-                  ),
-                ),
-                SizedBox(height: 10.0),
-                GestureDetector(
-                  child: Text('Try Again',
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      decoration: TextDecoration.underline
-                    ),
-                  ),
-                  onTap: () {
-                    setState((){});
-                  },
-                ),
-              ],
-            ),
-          );
+          return showError();
         }
         return Consumer<Categories>(
           child: Center(
