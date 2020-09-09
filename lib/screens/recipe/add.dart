@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +14,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import '../../widgets/text.form.ingredients.add.dart';
 import '../../widgets/text.form.steps.add.dart';
 import '../../providers/recipe/add.dart';
+import '../../helpers/connectivity.service.dart';
 
 class AddRecipeScreen extends StatefulWidget {
   @override
@@ -22,9 +22,6 @@ class AddRecipeScreen extends StatefulWidget {
 }
 
 class _AddRecipeState extends State<AddRecipeScreen> { 
-  ConnectivityResult connectionStatus;
-  Connectivity connectivity = Connectivity();
-  StreamSubscription<ConnectivityResult> connectivitySubscription;
   bool isInAsyncCall = false;
   Timer timer;
 
@@ -199,46 +196,6 @@ class _AddRecipeState extends State<AddRecipeScreen> {
     } 
   }
 
-  Future<void> updateConnectionStatus(ConnectivityResult result) async {
-    switch (result) {
-      case ConnectivityResult.wifi:
-        setState(() => connectionStatus = result);
-      break;
-      case ConnectivityResult.mobile:
-        setState(() => connectionStatus = result);
-      break;
-      case ConnectivityResult.none:
-        setState(() => connectionStatus = result);
-      break;
-      default:
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    initConnectivity();
-    connectivitySubscription = connectivity.onConnectivityChanged.listen(updateConnectionStatus);
-  } 
-
-  @override
-  void dispose() {
-    connectivitySubscription.cancel();
-    super.dispose();
-  }
-
-  Future<void> initConnectivity() async {
-    ConnectivityResult result;
-    try {
-      result = await connectivity.checkConnectivity();
-    } on PlatformException catch (e) {
-      print(e.toString());
-    }
-    if (!mounted) {
-      return Future.value(null);
-    }
-    return updateConnectionStatus(result);
-  }
   Widget build(BuildContext context) {
     bool isLoading = Provider.of<RecipeAdd>(context, listen: false).isLoading;
     bool isLoadingDraft = Provider.of<RecipeAdd>(context, listen: false).isLoadingDraft;
@@ -255,7 +212,9 @@ class _AddRecipeState extends State<AddRecipeScreen> {
           onPressed: () => Navigator.of(context).pop(true)
         ),
       ),
-      body: connectionStatus == ConnectivityResult.none ? showError() : getAddPage()
+      body: ConnectivityService(
+        widget: getAddPage()
+      )
     );
   }
 

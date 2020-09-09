@@ -1,11 +1,7 @@
-import 'dart:async';
-
-import 'package:chumbucket_recipes/helpers/connectivity.service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:connectivity/connectivity.dart';
 
+import '../../helpers/connectivity.service.dart';
 import '../../providers/recipe/detail.dart';
 import '../../widgets/favourites.item.dart';
 

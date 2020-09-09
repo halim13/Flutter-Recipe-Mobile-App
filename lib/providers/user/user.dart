@@ -10,7 +10,7 @@ import '../../models/User.dart';
 
 class User extends ChangeNotifier {
   bool isLoading = false;
-  String isUserRecipeVal;
+  var isUserRecipeVal;
   
   List<UserData> currentProfile = [];
   List<UserData> viewProfile = [];
@@ -26,7 +26,7 @@ class User extends ChangeNotifier {
     Map<String, Object> extractedUserData = json.decode(prefs.getString('userData'));
     String currentUserId = extractedUserData["userId"];
     if(userId == currentUserId) { 
-      isUserRecipeVal = "true";
+      isUserRecipeVal = true;
       notifyListeners();
     } else {
       isUserRecipeVal = null;

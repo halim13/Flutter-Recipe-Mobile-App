@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quartet/quartet.dart';
 import 'package:provider/provider.dart';
 
+import '../../helpers/connectivity.service.dart';
 import '../../providers/auth/auth.dart';
 import '../../providers/recipe/detail.dart';
 import '../../providers/user/user.dart';
@@ -48,6 +49,38 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
     String recipeId = routeArgs['uuid'];
     String userId = routeArgs['userId'];
 
+    Widget showError() {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 150.0,
+              child: Image.asset('assets/no-network.png')
+            ),
+            SizedBox(height: 15.0),
+            Text('Bad Connection or Server Unreachable',
+              style: TextStyle(
+                fontSize: 16.0
+              ),
+            ),
+            SizedBox(height: 10.0),
+            GestureDetector(
+              child: Text('Try Again',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  decoration: TextDecoration.underline
+                ),
+              ),
+              onTap: () {
+                setState((){});
+              },
+            ),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(titleCase(title)),
@@ -77,55 +110,29 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       ),
       body: FutureBuilder(
         future: Provider.of<RecipeDetail>(context, listen: false).detail(recipeId),
-        builder: (context, snapshot) {
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
           if(snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator() 
             );
           }
           if(snapshot.hasError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 150.0,
-                    child: Image.asset('assets/no-network.png')
-                  ),
-                  SizedBox(height: 15.0),
-                  Text('Bad Connection or Server Unreachable',
-                    style: TextStyle(
-                      fontSize: 16.0
-                    ),
-                  ),
-                  SizedBox(height: 10.0),
-                  GestureDetector(
-                    child: Text('Try Again',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        decoration: TextDecoration.underline
-                      ),
-                    ),
-                    onTap: () {
-                      setState((){});
-                    },
-                  ),
-                ],
-              ),
-            );
+            return showError();
           }
           return Consumer<RecipeDetail>(
             builder: (BuildContext context, RecipeDetail recipeProvider, Widget child) {
-              return DetailRecipeItem(  
-                imageurl: recipeProvider.getRecipeDetail.first.imageurl,
-                title: recipeProvider.getRecipeDetail.first.title,
-                duration: recipeProvider.getRecipeDetail.first.duration,
-                portion: recipeProvider.getRecipeDetail.first.portion,
-                countryName: recipeProvider.getRecipeDetail.first.country.name,
-                userName: recipeProvider.getRecipeDetail.first.user.name,
-                categoryTitle: recipeProvider.getRecipeDetail.first.category.title,
-                getIngredientsGroupDetail: recipeProvider.getIngredientsGroupDetail,
-                getStepsDetail: recipeProvider.getStepsDetail,
+              return ConnectivityService(
+                widget: DetailRecipeItem(  
+                  imageurl: recipeProvider.getRecipeDetail.first.imageurl,
+                  title: recipeProvider.getRecipeDetail.first.title,
+                  duration: recipeProvider.getRecipeDetail.first.duration,
+                  portion: recipeProvider.getRecipeDetail.first.portion,
+                  countryName: recipeProvider.getRecipeDetail.first.country.name,
+                  userName: recipeProvider.getRecipeDetail.first.user.name,
+                  categoryTitle: recipeProvider.getRecipeDetail.first.category.title,
+                  getIngredientsGroupDetail: recipeProvider.getIngredientsGroupDetail,
+                  getStepsDetail: recipeProvider.getStepsDetail,
+                ),
               );
             }
           );
@@ -138,9 +145,9 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
               builder: (context, recipeProvider, ch) {
                 return FloatingActionButton(
                   heroTag: UniqueKey(),
-                  elevation: 0.0,
                   backgroundColor: Colors.yellow.shade700,
                   foregroundColor: Colors.black,
+                  elevation: 0.0,
                   child: Icon(recipeProvider.isRecipeFavorite(recipeId, recipeProvider.favorite) ? Icons.star : Icons.star_border),
                   onPressed: () => recipeProvider.toggleFavorite(recipeId, recipeProvider.favorite, context)
                 );

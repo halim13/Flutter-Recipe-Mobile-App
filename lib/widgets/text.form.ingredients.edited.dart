@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/recipe/edit.dart';
@@ -76,6 +77,9 @@ Widget textFormIngredientsEdit(BuildContext context) {
                                 child: TextFormField(         
                                   focusNode: recipeProvider.ingredientsGroup[i].ingredients[z].focusNode,
                                   controller: recipeProvider.ingredientsGroup[i].ingredients[z].textEditingController,
+                                  inputFormatters: [
+                                    BlacklistingTextInputFormatter(RegExp('[\\*]')),
+                                  ],
                                   decoration: InputDecoration(
                                     hintStyle: TextStyle(
                                       fontSize: 16.0
