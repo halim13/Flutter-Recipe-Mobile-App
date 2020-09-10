@@ -44,8 +44,6 @@ class RecipeAdd with ChangeNotifier {
   List<Map<String, Object>> stepsSendToHttp = [];
   
   initState() {
-    allCategories();
-    allFoodCountries();
     Uuid uuid = Uuid();
     String ingredientUuidv4 = uuid.v4();
     String ingredientPerGroupUuidv4 = uuid.v4();
@@ -119,40 +117,32 @@ class RecipeAdd with ChangeNotifier {
     }
   }
 
-  Future allCategories() async {
-    String url = 'http://$baseurl:$port/api/v1/categories'; 
+  Future categoriesAndCountries() async {
+    String categoriesUrl = 'http://$baseurl:$port/api/v1/categories'; 
+    String countriesUrl = 'http://$baseurl:$port/api/v1/categories/food-countries';
     try {
-      http.Response response = await http.get(url);
-      CategoryModel model = CategoryModel.fromJson(json.decode(response.body));
+      http.Response categoriesResponse = await http.get(categoriesUrl);
+      http.Response countriesResponse = await http.get(countriesUrl);
+      CategoryModel categoryModel = CategoryModel.fromJson(json.decode(categoriesResponse.body));
+      FoodCountriesModel foodCountriesModel = FoodCountriesModel.fromJson(json.decode(countriesResponse.body));
       List<String> initialCategoriesDisplay = [];
-      model.data.forEach((item) { 
+      List<String> initialFoodCountriesDisplay = [];
+      categoryModel.data.forEach((item) { 
         initialCategoriesDisplay.add(item.title);
       });
-      categoriesDisplay = initialCategoriesDisplay;
-      categoryName = categoriesDisplay.first;
-      notifyListeners();
-    } catch(error) {
-      print(error);
-    }
-  }
-
-  Future allFoodCountries() async {
-    String url = 'http://$baseurl:$port/api/v1/categories/food-countries'; 
-    try {
-      http.Response response = await http.get(url);
-      FoodCountriesModel model = FoodCountriesModel.fromJson(json.decode(response.body));
-      List<String> initialFoodCountriesDisplay = [];
-      model.data.forEach((item) { 
+      foodCountriesModel.data.forEach((item) {
         initialFoodCountriesDisplay.add(item.name);
       });
+      categoriesDisplay = initialCategoriesDisplay;
       foodCountriesDisplay = initialFoodCountriesDisplay;
+      categoryName = categoriesDisplay.first;
       foodCountryName = foodCountriesDisplay.first;
       notifyListeners();
     } catch(error) {
       print(error);
     }
   }
-
+  
   void incrementIngredientPerGroup(BuildContext context) {
     Uuid uuid = Uuid();
     String uuidv4IngredientPerGroup = uuid.v4();

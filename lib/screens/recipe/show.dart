@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../../constants/url.dart';
 import '../../models/RecipeShow.dart';
 import '../../helpers/highlight.occurences.dart';
+import '../../helpers/show.error.dart';
 import '../../providers/recipe/show.dart';
 import '../profile/view.dart';
 
@@ -53,6 +54,9 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
     );
   }
 
+  refresh() {
+    setState((){});
+  }
   @override
   Widget build(BuildContext context) {
     Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments;
@@ -82,39 +86,17 @@ class _ShowRecipeScreenState extends State<ShowRecipeScreen> {
             );
           }
           if(snapshot.hasError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 150.0,
-                    child: Image.asset('assets/no-network.png')
-                  ),
-                  SizedBox(height: 15.0),
-                  Text('Bad Connection or Server Unreachable',
-                    style: TextStyle(
-                      fontSize: 16.0
-                    ),
-                  ),
-                  SizedBox(height: 10.0),
-                  GestureDetector(
-                    child: Text('Try Again',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        decoration: TextDecoration.underline
-                      ),
-                    ),
-                    onTap: () {
-                      setState((){});
-                    },
-                  ),
-                ],
-              ),
+            return ShowError(
+              notifyParent: refresh,
             );
           }
           return Consumer<RecipeShow>(
             child: Center(
-              child: Text('There is no Recipes yet'),
+              child: Text('There is no Recipes yet',
+                style: TextStyle(
+                  fontSize: 16.0
+                ), 
+              ),
             ),
             builder: (BuildContext context, RecipeShow recipeProvider, Widget child) => recipeProvider.getShowItem.length <= 0 ? child :
             RefreshIndicator(

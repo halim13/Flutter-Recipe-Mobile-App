@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ShowError extends StatefulWidget {
-  final BuildContext context;
-
-  ShowError({
-    this.context
-  });
+  final Function notifyParent;
+  ShowError({Key key, @required this.notifyParent}) : super(key: key);
 
   @override
   _ShowErrorState createState() => _ShowErrorState();
@@ -37,7 +34,7 @@ class _ShowErrorState extends State<ShowError> {
               ),
             ),
             onTap: () {
-              setState((){});
+              widget.notifyParent();
             },
           ),
         ],

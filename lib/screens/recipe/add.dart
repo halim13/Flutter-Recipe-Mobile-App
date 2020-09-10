@@ -14,6 +14,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import '../../widgets/text.form.ingredients.add.dart';
 import '../../widgets/text.form.steps.add.dart';
 import '../../providers/recipe/add.dart';
+import '../../helpers/show.error.dart';
 import '../../helpers/connectivity.service.dart';
 
 class AddRecipeScreen extends StatefulWidget {
@@ -196,6 +197,10 @@ class _AddRecipeState extends State<AddRecipeScreen> {
     } 
   }
 
+  refresh() {
+    setState((){});
+  }
+
   Widget build(BuildContext context) {
     bool isLoading = Provider.of<RecipeAdd>(context, listen: false).isLoading;
     bool isLoadingDraft = Provider.of<RecipeAdd>(context, listen: false).isLoadingDraft;
@@ -212,29 +217,25 @@ class _AddRecipeState extends State<AddRecipeScreen> {
           onPressed: () => Navigator.of(context).pop(true)
         ),
       ),
-      body: ConnectivityService(
-        widget: getAddPage()
+      body: FutureBuilder(
+        future: Provider.of<RecipeAdd>(context, listen: false).categoriesAndCountries(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if(snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator()
+            );
+          }
+          if(snapshot.hasError) {
+            return ShowError(
+              notifyParent: refresh,
+            );
+          }
+          return ConnectivityService(
+            widget: getAddPage(),
+            refresh: refresh,
+          );
+        }
       )
-    );
-  }
-
-  Widget showError() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 150.0,
-            child: Image.asset('assets/no-network.png')
-          ),
-          SizedBox(height: 15.0),
-          Text('Bad Connection or Server Unreachable',
-            style: TextStyle(
-              fontSize: 16.0
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -306,7 +307,8 @@ class _AddRecipeState extends State<AddRecipeScreen> {
             ),
             title('What are the Category ?'),
             Container(
-              margin: EdgeInsets.only(left: 18.0, top: 15.0, right: 18.0),
+              width: double.infinity,
+              margin: EdgeInsets.only(left: 18.0, right: 18.0),
               child: Column(
                 children: [
                   Consumer<RecipeAdd>(
@@ -325,7 +327,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
             ),
             title('Where this food come from ?'),
             Container(
-              margin: EdgeInsets.only(left: 18.0, top: 15.0, right: 18.0),
+              margin: EdgeInsets.only(left: 18.0, right: 18.0),
               child: Column(
                 children: [
                   Consumer<RecipeAdd>(
@@ -344,7 +346,7 @@ class _AddRecipeState extends State<AddRecipeScreen> {
             ),
             title('How many portion'),
             Container(
-              margin: EdgeInsets.only(left: 18.0, top: 15.0, right: 18.0),
+              margin: EdgeInsets.only(left: 18.0, right: 18.0),
               child: Column(
                 children: [
                   Consumer<RecipeAdd>(
@@ -363,7 +365,8 @@ class _AddRecipeState extends State<AddRecipeScreen> {
             ),
             title('How long to Cook this ?'),
             Container(
-              height: 220.0,
+              margin: EdgeInsets.only(left: 18.0, right: 18.0),
+              height: 200.0,
               child: Consumer<RecipeAdd>(
                 builder: (context, value, child) {
                 return CupertinoTimerPicker(
@@ -383,9 +386,9 @@ class _AddRecipeState extends State<AddRecipeScreen> {
                 border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(6.0),
               ),
-              margin: EdgeInsets.all(18.0),
-              padding: EdgeInsets.all(18.0),
               width: double.infinity,
+              margin: EdgeInsets.only(left: 18.0, right: 18.0),
+              padding: EdgeInsets.all(10.0),
               child: textFormIngredientsAdd()
             ),
             Container(
@@ -411,9 +414,9 @@ class _AddRecipeState extends State<AddRecipeScreen> {
             ),
             title('How to Cook ?'),
             Container(
-              margin: EdgeInsets.all(10.0),
-              padding: EdgeInsets.all(10.0),
               width: double.infinity,
+              margin: EdgeInsets.only(left: 18.0, right: 18.0),
+              padding: EdgeInsets.all(10.0),
               child: textFormStepsAdd(context)
             ),
             Container(

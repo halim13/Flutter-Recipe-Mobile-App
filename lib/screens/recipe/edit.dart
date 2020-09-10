@@ -15,6 +15,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import '../../widgets/text.form.ingredients.edited.dart';
 import '../../widgets/text.form.steps.edited.dart';
 import '../../constants/url.dart';
+import '../../helpers/show.error.dart';
 import '../../providers/recipe/edit.dart';
 
 class EditRecipeScreen extends StatefulWidget {
@@ -250,7 +251,10 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
       ),
     );
   }
-
+  refresh() {
+    setState((){});
+  }
+  @override
   Widget build(BuildContext context) {
     Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments;
     String recipeId = routeArgs["recipeId"];
@@ -269,34 +273,8 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
             );
           }
           if(snapshot.hasError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 150.0,
-                    child: Image.asset('assets/no-network.png')
-                  ),
-                  SizedBox(height: 15.0),
-                  Text('Bad Connection or Server Unreachable',
-                    style: TextStyle(
-                      fontSize: 16.0
-                    ),
-                  ),
-                  SizedBox(height: 10.0),
-                  GestureDetector(
-                    child: Text('Try Again',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        decoration: TextDecoration.underline
-                      ),
-                    ),
-                    onTap: () {
-                      setState((){});
-                    },
-                  ),
-                ],
-              ),
+            return ShowError(
+              notifyParent: refresh,
             );
           }
           return Consumer<RecipeEdit>(
@@ -379,7 +357,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                   ),
                   title('What are the Category ?'),
                   Container(
-                    margin: EdgeInsets.only(left: 18.0, top: 15.0, right: 18.0),
+                    margin: EdgeInsets.only(left: 18.0, right: 18.0),
                     child: Column(
                       children: [
                         Consumer<RecipeEdit>(
@@ -398,7 +376,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                   ),
                   title('Where this food come from ?'),
                   Container(
-                    margin: EdgeInsets.only(left: 18.0, top: 15.0, right: 18.0),
+                    margin: EdgeInsets.only(left: 18.0, right: 18.0),
                     child: Column(
                       children: [
                         Consumer<RecipeEdit>(
@@ -417,7 +395,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                   ),
                   title('How many Portion ?'),
                   Container(
-                    margin: EdgeInsets.only(left: 18.0, top: 15.0, right: 18.0),
+                    margin: EdgeInsets.only(left: 18.0, right: 18.0),
                     child: Column(
                       children: [
                         Consumer<RecipeEdit>(
@@ -437,7 +415,8 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                   ),
                   title('How long to Cook this ?'),
                   Container(
-                    height: 220.0,
+                    margin: EdgeInsets.only(left: 18.0, right: 18.0),
+                    height: 200.0,
                     child: Consumer<RecipeEdit>(
                       builder: (context, value, child) {
                       return CupertinoTimerPicker(
@@ -453,20 +432,20 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                   ),
                   title('What are the Ingredients ?'),
                   Container(
+                    width: double.infinity,
+                    margin: EdgeInsets.only(left: 18.0, right: 18.0),
+                    padding: EdgeInsets.all(10.0),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       border: Border.all(color: Colors.grey),
                       borderRadius: BorderRadius.circular(6.0),
                     ),
-                    margin: EdgeInsets.all(18.0),
-                    padding: EdgeInsets.all(18.0),
-                    width: double.infinity,
                     child: textFormIngredientsEdit(context)
                   ),
                   Container(
-                    margin: EdgeInsets.only(left: 10.0, right: 10.0),
-                    padding: EdgeInsets.all(10.0),
                     width: double.infinity,
+                    margin: EdgeInsets.only(left: 18.0, right: 18.0),
+                    padding: EdgeInsets.all(10.0),
                     child: Consumer<RecipeEdit>(
                       builder: (context, recipeProvider, child) {
                         return RaisedButton(
@@ -490,15 +469,15 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                   ),
                   title('How to Cook ?'),
                   Container(
-                    margin: EdgeInsets.all(10.0),
-                    padding: EdgeInsets.all(10.0),
                     width: double.infinity,
+                    margin: EdgeInsets.only(left: 18.0, right: 18.0),
+                    padding: EdgeInsets.all(10.0),
                     child: textFormStepsEdited(context)
                   ),
                   Container(
+                    width: double.infinity,
                     margin: EdgeInsets.all(10.0),
                     padding: EdgeInsets.all(10.0),
-                    width: double.infinity,
                     child: Consumer<RecipeEdit>(
                       builder: (context, recipeProvider, child) {
                         return RaisedButton(
@@ -523,28 +502,30 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                     width: double.infinity,
                     margin: EdgeInsets.all(10.0),
                     padding: EdgeInsets.all(10.0),
-                        child: Consumer<RecipeEdit>(
-                          builder: (BuildContext context, RecipeEdit recipeProvider, Widget child) {
-                            return Container(
-                                height: 48.0,
-                                child: recipeProvider.isLoading ? RaisedButton(
-                                  child: Center(
-                                    child: SizedBox(
-                                      height: 30.0,
-                                      width: 30.0,
-                                      child: CircularProgressIndicator(
-                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                      ),
-                                    )
+                      child: Consumer<RecipeEdit>(
+                        builder: (BuildContext context, RecipeEdit recipeProvider, Widget child) {
+                          return Container(
+                            height: 48.0,
+                            child: recipeProvider.isLoading 
+                            ? RaisedButton(
+                              child: Center(
+                                child: SizedBox(
+                                  height: 30.0,
+                                  width: 30.0,
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                                   ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    side: BorderSide(color: Colors.transparent)
-                                  ),
-                                  elevation: 0.0,
-                                  color: Colors.blue.shade700,
-                                  onPressed: () {},
-                                ) : recipeProvider.data.recipes.first.isPublished == 1 
+                                )
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                side: BorderSide(color: Colors.transparent)
+                              ),
+                              elevation: 0.0,
+                              color: Colors.blue.shade700,
+                              onPressed: () {},
+                            ) 
+                          : recipeProvider.data.recipes.first.isPublished == 1 
                                   ? RaisedButton(
                                       child: Text(
                                         'Update',
@@ -562,8 +543,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                                     onPressed: () => save(context, 2),  
                                   )
                                 :  RaisedButton(
-                                    child: Text(
-                                      'Publish',
+                                    child: Text('Publish',
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 16.0
@@ -583,37 +563,39 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                         ),
                         Container(
                           width: double.infinity,
-                          margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 0.0, bottom: 10.0),
-                          padding: EdgeInsets.all(10.0),
+                          margin: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
+                          padding: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
                           child: Consumer<RecipeEdit>(
                            builder: (BuildContext context, RecipeEdit recipeProvider, Widget child) =>Container(
                               height: 48.0,
-                              child: recipeProvider.isLoadingDraft ? RaisedButton(
-                                    child: Center(
-                                      child: SizedBox(
-                                        height: 30.0,
-                                        width: 30.0,
-                                        child: CircularProgressIndicator(
-                                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                        ),
-                                      )
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      side: BorderSide(color: Colors.transparent)
-                                    ),
-                                    elevation: 0.0,
-                                    color: Colors.blue.shade700,
-                                    onPressed: () {},
-                                  ) : RaisedButton(
-                                  child: Text(
-                                    'Save to Draft',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16.0
-                                    ),
-                                  ) ,
+                              child: recipeProvider.isLoadingDraft 
+                              ? RaisedButton(
+                                  child: Center(
+                                    child: SizedBox(
+                                      height: 30.0,
+                                      width: 30.0,
+                                      child: CircularProgressIndicator(
+                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                      ),
+                                    )
+                                  ),
                                   shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    side: BorderSide(color: Colors.transparent)
+                                  ),
+                                  elevation: 0.0,
+                                  color: Colors.blue.shade700,
+                                  onPressed: () {},
+                                ) 
+                              : RaisedButton(
+                                child: Text(
+                                  'Save to Draft',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16.0
+                                  ),
+                                ),
+                                shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8.0),
                                   side: BorderSide(color: Colors.transparent)
                                 ),
@@ -622,16 +604,16 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                                 onPressed: () => save(context, 0),  
                               )
                             ),
-                          ),
-                        )
-                      ],
-                    )
-                  ),
+                        ),
+                      )
+                    ],
+                  )
                 ),
-              );
-            },
-          ),
-        )
-      );
+              ),
+            );
+          },
+        ),
+      )
+    );
   }
 }

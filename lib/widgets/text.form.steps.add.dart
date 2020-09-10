@@ -52,7 +52,7 @@ Widget textFormStepsAdd(BuildContext context) {
               physics: NeverScrollableScrollPhysics(),
               controller: recipeProvider.stepsScrollController,
               itemCount: recipeProvider.steps.length,
-              itemBuilder: (context, i) {
+              itemBuilder: (BuildContext context, int i) {
                 return Container(
                   child: Column(
                     children: [

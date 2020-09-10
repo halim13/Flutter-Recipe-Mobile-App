@@ -1,13 +1,16 @@
 import 'dart:async';
 
+import 'package:chumbucket_recipes/helpers/show.error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:connectivity/connectivity.dart';
 
 class ConnectivityService extends StatefulWidget {
   ConnectivityService({
-    this.widget
+    this.widget,
+    this.refresh
   });
+  final Function refresh;
   final Widget widget;
   @override
   _ConnectivityServiceState createState() => _ConnectivityServiceState();
@@ -57,27 +60,8 @@ class _ConnectivityServiceState extends State<ConnectivityService> {
       default:
     }
   }
-  Widget showError() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 150.0,
-            child: Image.asset('assets/no-network.png')
-          ),
-          SizedBox(height: 15.0),
-          Text('Bad Connection or Server Unreachable',
-            style: TextStyle(
-              fontSize: 16.0
-            ),
-          ),               
-        ],
-      ),
-    );
-  }
 
   Widget build(BuildContext context) {
-    return connectionStatus == ConnectivityResult.none ? showError() : widget.widget; 
+    return connectionStatus == ConnectivityResult.none ? ShowError(notifyParent: widget.refresh) : widget.widget; 
   }
 }

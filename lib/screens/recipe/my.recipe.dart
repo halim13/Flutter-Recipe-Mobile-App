@@ -8,6 +8,8 @@ import '../../constants/url.dart';
 import '../../models/RecipeShow.dart';
 import '../../providers/recipe/my.recipe.dart';
 import '../../screens/profile/view.dart';
+import '../../helpers/connectivity.service.dart';
+import '../../helpers/show.error.dart';
 
 class MyRecipeScreen extends StatefulWidget {
   @override
@@ -33,7 +35,7 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
     controller.dispose();
   }
 
-  void selectRecipe(
+  void detailRecipe(
     BuildContext context, 
     String uuid, 
     String title, 
@@ -49,6 +51,10 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
     );
   }
 
+  refresh() {
+    setState((){});
+  }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -74,209 +80,185 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
             );
           }
           if(snapshot.hasError) {
-            return Consumer<MyRecipe>(
-            builder: (context, userProvider, child) =>
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 150.0,
-                      child: Image.asset('assets/no-network.png')
-                    ),
-                    SizedBox(height: 15.0),
-                    Text('Bad Connection or Server Unreachable',
-                      style: TextStyle(
-                        fontSize: 16.0
-                      ),
-                    ),
-                    SizedBox(height: 10.0),
-                    GestureDetector(
-                      child: Text('Try Again',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          decoration: TextDecoration.underline
-                        ),
-                      ),
-                      onTap: () {
-                        setState((){});
-                      },
-                    ),
-                  ],
-                ),
-              ),
+            return ShowError(
+              notifyParent: refresh,
             );
           }
           return Consumer<MyRecipe>(
             child: Center(
-              child: Text('There is no Recipes yet'),
+              child: Text('There is no Recipes yet',
+                style: TextStyle(
+                  fontSize: 16.0
+                ),
+              ),
             ),
             builder: (BuildContext context, MyRecipe recipeProvider, Widget child) => recipeProvider.getShowItem.length <= 0 ? child :
             RefreshIndicator(
               onRefresh: () => recipeProvider.refreshRecipe(),
               child: ListView.builder(
-              controller: controller,
-              itemCount: recipeProvider.getShowItem.length,
-              itemBuilder: (context, i) {
-                if(i == recipeProvider.getShowItem.length) 
-                  return CircularProgressIndicator();
-                  return Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0)
-                    ),
-                    elevation: 4.0,
-                    margin: EdgeInsets.all(10.0),
-                    child: Column(
-                      children: [
-                        Stack(
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                selectRecipe(
-                                  context, 
-                                  recipeProvider.getShowItem[i].uuid,
-                                  recipeProvider.getShowItem[i].title, 
-                                  recipeProvider.getShowItem[i].user.uuid,
-                                );
-                              },
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(15.0),
-                                  topRight: Radius.circular(15.0),
-                                ),
-                                child: CachedNetworkImage(
-                                  imageUrl: '$imagesRecipesUrl/${recipeProvider.getShowItem[i].imageurl}',
-                                  imageBuilder: (context, imageProvider) => Container(
-                                    width: double.infinity,
-                                    height: 250.0,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    )
-                                  ),
-                                  placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
-                                  errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
-                                  fadeOutDuration: Duration(seconds: 1),
-                                  fadeInDuration: Duration(seconds: 1),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 20.0,
-                              right: 10.0,
-                              child: Container(
-                                width: 300.0,
-                                color: Colors.black54,
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 5.0,
-                                  horizontal: 20.0,
-                                ),
-                                child: Text(
-                                  titleCase(recipeProvider.getShowItem[i].title),
-                                  style: TextStyle(
-                                    fontSize: 26.0,
-                                    color: Colors.white,
-                                  ),
-                                  softWrap: true,
-                                  overflow: TextOverflow.fade,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Container(
-                          padding: EdgeInsets.all(20.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                controller: controller,
+                itemCount: recipeProvider.getShowItem.length,
+                itemBuilder: (BuildContext context, int i) {
+                  return ConnectivityService(
+                    widget: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0)
+                      ),
+                      elevation: 4.0,
+                      margin: EdgeInsets.all(10.0),
+                      child: Column(
+                        children: [
+                          Stack(
                             children: [
-                              Row(
-                                children: [
-                                  Icon(Icons.schedule),
-                                  SizedBox(width: 6.0),
-                                  Text('${recipeProvider.getShowItem[i].duration} min'),
-                                ],
+                              InkWell(
+                                onTap: () {
+                                  detailRecipe(
+                                    context, 
+                                    recipeProvider.getShowItem[i].uuid,
+                                    recipeProvider.getShowItem[i].title, 
+                                    recipeProvider.getShowItem[i].user.uuid,
+                                  );
+                                },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(15.0),
+                                    topRight: Radius.circular(15.0),
+                                  ),
+                                  child: CachedNetworkImage(
+                                    imageUrl: '$imagesRecipesUrl/${recipeProvider.getShowItem[i].imageurl}',
+                                    imageBuilder: (context, imageProvider) => Container(
+                                      width: double.infinity,
+                                      height: 250.0,
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      )
+                                    ),
+                                    placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+                                    errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+                                    fadeOutDuration: Duration(seconds: 1),
+                                    fadeInDuration: Duration(seconds: 1),
+                                  ),
+                                ),
                               ),
-                              Row(
-                                children: [
-                                  Icon(Icons.fastfood),
-                                  SizedBox(width: 6.0),
-                                  Text('${recipeProvider.getShowItem[i].portion} Portion'),
-                                ],
+                              Positioned(
+                                bottom: 20.0,
+                                right: 10.0,
+                                child: Container(
+                                  width: 300.0,
+                                  color: Colors.black54,
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 5.0,
+                                    horizontal: 20.0,
+                                  ),
+                                  child: Text(
+                                    titleCase(recipeProvider.getShowItem[i].title),
+                                    style: TextStyle(
+                                      fontSize: 26.0,
+                                      color: Colors.white,
+                                    ),
+                                    softWrap: true,
+                                    overflow: TextOverflow.fade,
+                                  ),
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => ViewProfileScreen(recipeProvider.getShowItem[i].user.uuid, recipeProvider.getShowItem[i].user.name)),
-                            );
-                          },
-                          child: Container(
-                            padding: EdgeInsets.only(top: 0.0, left: 20.0, right: 20.0, bottom: 15.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
+                          Container(
+                            padding: EdgeInsets.all(20.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Row(
-                                      children: [
-                                        Icon(Icons.flag),
-                                        SizedBox(width: 6.0),
-                                        Text(recipeProvider.getShowItem[i].country.name),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        RichText(
-                                          text: TextSpan(
-                                            text: 'Recipe by : ',
-                                            style: TextStyle(
-                                              color: Colors.black, 
+                                    Icon(Icons.schedule),
+                                    SizedBox(width: 6.0),
+                                    Text('${recipeProvider.getShowItem[i].duration} min'),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(Icons.fastfood),
+                                    SizedBox(width: 6.0),
+                                    Text('${recipeProvider.getShowItem[i].portion} Portion'),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ViewProfileScreen(recipeProvider.getShowItem[i].user.uuid, recipeProvider.getShowItem[i].user.name)),
+                              );
+                            },
+                            child: Container(
+                              padding: EdgeInsets.only(top: 0.0, left: 20.0, right: 20.0, bottom: 15.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(Icons.flag),
+                                          SizedBox(width: 6.0),
+                                          Text(recipeProvider.getShowItem[i].country.name),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          RichText(
+                                            text: TextSpan(
+                                              text: 'Recipe by : ',
+                                              style: TextStyle(
+                                                color: Colors.black, 
+                                              ),
+                                              children: <TextSpan>[
+                                                TextSpan(
+                                                  text: '${recipeProvider.getShowItem[i].user.name}',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16.0
+                                                  ),
+                                                )
+                                              ]
                                             ),
-                                            children: <TextSpan>[
-                                              TextSpan(
-                                                text: '${recipeProvider.getShowItem[i].user.name}',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16.0
-                                                ),
-                                              )
-                                            ]
+                                          )
+                                        ]
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10.0),
+                                  RichText(
+                                    text: TextSpan(
+                                      text: 'Category : ',
+                                      style: TextStyle(
+                                        color: Colors.black, 
+                                      ),
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                          text: '${recipeProvider.getShowItem[i].category.title}',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16.0
                                           ),
                                         )
                                       ]
                                     ),
-                                  ],
-                                ),
-                                SizedBox(height: 10.0),
-                                RichText(
-                                  text: TextSpan(
-                                    text: 'Category : ',
-                                    style: TextStyle(
-                                      color: Colors.black, 
-                                    ),
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        text: '${recipeProvider.getShowItem[i].category.title}',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16.0
-                                        ),
-                                      )
-                                    ]
                                   ),
-                                ),
-                              ]
+                                ]
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
+                    refresh: refresh,
                   );
                 }
               ),
