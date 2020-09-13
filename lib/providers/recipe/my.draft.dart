@@ -396,7 +396,10 @@ class MyDraft extends ChangeNotifier {
 
   Future<void> getRecipesDraft([int limit = 0]) async {
     limit = limit + 5;
-    String url = 'http://$baseurl:$port/api/v1/recipes/show-draft?limit=$limit'; 
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, Object> extractedUserData = json.decode(prefs.getString('userData'));
+    String userId = extractedUserData["userId"];
+    String url = 'http://$baseurl:$port/api/v1/recipes/show-draft/$userId?limit=$limit'; 
     try {
       http.Response response = await http.get(url).timeout(Duration(seconds: 10));
       RecipeDraftModel model = RecipeDraftModel.fromJson(json.decode(response.body));

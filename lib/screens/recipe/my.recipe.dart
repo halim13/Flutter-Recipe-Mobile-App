@@ -138,8 +138,6 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
                                     ),
                                     placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
                                     errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
-                                    fadeOutDuration: Duration(seconds: 1),
-                                    fadeInDuration: Duration(seconds: 1),
                                   ),
                                 ),
                               ),
@@ -196,7 +194,7 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
                               );
                             },
                             child: Container(
-                              padding: EdgeInsets.only(top: 0.0, left: 20.0, right: 20.0, bottom: 15.0),
+                              padding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 15.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
@@ -269,7 +267,6 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
     );
   }
 }
-
 
 class DataSearch extends SearchDelegate<String> {
   ThemeData appBarTheme(BuildContext context) {
@@ -353,8 +350,6 @@ class DataSearch extends SearchDelegate<String> {
                         imageUrl: '$imagesRecipesUrl/${results[i].imageurl}',
                         placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
                         errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
-                        fadeOutDuration: Duration(seconds: 1),
-                        fadeInDuration: Duration(seconds: 1),
                       ), 
                     ),
                     Positioned(
@@ -402,7 +397,7 @@ class DataSearch extends SearchDelegate<String> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.only(top: 0.0, left: 20.0, right: 20.0, bottom: 15.0),
+                  padding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 15.0),
                   child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -473,41 +468,6 @@ class DataSearch extends SearchDelegate<String> {
     MyRecipe recipeProvider = Provider.of<MyRecipe>(context, listen: false);
     if(query.isEmpty) {
       return Container();
-      // return ListView.builder(
-      //   itemCount: recipeProvider.getShowItem.length,
-      //   itemBuilder: (context, i) => Card(
-      //     child: ListTile(
-      //       onTap: () {
-      //         Navigator.of(context).pushNamed(
-      //           '/detail-recipe',
-      //           arguments: {
-      //             'uuid': recipeProvider.getShowItem[i].uuid,
-      //             'title': recipeProvider.getShowItem[i].title,
-      //             'userId': recipeProvider.getShowItem[i].user.uuid,
-      //           }
-      //         );
-      //       },
-      //       leading: CachedNetworkImage(
-      //         width: 50.0,
-      //         height: 50.0,
-      //         imageUrl: '$imagesRecipesUrl/${recipeProvider.getShowItem[i].imageurl}',
-      //         placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
-      //         errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
-      //         fadeOutDuration: Duration(seconds: 1),
-      //         fadeInDuration: Duration(seconds: 1),
-      //       ),
-      //       title: RichText(
-      //         text: TextSpan(
-      //           children: highlightOccurrences(recipeProvider.getShowItem[i].title, query),
-      //           style: TextStyle(
-      //             color: Colors.grey,
-      //             fontWeight: FontWeight.bold
-      //           ),
-      //         )
-      //       )
-      //     ),
-      //   ),
-      // );
     }
     List<RecipeShowModelData> suggestionsList = recipeProvider.getShowItem.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
     return ListView.builder(
@@ -530,8 +490,6 @@ class DataSearch extends SearchDelegate<String> {
             imageUrl: '$imagesRecipesUrl/${suggestionsList[i].imageurl}',
             placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
             errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
-            fadeOutDuration: Duration(seconds: 1),
-            fadeInDuration: Duration(seconds: 1),
           ),
           title: RichText(
             text: TextSpan(

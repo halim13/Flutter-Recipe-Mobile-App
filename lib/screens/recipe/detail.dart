@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:quartet/quartet.dart';
 import 'package:provider/provider.dart';
 
-import '../../helpers/connectivity.service.dart';
 import '../../providers/auth/auth.dart';
 import '../../providers/recipe/detail.dart';
 import '../../providers/user/user.dart';
+import '../../helpers/connectivity.service.dart';
+import '../../helpers/show.error.dart';
 import '../../widgets/detail.recipe.item.dart';
 
 class RecipeDetailScreen extends StatefulWidget {
@@ -44,43 +45,16 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
     }
     super.didChangeDependencies();
   }
+  refresh() {
+    setState((){});
+  }
+  @override
   Widget build(BuildContext context) {
     Map<String, String> routeArgs = ModalRoute.of(context).settings.arguments;
     String recipeId = routeArgs['uuid'];
     String userId = routeArgs['userId'];
 
-    Widget showError() {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 150.0,
-              child: Image.asset('assets/no-network.png')
-            ),
-            SizedBox(height: 15.0),
-            Text('Bad Connection or Server Unreachable',
-              style: TextStyle(
-                fontSize: 16.0
-              ),
-            ),
-            SizedBox(height: 10.0),
-            GestureDetector(
-              child: Text('Try Again',
-                style: TextStyle(
-                  fontSize: 16.0,
-                  decoration: TextDecoration.underline
-                ),
-              ),
-              onTap: () {
-                setState((){});
-              },
-            ),
-          ],
-        ),
-      );
-    }
-
+   
     return Scaffold(
       appBar: AppBar(
         title: Text(titleCase(title)),
@@ -117,7 +91,9 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
             );
           }
           if(snapshot.hasError) {
-            return showError();
+            return ShowError(
+              notifyParent: refresh,
+            );
           }
           return Consumer<RecipeDetail>(
             builder: (BuildContext context, RecipeDetail recipeProvider, Widget child) {
@@ -133,6 +109,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   getIngredientsGroupDetail: recipeProvider.getIngredientsGroupDetail,
                   getStepsDetail: recipeProvider.getStepsDetail,
                 ),
+                refresh: refresh,
               );
             }
           );
@@ -142,7 +119,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
         builder: (BuildContext context, Auth authProvider, Widget child) {
           return authProvider.isAuth 
           ? Consumer<RecipeDetail>(
-              builder: (context, recipeProvider, ch) {
+              builder: (BuildContext context, RecipeDetail recipeProvider, Widget child) {
                 return FloatingActionButton(
                   heroTag: UniqueKey(),
                   backgroundColor: Colors.yellow.shade700,
@@ -155,7 +132,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
             ) 
           : FutureBuilder(
             future: authProvider.tryAutoLogin(),
-            builder: (ctx, snapshot) => Container()
+            builder: (BuildContext context, AsyncSnapshot snapshot) => Container()
           );
         }
       )

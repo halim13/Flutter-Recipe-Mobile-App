@@ -4,6 +4,8 @@ import 'package:quartet/quartet.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../helpers/highlight.occurences.dart';
+import '../../helpers/connectivity.service.dart';
+import '../../helpers/show.error.dart';
 import '../../models/RecipeDraft.dart';
 import '../../constants/url.dart';
 import '../../providers/recipe/my.draft.dart';
@@ -33,7 +35,7 @@ class _MyDraftScreenState extends State<MyDraftScreen> {
     controller.dispose();
   }
 
-  void selectRecipe(
+  void detailRecipe(
     BuildContext context, 
     String uuid, 
     String title,
@@ -49,6 +51,10 @@ class _MyDraftScreenState extends State<MyDraftScreen> {
     );
   }
 
+  refresh() {
+    setState(() {});
+  }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -74,206 +80,183 @@ class _MyDraftScreenState extends State<MyDraftScreen> {
             );
           }
           if(snapshot.hasError) {
-            return  Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 150.0,
-                      child: Image.asset('assets/no-network.png')
-                    ),
-                    SizedBox(height: 15.0),
-                    Text('Bad Connection or Server Unreachable',
-                      style: TextStyle(
-                        fontSize: 16.0
-                      ),
-                    ),
-                    SizedBox(height: 10.0),
-                    GestureDetector(
-                      child: Text('Try Again',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          decoration: TextDecoration.underline
-                        ),
-                      ),
-                      onTap: () {
-                        setState((){});
-                      },
-                    ),
-                  ],
-                ),
-              );
+            return ShowError(
+              notifyParent: refresh,
+            );
           }
           return Consumer<MyDraft>(
             child: Center(
-              child: Text('There is no Drafts yet'),
+              child: Text('There is no Drafts yet',
+                style: TextStyle(
+                  fontSize: 16.0
+                ),
+              ),
             ),
             builder: (BuildContext context, MyDraft recipeProvider, Widget child) => recipeProvider.getRecipesDraftItem.length <= 0 ? child :
             RefreshIndicator(
               onRefresh: () => recipeProvider.refreshRecipesDraft(),
               child: ListView.builder(
-              controller: controller,
-              itemCount: recipeProvider.getRecipesDraftItem.length,
-              itemBuilder: (context, i) {
-                if(i == recipeProvider.getRecipesDraftItem.length) 
-                  return CircularProgressIndicator();
-                  return Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0)
-                    ),
-                    elevation: 4.0,
-                    margin: EdgeInsets.all(10.0),
-                    child: Column(
-                      children: [
-                        Stack(
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                selectRecipe(
-                                  context, 
-                                  recipeProvider.getRecipesDraftItem[i].uuid,
-                                  recipeProvider.getRecipesDraftItem[i].title, 
-                                  recipeProvider.getRecipesDraftItem[i].user.uuid
-                                );
-                              },
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(15.0),
-                                  topRight: Radius.circular(15.0),
-                                ),
-                                child: CachedNetworkImage(
-                                  imageUrl: '$imagesRecipesUrl/${recipeProvider.getRecipesDraftItem[i].imageurl}',
-                                  imageBuilder: (context, imageProvider) => Container(
-                                    width: double.infinity,
-                                    height: 250.0,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    )
-                                  ),
-                                  placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
-                                  errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
-                                  fadeOutDuration: Duration(seconds: 1),
-                                  fadeInDuration: Duration(seconds: 1),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 20.0,
-                              right: 10.0,
-                              child: Container(
-                                width: 300.0,
-                                color: Colors.black54,
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 5.0,
-                                  horizontal: 20.0,
-                                ),
-                                child: Text(
-                                  titleCase(recipeProvider.getRecipesDraftItem[i].title),
-                                  style: TextStyle(
-                                    fontSize: 26.0,
-                                    color: Colors.white,
-                                  ),
-                                  softWrap: true,
-                                  overflow: TextOverflow.fade,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Container(
-                          padding: EdgeInsets.all(20.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                controller: controller,
+                itemCount: recipeProvider.getRecipesDraftItem.length,
+                itemBuilder: (BuildContext context, int i) {
+                  return ConnectivityService(
+                    widget: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0)
+                      ),
+                      elevation: 4.0,
+                      margin: EdgeInsets.all(10.0),
+                      child: Column(
+                        children: [
+                          Stack(
                             children: [
-                              Row(
-                                children: [
-                                  Icon(Icons.schedule),
-                                  SizedBox(width: 6.0),
-                                  Text('${recipeProvider.getRecipesDraftItem[i].duration} min'),
-                                ],
+                              InkWell(
+                                onTap: () {
+                                  detailRecipe(
+                                    context, 
+                                    recipeProvider.getRecipesDraftItem[i].uuid,
+                                    recipeProvider.getRecipesDraftItem[i].title, 
+                                    recipeProvider.getRecipesDraftItem[i].user.uuid
+                                  );
+                                },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(15.0),
+                                    topRight: Radius.circular(15.0),
+                                  ),
+                                  child: CachedNetworkImage(
+                                    imageUrl: '$imagesRecipesUrl/${recipeProvider.getRecipesDraftItem[i].imageurl}',
+                                    imageBuilder: (context, imageProvider) => Container(
+                                      width: double.infinity,
+                                      height: 250.0,
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      )
+                                    ),
+                                    placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
+                                    errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
+                                  ),
+                                ),
                               ),
-                              Row(
-                                children: [
-                                  Icon(Icons.fastfood),
-                                  SizedBox(width: 6.0),
-                                  Text('${recipeProvider.getRecipesDraftItem[i].portion} Portion'),
-                                ],
+                              Positioned(
+                                bottom: 20.0,
+                                right: 10.0,
+                                child: Container(
+                                  width: 300.0,
+                                  color: Colors.black54,
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 5.0,
+                                    horizontal: 20.0,
+                                  ),
+                                  child: Text(
+                                    titleCase(recipeProvider.getRecipesDraftItem[i].title),
+                                    style: TextStyle(
+                                      fontSize: 26.0,
+                                      color: Colors.white,
+                                    ),
+                                    softWrap: true,
+                                    overflow: TextOverflow.fade,
+                                  ),
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => ViewProfileScreen(recipeProvider.getRecipesDraftItem[i].user.uuid, recipeProvider.getRecipesDraftItem[i].user.name)),
-                            );
-                          },
-                          child: Container(
-                            padding: EdgeInsets.only(top: 0.0, left: 20.0, right: 20.0, bottom: 15.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
+                          Container(
+                            padding: EdgeInsets.all(20.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                Row(
+                                  children: [
+                                    Icon(Icons.schedule),
+                                    SizedBox(width: 6.0),
+                                    Text('${recipeProvider.getRecipesDraftItem[i].duration} min'),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(Icons.fastfood),
+                                    SizedBox(width: 6.0),
+                                    Text('${recipeProvider.getRecipesDraftItem[i].portion} Portion'),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ViewProfileScreen(recipeProvider.getRecipesDraftItem[i].user.uuid, recipeProvider.getRecipesDraftItem[i].user.name)),
+                              );
+                            },
+                            child: Container(
+                              padding: EdgeInsets.only(top: 0.0, left: 20.0, right: 20.0, bottom: 15.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Row(
-                                    children: [
-                                      Icon(Icons.flag),
-                                      SizedBox(width: 6.0),
-                                      Text(recipeProvider.getRecipesDraftItem[i].country.name),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      RichText(
-                                        text: TextSpan(
-                                          text: 'Recipe by : ',
-                                          style: TextStyle(
-                                            color: Colors.black, 
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(Icons.flag),
+                                        SizedBox(width: 6.0),
+                                        Text(recipeProvider.getRecipesDraftItem[i].country.name),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        RichText(
+                                          text: TextSpan(
+                                            text: 'Recipe by : ',
+                                            style: TextStyle(
+                                              color: Colors.black, 
+                                            ),
+                                            children: <TextSpan>[
+                                              TextSpan(
+                                                text: '${recipeProvider.getRecipesDraftItem[i].user.name}',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16.0
+                                                ),
+                                              )
+                                            ]
                                           ),
-                                          children: <TextSpan>[
-                                            TextSpan(
-                                              text: '${recipeProvider.getRecipesDraftItem[i].user.name}',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16.0
-                                              ),
-                                            )
-                                          ]
+                                        )
+                                      ]
+                                    ),
+                                  ],
+                                  ),
+                                  SizedBox(height: 10.0),
+                                  RichText(
+                                  text: TextSpan(
+                                    text: 'Category : ',
+                                    style: TextStyle(
+                                      color: Colors.black, 
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: '${recipeProvider.getRecipesDraftItem[i].category.title}',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16.0
                                         ),
                                       )
                                     ]
                                   ),
-                                ],
-                                ),
-                                SizedBox(height: 10.0),
-                                RichText(
-                                text: TextSpan(
-                                  text: 'Category : ',
-                                  style: TextStyle(
-                                    color: Colors.black, 
-                                  ),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text: '${recipeProvider.getRecipesDraftItem[i].category.title}',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16.0
-                                      ),
-                                    )
-                                  ]
-                                ),
-                              )
-                              ]
+                                )
+                                ]
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
+                    refresh: refresh,
                   );
                 }
               ),
@@ -284,6 +267,7 @@ class _MyDraftScreenState extends State<MyDraftScreen> {
     );
   }
 }
+
 class DataSearch extends SearchDelegate<String> {
   ThemeData appBarTheme(BuildContext context) {
     ThemeData theme = Theme.of(context);
@@ -415,7 +399,7 @@ class DataSearch extends SearchDelegate<String> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.only(top: 0.0, left: 20.0, right: 20.0, bottom: 15.0),
+                  padding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 15.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [           
@@ -485,41 +469,6 @@ class DataSearch extends SearchDelegate<String> {
     MyDraft recipeProvider = Provider.of<MyDraft>(context, listen: false);
     if(query.isEmpty) {
       return Container();
-      // return ListView.builder(
-      //   itemCount: recipeProvider.getRecipesDraftItem.length,
-      //   itemBuilder: (context, i) => Card(
-      //     child: ListTile(
-      //       onTap: () {
-      //         Navigator.of(context).pushNamed(
-      //           '/detail-recipe',
-      //           arguments: {
-      //             'uuid': recipeProvider.getRecipesDraftItem[i].uuid,
-      //             'title': recipeProvider.getRecipesDraftItem[i].title,
-      //             'userId': recipeProvider.getRecipesDraftItem[i].user.uuid,
-      //           }
-      //         );
-      //       },
-      //       leading: CachedNetworkImage(
-      //         width: 50.0,
-      //         height: 50.0,
-      //         imageUrl: '$imagesRecipesUrl/${recipeProvider.getRecipesDraftItem[i].imageurl}',
-      //         placeholder: (context, url) => Image.asset('assets/default-thumbnail.jpg'),
-      //         errorWidget: (context, url, error) => Image.asset('assets/default-thumbnail.jpg'),
-      //         fadeOutDuration: Duration(seconds: 1),
-      //         fadeInDuration: Duration(seconds: 1),
-      //       ),
-      //       title: RichText(
-      //         text: TextSpan(
-      //           children: highlightOccurrences(recipeProvider.getRecipesDraftItem[i].title, query),
-      //           style: TextStyle(
-      //             color: Colors.grey,
-      //             fontWeight: FontWeight.bold
-      //           ),
-      //         )
-      //       )
-      //     ),
-      //   ),
-      // );
     }
     List<RecipeDraftModelData> suggestionsList = recipeProvider.getRecipesDraftItem.where((item) => item.title.toLowerCase().contains(query.toLowerCase())).toList();
     return ListView.builder(
